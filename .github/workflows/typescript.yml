@@ -40,9 +40,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
       - name: Download Artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v2
         with:
           name: build
+          path: build
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@40e688fac5b1c50b60cf21282345e1b7f02f4bab
         with:
