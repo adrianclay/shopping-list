@@ -1,8 +1,13 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import firebase from "firebase";
 
-function App() {
+interface AppProps {
+  firebase: firebase.app.App
+}
+
+function App(props: AppProps) {
   return (
     <div className="App">
       <header className="App-header">
