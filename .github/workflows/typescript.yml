@@ -27,10 +27,14 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
-      - name: Install Dependencies
+      - name: Install node dependencies via yarn
         run: yarn install
+      - name: Install the Firebase CLI
+        run: yarn global add firebase-tools
+      - name: Install the Firestore Emulator
+        run: $(yarn global bin)/firebase setup:emulators:firestore
       - name: Test
-        run: CI=true yarn test
+        run: CI=true $(yarn global bin)/firebase emulators:exec --only firestore "yarn test"
 
   deploy:
     name: Deploy
