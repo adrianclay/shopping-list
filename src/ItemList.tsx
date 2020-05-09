@@ -1,20 +1,22 @@
 import React, {useEffect, useState} from "react";
 import {ShoppingListItem} from "./App";
 
-interface ItemListProps {
-  firebase: firebase.app.App
+interface ShoppingListItemFetcher {
+  fetchShoppingListItems(): Promise<ShoppingListItem[]>;
 }
 
-function ItemList({ firebase }: ItemListProps) {
+interface ItemListProps {
+  shoppingListItemFetcher: ShoppingListItemFetcher
+}
+
+function ItemList({ shoppingListItemFetcher }: ItemListProps) {
   const [shoppingListItems, setShoppingListItems] = useState([] as ShoppingListItem[]);
 
   useEffect(() => {
-    const firestore = firebase.firestore();
-    const shoppingListCollection = firestore.collection('shopping-list-items')
-    shoppingListCollection.get().then(stuff => {
-      setShoppingListItems(stuff.docs.map(s => s.data() as ShoppingListItem));
+    shoppingListItemFetcher.fetchShoppingListItems().then(stuff => {
+      setShoppingListItems(stuff);
     })
-  }, [firebase]);
+  }, [shoppingListItemFetcher]);
 
   return (
     <ul>
