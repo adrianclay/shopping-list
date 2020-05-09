@@ -4,11 +4,13 @@ import {render} from '@testing-library/react';
 import {ShoppingListItem} from "./App";
 
 let resolve_fetch: (value: ShoppingListItem[]) => void;
+let reject_fetch: () => void;
 
 const shoppingListItemFetcherStub = {
   fetchShoppingListItems(): Promise<ShoppingListItem[]> {
     return new Promise((resolve, reject) => {
       resolve_fetch = resolve;
+      reject_fetch = reject;
     });
   }
 }
@@ -35,3 +37,12 @@ test('hides loading message after fetch is resolved', async () => {
 
   expect(await queryByText(/loading/i)).toBeNull()
 });
+
+test('displays error message if fetch fails', async () => {
+  const { findByText, queryByText } = render(<ItemList shoppingListItemFetcher={shoppingListItemFetcherStub} />)
+
+  reject_fetch();
+
+  expect(await findByText(/error/i)).toBeInTheDocument()
+  expect(await queryByText(/loading/i)).toBeNull()
+})

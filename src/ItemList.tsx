@@ -11,14 +11,21 @@ interface ItemListProps {
 
 function ItemList({ shoppingListItemFetcher }: ItemListProps) {
   const [isLoading, setIsLoading] = useState(true);
+  const [fetchErrored, setFetchError] = useState(false);
   const [shoppingListItems, setShoppingListItems] = useState([] as ShoppingListItem[]);
 
   useEffect(() => {
     shoppingListItemFetcher.fetchShoppingListItems().then(stuff => {
       setIsLoading(false);
       setShoppingListItems(stuff);
+    }).catch(() => {
+      setFetchError(true);
     })
   }, [shoppingListItemFetcher]);
+
+  if (fetchErrored) {
+    return <p>Error</p>
+  }
 
   if (isLoading) {
     return <p>Loading</p>
