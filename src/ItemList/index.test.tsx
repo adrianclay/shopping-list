@@ -1,7 +1,7 @@
 import React from 'react';
-import ItemList from './ItemList';
+import ItemList from './';
 import {render} from '@testing-library/react';
-import {ShoppingListItem} from "./App";
+import {ShoppingListItem} from "../App";
 
 let resolve_fetch: (value: ShoppingListItem[]) => void;
 let reject_fetch: () => void;

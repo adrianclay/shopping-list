@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {ShoppingListItem} from "./App";
+import {ShoppingListItem} from "../App";
 
 interface ShoppingListItemFetcher {
   fetchShoppingListItems(): Promise<ShoppingListItem[]>;
