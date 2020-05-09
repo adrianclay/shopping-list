@@ -10,13 +10,19 @@ interface ItemListProps {
 }
 
 function ItemList({ shoppingListItemFetcher }: ItemListProps) {
+  const [isLoading, setIsLoading] = useState(true);
   const [shoppingListItems, setShoppingListItems] = useState([] as ShoppingListItem[]);
 
   useEffect(() => {
     shoppingListItemFetcher.fetchShoppingListItems().then(stuff => {
+      setIsLoading(false);
       setShoppingListItems(stuff);
     })
   }, [shoppingListItemFetcher]);
+
+  if (isLoading) {
+    return <p>Loading</p>
+  }
 
   return (
     <ul>
