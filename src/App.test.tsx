@@ -1,9 +1,37 @@
 import React from 'react';
-import {render} from '@testing-library/react';
-import App from './App';
+import {render, screen} from '@testing-library/react';
+import App, {ShoppingListItem} from './App';
+import {initializeTestApp} from "@firebase/testing";
 
-test('renders title', () => {
-  const { getByText } = render(<App />);
+const firebase = initializeTestApp({
+  projectId: 'my-test-project',
+  auth: { uid: 'alice', email: 'alice@example.com' }
+});
 
-  expect(getByText(/Shopping List/i)).toBeInTheDocument();
+async function emptyCollection(collectionName: string) {
+  const firestore = firebase.firestore();
+  const collection = firestore.collection(collectionName);
+  const documents = (await collection.get()).docs;
+  const deleteBatch = firestore.batch();
+  documents.forEach(doc => deleteBatch.delete(doc.ref));
+  await deleteBatch.commit();
+}
+
+afterAll(async () => {
+  await emptyCollection('shopping-list-items');
+  firebase.firestore().terminate()
+});
+
+async function addShoppingListItem(shoppingListItem: ShoppingListItem) {
+  await firebase.firestore().collection('shopping-list-items').add(shoppingListItem);
+}
+
+test('renders shopping list items', async () => {
+  await addShoppingListItem({ name: 'Ketchup' });
+  await addShoppingListItem({ name: 'Cake' });
+
+  render(<App firebase={firebase}/>);
+
+  expect(await screen.findByText('Ketchup')).toBeInTheDocument()
+  expect(await screen.findByText('Cake')).toBeInTheDocument()
 });
