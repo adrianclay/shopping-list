@@ -3,6 +3,7 @@ import './App.css';
 import firebase from "firebase";
 import ItemList from "./ItemList";
 import FirestoreService from "./services/FirestoreService";
+import AddItemForm from "./AddItemForm";
 
 interface AppProps {
   firebase: firebase.app.App
@@ -19,6 +20,7 @@ function App({ firebase }: AppProps) {
     <div className="App">
       <header className="App-header">
         Shopping List
+        <AddItemForm shoppingListItemAdder={firestoreService} />
         <ItemList shoppingListItemFetcher={firestoreService} />
       </header>
     </div>

@@ -15,4 +15,8 @@ export default class FirestoreService {
       return collection.docs.map(item => item.data() as ShoppingListItem)
     });
   }
+
+  async addShoppingListItem(item: ShoppingListItem) {
+    await this.firebase.firestore().collection('shopping-list-items').add(item);
+  }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {render, screen} from '@testing-library/react';
+import {render, screen, fireEvent} from '@testing-library/react';
 import App, {ShoppingListItem} from './App';
 import {initializeTestApp} from "@firebase/testing";
 
@@ -23,14 +23,19 @@ afterAll(async () => {
 });
 
 async function addShoppingListItem(shoppingListItem: ShoppingListItem) {
-  await firebase.firestore().collection('shopping-list-items').add(shoppingListItem);
+  fireEvent.change(
+    screen.getByLabelText(/item/i),
+    { target: { value: shoppingListItem.name } }
+  )
+
+  fireEvent.click(screen.getByText(/add/i))
 }
 
-test('renders shopping list items', async () => {
+test('As a user I can add items to the shopping list', async () => {
+  render(<App firebase={firebase}/>);
+
   await addShoppingListItem({ name: 'Ketchup' });
   await addShoppingListItem({ name: 'Cake' });
-
-  render(<App firebase={firebase}/>);
 
   expect(await screen.findByText('Ketchup')).toBeInTheDocument()
   expect(await screen.findByText('Cake')).toBeInTheDocument()
