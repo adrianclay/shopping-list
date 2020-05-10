@@ -33,7 +33,7 @@ GitHub Actions has jobs which test, build and deploy the application.
 
 ### GitHub secrets
 
-To Deploy to Firebase Hosting the deploy job needs the following [GitHub secrets][github_secrets_docs]. 
+To Deploy to [Firebase Hosting][firebase_hosting] the deploy job needs the following [GitHub secrets][github_secrets_docs]. 
 
 * FIREBASE_PROJECT_ID - see [Setting up a Firebase Project][firebase_project_id]
 * FIREBASE_TOKEN - generated via `firebase login:ci`
