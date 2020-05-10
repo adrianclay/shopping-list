@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {ShoppingListItem} from "../App";
 
 interface ShoppingListItemFetcher {
-  fetchShoppingListItems(): Promise<ShoppingListItem[]>;
+  subscribeToDatabaseChanges(onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void;
 }
 
 interface ItemListProps {
@@ -15,12 +15,12 @@ function ItemList({ shoppingListItemFetcher }: ItemListProps) {
   const [shoppingListItems, setShoppingListItems] = useState([] as ShoppingListItem[]);
 
   useEffect(() => {
-    shoppingListItemFetcher.fetchShoppingListItems().then(stuff => {
+    return shoppingListItemFetcher.subscribeToDatabaseChanges(stuff => {
       setIsLoading(false);
       setShoppingListItems(stuff);
-    }).catch(() => {
+    }, () => {
       setFetchError(true);
-    })
+    });
   }, [shoppingListItemFetcher]);
 
   if (fetchErrored) {

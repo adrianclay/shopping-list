@@ -8,12 +8,13 @@ export default class FirestoreService {
     this.firebase = firebase;
   }
 
-  fetchShoppingListItems(): Promise<ShoppingListItem[]> {
+  subscribeToDatabaseChanges(onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void {
     const firestore = this.firebase.firestore();
     const shoppingListCollection = firestore.collection('shopping-list-items')
-    return shoppingListCollection.get().then(collection => {
-      return collection.docs.map(item => item.data() as ShoppingListItem)
-    });
+    return shoppingListCollection.onSnapshot(collection => {
+      const items = collection.docs.map(item => item.data() as ShoppingListItem);
+      onUpdate(items);
+    }, onError);
   }
 
   async addShoppingListItem(item: ShoppingListItem) {
