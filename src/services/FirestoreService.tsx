@@ -8,7 +8,7 @@ export default class FirestoreService {
     this.firebase = firebase;
   }
 
-  subscribeToDatabaseChanges(onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void {
+  subscribeToItemChanges(onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void {
     const firestore = this.firebase.firestore();
     const shoppingListCollection = firestore.collection('shopping-list-items')
     return shoppingListCollection.onSnapshot(collection => {

@@ -20,7 +20,7 @@ function performItemsUpdateError() {
 }
 
 const shoppingListItemFetcherStub = {
-  subscribeToDatabaseChanges(onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void {
+  subscribeToItemChanges(onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void {
     stubOnUpdate = onUpdate;
     stubOnError = onError;
 
