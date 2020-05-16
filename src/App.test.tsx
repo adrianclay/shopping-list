@@ -18,8 +18,11 @@ async function emptyCollection(collectionName: string) {
 }
 
 afterAll(async () => {
-  await emptyCollection('shopping-list-items');
-  firebase.firestore().terminate()
+  try {
+    await emptyCollection('shopping-list-items');
+  } finally {
+    firebase.firestore().terminate()
+  }
 });
 
 async function addShoppingListItem(shoppingListItem: ShoppingListItem) {
