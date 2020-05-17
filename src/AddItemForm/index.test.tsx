@@ -1,7 +1,7 @@
 import AddItemForm from "./";
 import React from "react";
 import {fireEvent, render} from "@testing-library/react";
-import {ShoppingListItem} from "../App";
+import ShoppingListItem from '../domain/ShoppingListItem';
 
 let itemTextBox: HTMLElement, addItemButton: HTMLElement
 let addShoppingListItemMock: jest.Mock<void, ShoppingListItem[]>

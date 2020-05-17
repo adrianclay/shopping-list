@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { ShoppingListItem } from '../App'
+import ShoppingListItem from '../domain/ShoppingListItem';
 
 interface ShoppingListItemAdder {
   addShoppingListItem(item: ShoppingListItem): void

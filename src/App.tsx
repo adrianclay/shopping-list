@@ -13,10 +13,6 @@ interface AppProps {
   firebase: firebase.app.App
 }
 
-export interface ShoppingListItem {
-  name: string
-}
-
 function App({ firebase }: AppProps) {
   const authenticationService = new AuthenticationService(firebase);
 

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {ShoppingListItem} from "../App";
+import ShoppingListItem from '../domain/ShoppingListItem';
 
 interface ShoppingListItemFetcher {
   subscribeToItemChanges(onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void;

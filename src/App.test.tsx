@@ -1,6 +1,7 @@
 import React from 'react';
 import {render, screen, fireEvent} from '@testing-library/react';
-import {ShoppingListItem, AuthenticatedApp} from './App';
+import ShoppingListItem from './domain/ShoppingListItem';
+import {AuthenticatedApp} from './App';
 import {initializeTestApp} from "@firebase/testing";
 
 const firebase = initializeTestApp({

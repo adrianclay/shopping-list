@@ -1,7 +1,8 @@
 import React from 'react';
 import ItemList from './';
 import {render, act} from '@testing-library/react';
-import {ShoppingListItem} from "../App";
+import ShoppingListItem from '../domain/ShoppingListItem';
+
 
 let stubOnUpdate: (value: ShoppingListItem[]) => void;
 let stubOnError: () => void;
