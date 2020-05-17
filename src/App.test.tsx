@@ -1,6 +1,6 @@
 import React from 'react';
 import {render, screen, fireEvent} from '@testing-library/react';
-import App, {ShoppingListItem} from './App';
+import {ShoppingListItem, AuthenticatedApp} from './App';
 import {initializeTestApp} from "@firebase/testing";
 
 const firebase = initializeTestApp({
@@ -35,7 +35,7 @@ async function addShoppingListItem(shoppingListItem: ShoppingListItem) {
 }
 
 test('As a user I can add items to the shopping list', async () => {
-  render(<App firebase={firebase}/>);
+  render(<AuthenticatedApp firebase={firebase}/>);
 
   await addShoppingListItem({ name: 'Ketchup' });
   await addShoppingListItem({ name: 'Cake' });
