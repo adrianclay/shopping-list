@@ -13,6 +13,16 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 [yarn]: https://yarnpkg.com/
 [firebase_cli]: https://firebase.google.com/docs/cli
 
+### Firebase config
+
+Copy the `.env.sample` to `.env`, e.g.
+```
+$ cp .env.sample .env
+```
+and fill in the blanks using the [Firebase config object][firebase-config-object].
+
+[firebase-config-object]: https://firebase.google.com/docs/web/setup?authuser=0#config-object
+
 In the project directory, you can run:
 
 ### `make start`
