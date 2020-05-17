@@ -1,5 +1,5 @@
 import React from 'react';
-import {render, screen, fireEvent} from '@testing-library/react';
+import {render, screen, fireEvent, waitForElementToBeRemoved} from '@testing-library/react';
 import ShoppingListItem from './domain/ShoppingListItem';
 import {AuthenticatedApp} from './App';
 import {initializeTestApp} from "@firebase/testing";
@@ -37,6 +37,8 @@ async function addShoppingListItem(shoppingListItem: ShoppingListItem) {
 
 test('As a user I can add items to the shopping list', async () => {
   render(<AuthenticatedApp firebase={firebase}/>);
+
+  await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
 
   await addShoppingListItem({ name: 'Ketchup' });
   await addShoppingListItem({ name: 'Cake' });
