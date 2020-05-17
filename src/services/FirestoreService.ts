@@ -9,15 +9,17 @@ export default class FirestoreService {
   }
 
   subscribeToItemChanges(onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void {
-    const firestore = this.firebase.firestore();
-    const shoppingListCollection = firestore.collection('shopping-list-items')
-    return shoppingListCollection.onSnapshot(collection => {
+    return this.shoppingListItemCollection().onSnapshot(collection => {
       const items = collection.docs.map(item => item.data() as ShoppingListItem);
       onUpdate(items);
     }, onError);
   }
 
   async addShoppingListItem(item: ShoppingListItem) {
-    await this.firebase.firestore().collection('shopping-list-items').add(item);
+    await this.shoppingListItemCollection().add(item);
+  }
+
+  private shoppingListItemCollection() {
+    return this.firebase.firestore().collection('shopping-list-items');
   }
 }
