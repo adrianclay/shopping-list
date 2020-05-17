@@ -1,4 +1,4 @@
-import firebase from "firebase";
+import * as firebase from "firebase/app";
 import ShoppingListItem from "../domain/ShoppingListItem";
 
 export default class FirestoreService {

@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import firebase from "firebase";
+import * as firebase from "firebase/app";
 
 import FirestoreService from "./services/FirestoreService";
 import AuthenticationService from './services/AuthenticationService';
