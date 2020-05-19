@@ -1,5 +1,5 @@
 import * as firebase from "firebase/app";
-import { User } from "../Login";
+import User from "../domain/User";
 
 export default class AuthenticationService {
   private firebase: firebase.app.App;

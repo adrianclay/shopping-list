@@ -1,9 +1,5 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
-
-export interface User {
-  displayName: string | null;
-  uid: string;
-}
+import User from "../domain/User";
 
 interface LoginProps {
   authenticator: {
