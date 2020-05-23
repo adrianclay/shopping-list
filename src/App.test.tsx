@@ -3,24 +3,16 @@ import {render, screen, fireEvent, waitForElementToBeRemoved} from '@testing-lib
 import ShoppingListItem from './domain/ShoppingListItem';
 import {AuthenticatedApp} from './App';
 import {initializeTestApp} from "@firebase/testing";
+import { emptyCollection } from './setupTests';
 
 const firebase = initializeTestApp({
   projectId: 'my-test-project',
   auth: { uid: 'alice', email: 'alice@example.com' }
 });
 
-async function emptyCollection(collectionName: string) {
-  const firestore = firebase.firestore();
-  const collection = firestore.collection(collectionName);
-  const documents = (await collection.get()).docs;
-  const deleteBatch = firestore.batch();
-  documents.forEach(doc => deleteBatch.delete(doc.ref));
-  await deleteBatch.commit();
-}
-
 afterAll(async () => {
   try {
-    await emptyCollection('shopping-list-items');
+    await emptyCollection(firebase, 'shopping-list-items');
   } finally {
     firebase.firestore().terminate()
   }
