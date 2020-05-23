@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import { Button, Input, Form } from 'semantic-ui-react'
 import ShoppingListItem from '../domain/ShoppingListItem';
 
 interface ShoppingListItemAdder {
@@ -26,15 +27,21 @@ function AddItemForm({shoppingListItemAdder}: AddItemFormProps) {
   };
 
   return (
-    <form>
-      <label>
-        Item
-        <input type="text" onChange={onChange} value={itemName}/>
-      </label>
-      <button onClick={addItem}>
-        Add
-      </button>
-    </form>
+    <Form>
+      <Form.Group inline>
+        <Form.Field>
+          <label>
+            Item
+            <Input type="text" onChange={onChange} value={itemName}/>
+          </label>
+        </Form.Field>
+        <Form.Field>
+          <Button onClick={addItem}>
+            Add
+          </Button>
+        </Form.Field>
+      </Form.Group>
+    </Form>
   );
 }
 
