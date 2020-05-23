@@ -1,4 +1,5 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
+import { Button, Icon, Loader } from "semantic-ui-react";
 import User from "../domain/User";
 
 interface LoginProps {
@@ -19,16 +20,17 @@ const Login: FunctionComponent<LoginProps> = ({authenticator, children}) => {
 
 
   if (currentUser === undefined) {
-    return <p>Loading</p>;
+    return <Loader active>Loading</Loader>;
   }
 
   if (currentUser) {
     return <div>{children}</div>;
   }
 
-  return <button onClick={() => { authenticator.signInWithRedirect() }}>
-    Please login
-  </button>;
+  return <Button basic size="large" onClick={() => { authenticator.signInWithRedirect() }}>
+    <Icon name="google" />
+    Sign in
+  </Button>;
 }
 
 export default Login;

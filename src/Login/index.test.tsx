@@ -51,11 +51,11 @@ describe('not logged in', () => {
   })
 
   test('displays login button', async () => {
-    expect(await findByText(/login/i)).toBeInTheDocument();
+    expect(await findByText(/sign in/i)).toBeInTheDocument();
   });
 
   test('calls signInWithRedirect, on clicking the login button', async () => {
-    (await findByText(/login/i)).click()
+    (await findByText(/sign in/i)).click()
 
     expect(signInWithRedirect).toBeCalledWith()
   })
