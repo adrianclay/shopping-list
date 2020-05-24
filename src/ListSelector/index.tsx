@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import ShoppingList from "../domain/ShoppingList";
-import { Dropdown } from "semantic-ui-react";
+import { Dropdown, DropdownProps } from "semantic-ui-react";
 
 interface ListSelectorProps {
   shoppingListFetcher: {
     subscribeToListChanges(onUpdate: (lists: ShoppingList[]) => void, onError: () => void): () => void;
-  }
+  };
+  onSelect: (item: ShoppingList) => void;
 }
 
-function ListSelector({ shoppingListFetcher }: ListSelectorProps) {
+function ListSelector({ shoppingListFetcher, onSelect }: ListSelectorProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [fetchErrored, setFetchError] = useState(false);
   const [shoppingLists, setShoppingLists] = useState<ShoppingList[]>([]);
@@ -37,7 +38,14 @@ function ListSelector({ shoppingListFetcher }: ListSelectorProps) {
     };
   });
 
-  return <Dropdown selection options={options} placeholder='Switch shopping list' />;
+  const onChangeHandler = (_: React.SyntheticEvent<HTMLElement>, { value }: DropdownProps) => {
+    const list = shoppingLists.find(sl => sl.id === value);
+    if(list) {
+      onSelect(list);
+    }
+  };
+
+  return <Dropdown selection options={options} placeholder='Switch shopping list' onChange={onChangeHandler}/>;
 }
 
 export default ListSelector;

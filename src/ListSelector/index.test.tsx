@@ -15,14 +15,20 @@ const shoppingListFetcherStub = {
   }
 };
 
+let onSelectSpy: jest.Mock
+function renderListSelection() {
+  onSelectSpy = jest.fn();
+  return render(<ListSelector shoppingListFetcher={shoppingListFetcherStub} onSelect={onSelectSpy} />);
+}
+
 test('displays loading message before fetch is resolved', async () => {
-  const { findByText } = render(<ListSelector shoppingListFetcher={shoppingListFetcherStub} />)
+  const { findByText } = renderListSelection();
 
   expect(await findByText(/loading/i)).toBeInTheDocument()
 });
 
 test('hides loading message after fetch is resolved', async () => {
-  const { queryByText } = render(<ListSelector shoppingListFetcher={shoppingListFetcherStub} />)
+  const { queryByText } = renderListSelection();
 
   act(() => {
     makeUpdate([]);
@@ -32,7 +38,7 @@ test('hides loading message after fetch is resolved', async () => {
 });
 
 test('displays error message if fetch fails', async () => {
-  const { findByText, queryByText } = render(<ListSelector shoppingListFetcher={shoppingListFetcherStub} />)
+  const { findByText, queryByText } = renderListSelection();
 
   act(() => {
     makeError();
@@ -43,7 +49,7 @@ test('displays error message if fetch fails', async () => {
 })
 
 test('displays latest set of lists when updating twice', async () => {
-  const { findByText } = render(<ListSelector shoppingListFetcher={shoppingListFetcherStub} />)
+  const { findByText } = renderListSelection();
 
   act(() => {
     makeUpdate([]);
@@ -57,9 +63,26 @@ test('displays latest set of lists when updating twice', async () => {
 })
 
 test('calls the unsubscribe method when unmounting', async () => {
-  const { unmount } = render(<ListSelector shoppingListFetcher={shoppingListFetcherStub} />);
+  const { unmount } = renderListSelection();
 
   unmount();
 
   expect(unsubscribeSpy).toBeCalledWith();
 })
+
+test('raises onSelect event when interacting with dropdown', async () => {
+  const { findByText } = renderListSelection();
+
+  const list = {
+    id: 'xmas',
+    name: 'Adrians Christmas List'
+  };
+
+  act(() => {
+    makeUpdate([list]);
+  });
+
+  (await findByText(list.name)).click();
+
+  expect(onSelectSpy).toHaveBeenCalledWith(list);
+});
