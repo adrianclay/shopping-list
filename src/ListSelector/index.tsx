@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ShoppingList from "../domain/ShoppingList";
+import { Dropdown } from "semantic-ui-react";
 
 interface ListSelectorProps {
   shoppingListFetcher: {
@@ -29,15 +30,14 @@ function ListSelector({ shoppingListFetcher }: ListSelectorProps) {
     return <p>loading</p>;
   }
 
-  return (
-    <ul>
-      {shoppingLists.map(shoppingList =>
-        <li key={shoppingList.id}>
-          {shoppingList.name}
-        </li>
-      ) }
-    </ul>
-  );
+  const options = shoppingLists.map(shoppingList => {
+    return {
+      text: shoppingList.name,
+      value: shoppingList.id,
+    };
+  });
+
+  return <Dropdown selection options={options} placeholder='Switch shopping list' />;
 }
 
 export default ListSelector;
