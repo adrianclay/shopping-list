@@ -15,11 +15,6 @@ const shoppingListFetcherStub = {
   }
 };
 
-
-beforeEach(() => {
-  shoppingListFetcherStub
-})
-
 test('displays loading message before fetch is resolved', async () => {
   const { findByText } = render(<ListSelector shoppingListFetcher={shoppingListFetcherStub} />)
 
