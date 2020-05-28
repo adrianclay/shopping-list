@@ -2,50 +2,55 @@ import React, { useEffect, useState } from "react";
 import ShoppingList from "../domain/ShoppingList";
 import { Dropdown, DropdownProps } from "semantic-ui-react";
 
-interface ListSelectorProps {
-  shoppingListFetcher: {
-    subscribeToListChanges(onUpdate: (lists: ShoppingList[]) => void, onError: () => void): () => void;
-  };
+interface ShoppingListFetcher {
+  subscribeToListChanges(onUpdate: (lists: ShoppingList[]) => void, onError: () => void): () => void;
+}
+
+export interface ListSelectorProps {
   onSelect: (item: ShoppingList) => void;
 }
 
-function ListSelector({ shoppingListFetcher, onSelect }: ListSelectorProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [fetchErrored, setFetchError] = useState(false);
-  const [shoppingLists, setShoppingLists] = useState<ShoppingList[]>([]);
+function ListSelectorConstructor(shoppingListFetcher: ShoppingListFetcher) {
 
-  useEffect(() => {
-    return shoppingListFetcher.subscribeToListChanges(shoppingLists => {
-      setIsLoading(false);
-      setShoppingLists(shoppingLists);
-    }, () => {
-      setFetchError(true);
-    });
-  }, [shoppingListFetcher]);
+  return function ListSelector({ onSelect }: ListSelectorProps) {
+    const [isLoading, setIsLoading] = useState(true);
+    const [fetchErrored, setFetchError] = useState(false);
+    const [shoppingLists, setShoppingLists] = useState<ShoppingList[]>([]);
 
-  if(fetchErrored) {
-    return <p>Error</p>;
-  }
+    useEffect(() => {
+      return shoppingListFetcher.subscribeToListChanges(shoppingLists => {
+        setIsLoading(false);
+        setShoppingLists(shoppingLists);
+      }, () => {
+        setFetchError(true);
+      });
+    }, []);
 
-  if(isLoading) {
-    return <p>loading</p>;
-  }
-
-  const options = shoppingLists.map(shoppingList => {
-    return {
-      text: shoppingList.name,
-      value: shoppingList.id,
-    };
-  });
-
-  const onChangeHandler = (_: React.SyntheticEvent<HTMLElement>, { value }: DropdownProps) => {
-    const list = shoppingLists.find(sl => sl.id === value);
-    if(list) {
-      onSelect(list);
+    if(fetchErrored) {
+      return <p>Error</p>;
     }
-  };
 
-  return <Dropdown selection options={options} placeholder='Switch shopping list' onChange={onChangeHandler}/>;
+    if(isLoading) {
+      return <p>loading</p>;
+    }
+
+    const options = shoppingLists.map(shoppingList => {
+      return {
+        text: shoppingList.name,
+        value: shoppingList.id,
+      };
+    });
+
+    const onChangeHandler = (_: React.SyntheticEvent<HTMLElement>, { value }: DropdownProps) => {
+      const list = shoppingLists.find(sl => sl.id === value);
+      if(list) {
+        onSelect(list);
+      }
+    };
+
+    return <Dropdown selection options={options} placeholder='Switch shopping list' onChange={onChangeHandler}/>;
+  }
+
 }
 
-export default ListSelector;
+export default ListSelectorConstructor;

@@ -1,7 +1,7 @@
 import { render, act } from "@testing-library/react";
 import React from "react";
-import ListSelector from ".";
 import ShoppingList from "../domain/ShoppingList";
+import ListSelectorConstructor from ".";
 
 let makeUpdate: (lists: ShoppingList[]) => void;
 let makeError: () => void;
@@ -18,7 +18,8 @@ const shoppingListFetcherStub = {
 let onSelectSpy: jest.Mock
 function renderListSelection() {
   onSelectSpy = jest.fn();
-  return render(<ListSelector shoppingListFetcher={shoppingListFetcherStub} onSelect={onSelectSpy} />);
+  const ListSelector = ListSelectorConstructor(shoppingListFetcherStub);
+  return render(<ListSelector onSelect={onSelectSpy} />);
 }
 
 test('displays loading message before fetch is resolved', async () => {

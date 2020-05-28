@@ -1,13 +1,8 @@
 import React from 'react';
-import ListSelector from "./";
 import { action } from '@storybook/addon-actions';
+import ListSelectorConstructor from './';
 
-export default {
-  title: 'ListSelector',
-  component: ListSelector,
-};
-
-export const WithItems = () => <ListSelector shoppingListFetcher={{ subscribeToListChanges: (onUpdate, onError) => {
+const ListSelectorWithItems = ListSelectorConstructor({ subscribeToListChanges: (onUpdate, onError) => {
   onUpdate([{
     id: '101',
     name: 'Christmas wish list'
@@ -16,13 +11,22 @@ export const WithItems = () => <ListSelector shoppingListFetcher={{ subscribeToL
     name: 'Weekly shop'
   }]);
   return () => {};
-} }} onSelect={action('onSelect')} />
+} });
+export const WithItems = () => <ListSelectorWithItems onSelect={action('onSelect')} />
 
-export const WithError = () => <ListSelector shoppingListFetcher={{ subscribeToListChanges: (onUpdate, onError) => {
+const ListSelectorWithError = ListSelectorConstructor({ subscribeToListChanges: (onUpdate, onError) => {
   onError();
   return () => {};
-} }} onSelect={action('onSelect')} />
+} });
+export const WithError = () => <ListSelectorWithError onSelect={action('onSelect')} />
 
-export const Loading = () => <ListSelector shoppingListFetcher={{ subscribeToListChanges: (onUpdate, onError) => {
+const ListSelectorLoading = ListSelectorConstructor({ subscribeToListChanges: (onUpdate, onError) => {
   return () => {};
-} }} onSelect={action('onSelect')} />
+} });
+export const Loading = () => <ListSelectorLoading onSelect={action('onSelect')} />
+
+
+export default {
+  title: 'ListSelector',
+  component: ListSelectorWithItems,
+};
