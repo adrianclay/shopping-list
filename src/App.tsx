@@ -5,7 +5,7 @@ import FirestoreService from "./services/FirestoreService";
 import AuthenticationService from './services/AuthenticationService';
 
 import ItemListConstructor from "./ItemList";
-import AddItemForm from "./AddItemForm";
+import AddItemFormConstructor from './AddItemForm';
 import Login from "./Login";
 
 import { Container } from 'semantic-ui-react'
@@ -30,8 +30,9 @@ function App({ firebase }: AppProps) {
 export function AuthenticatedApp({ firebase }: AppProps) {
   const firestoreService = new FirestoreService(firebase);
   const ItemList = ItemListConstructor(firestoreService);
+  const AddItemForm = AddItemFormConstructor(firestoreService);
   return <div>
-    <AddItemForm shoppingListItemAdder={firestoreService} />
+    <AddItemForm />
     <ItemList />
   </div>;
 }

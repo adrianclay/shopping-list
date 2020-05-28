@@ -1,12 +1,12 @@
 import React from 'react';
-import AddItemForm from "./";
+import AddItemFormConstructor from "./";
 import {action} from '@storybook/addon-actions';
+
+const AddItemForm = AddItemFormConstructor({addShoppingListItem: action('addShoppingListItem')})
 
 export default {
   title: 'AddItemForm',
   component: AddItemForm,
 };
 
-export const Example = () => <AddItemForm shoppingListItemAdder={{addShoppingListItem: action('addShoppingListItem')}}/>
-
-
+export const Example = () => <AddItemForm />

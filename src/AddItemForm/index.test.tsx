@@ -1,4 +1,4 @@
-import AddItemForm from "./";
+import AddItemFormConstructor from "./";
 import React from "react";
 import {fireEvent, render} from "@testing-library/react";
 import ShoppingListItem from '../domain/ShoppingListItem';
@@ -8,9 +8,9 @@ let addShoppingListItemMock: jest.Mock<void, ShoppingListItem[]>
 
 beforeEach(() => {
   addShoppingListItemMock = jest.fn<void, ShoppingListItem[]>();
-  const { getByLabelText, getByText } = render(<AddItemForm shoppingListItemAdder={{
-    addShoppingListItem: addShoppingListItemMock
-  }} />);
+  const AddItemForm = AddItemFormConstructor({ addShoppingListItem: addShoppingListItemMock });
+
+  const { getByLabelText, getByText } = render(<AddItemForm />);
 
   itemTextBox = getByLabelText(/item/i);
   addItemButton = getByText(/add/i);

@@ -6,43 +6,45 @@ interface ShoppingListItemAdder {
   addShoppingListItem(item: ShoppingListItem): void
 }
 
-interface AddItemFormProps {
-  shoppingListItemAdder: ShoppingListItemAdder
+export interface AddItemFormProps {
+
 }
 
-function AddItemForm({shoppingListItemAdder}: AddItemFormProps) {
-  const [itemName, setItemName] = useState('')
+function AddItemFormConstructor(shoppingListItemAdder: ShoppingListItemAdder) {
+  return function AddItemForm(_ : AddItemFormProps) {
+    const [itemName, setItemName] = useState('')
 
-  const addItem = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    event.preventDefault();
+    const addItem = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      event.preventDefault();
 
-    shoppingListItemAdder.addShoppingListItem({
-      name: itemName,
-    });
-    setItemName('');
-  };
+      shoppingListItemAdder.addShoppingListItem({
+        name: itemName,
+      });
+      setItemName('');
+    };
 
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setItemName(event.target.value);
-  };
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setItemName(event.target.value);
+    };
 
-  return (
-    <Form>
-      <Form.Group inline>
-        <Form.Field>
-          <label>
-            Item
-            <Input type="text" onChange={onChange} value={itemName}/>
-          </label>
-        </Form.Field>
-        <Form.Field>
-          <Button onClick={addItem}>
-            Add
-          </Button>
-        </Form.Field>
-      </Form.Group>
-    </Form>
-  );
+    return (
+      <Form>
+        <Form.Group inline>
+          <Form.Field>
+            <label>
+              Item
+              <Input type="text" onChange={onChange} value={itemName}/>
+            </label>
+          </Form.Field>
+          <Form.Field>
+            <Button onClick={addItem}>
+              Add
+            </Button>
+          </Form.Field>
+        </Form.Group>
+      </Form>
+    );
+  }
 }
 
-export default AddItemForm;
+export default AddItemFormConstructor;
