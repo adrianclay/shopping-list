@@ -9,37 +9,39 @@ interface ItemListProps {
   shoppingListItemFetcher: ShoppingListItemFetcher
 }
 
-function ItemList({ shoppingListItemFetcher }: ItemListProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [fetchErrored, setFetchError] = useState(false);
-  const [shoppingListItems, setShoppingListItems] = useState([] as ShoppingListItem[]);
+function ItemListConstructor(shoppingListItemFetcher: ShoppingListItemFetcher) {
+  return function ItemList() {
+    const [isLoading, setIsLoading] = useState(true);
+    const [fetchErrored, setFetchError] = useState(false);
+    const [shoppingListItems, setShoppingListItems] = useState([] as ShoppingListItem[]);
 
-  useEffect(() => {
-    return shoppingListItemFetcher.subscribeToItemChanges(stuff => {
-      setIsLoading(false);
-      setShoppingListItems(stuff);
-    }, () => {
-      setFetchError(true);
-    });
-  }, [shoppingListItemFetcher]);
+    useEffect(() => {
+      return shoppingListItemFetcher.subscribeToItemChanges(stuff => {
+        setIsLoading(false);
+        setShoppingListItems(stuff);
+      }, () => {
+        setFetchError(true);
+      });
+    }, []);
 
-  if (fetchErrored) {
-    return <p>Error</p>
+    if (fetchErrored) {
+      return <p>Error</p>
+    }
+
+    if (isLoading) {
+      return <p>Loading</p>
+    }
+
+    return (
+      <ul>
+        { shoppingListItems.map(shoppingListItem =>
+          <li key={shoppingListItem.name}>
+            {shoppingListItem.name}
+          </li>
+        ) }
+      </ul>
+    )
   }
+};
 
-  if (isLoading) {
-    return <p>Loading</p>
-  }
-
-  return (
-    <ul>
-      { shoppingListItems.map(shoppingListItem =>
-        <li key={shoppingListItem.name}>
-          {shoppingListItem.name}
-        </li>
-      ) }
-    </ul>
-  )
-}
-
-export default ItemList;
+export default ItemListConstructor;

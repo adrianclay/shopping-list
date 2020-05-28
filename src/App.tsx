@@ -4,7 +4,7 @@ import * as firebase from "firebase/app";
 import FirestoreService from "./services/FirestoreService";
 import AuthenticationService from './services/AuthenticationService';
 
-import ItemList from "./ItemList";
+import ItemListConstructor from "./ItemList";
 import AddItemForm from "./AddItemForm";
 import Login from "./Login";
 
@@ -29,9 +29,10 @@ function App({ firebase }: AppProps) {
 
 export function AuthenticatedApp({ firebase }: AppProps) {
   const firestoreService = new FirestoreService(firebase);
+  const ItemList = ItemListConstructor(firestoreService);
   return <div>
     <AddItemForm shoppingListItemAdder={firestoreService} />
-    <ItemList shoppingListItemFetcher={firestoreService} />
+    <ItemList />
   </div>;
 }
 
