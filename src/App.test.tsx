@@ -1,6 +1,5 @@
 import React from 'react';
 import {render, screen, fireEvent, waitForElementToBeRemoved} from '@testing-library/react';
-import ShoppingListItem from './domain/ShoppingListItem';
 import {AuthenticatedApp} from './App';
 import {initializeTestApp} from "@firebase/testing";
 import { emptyCollection } from './setupTests';
@@ -20,10 +19,10 @@ afterAll(async () => {
   }
 });
 
-async function addShoppingListItem(shoppingListItem: ShoppingListItem) {
+async function addShoppingListItem(itemName: string) {
   fireEvent.change(
     screen.getByLabelText(/item/i),
-    { target: { value: shoppingListItem.name } }
+    { target: { value: itemName } }
   )
 
   fireEvent.click(screen.getByText(/add/i))
@@ -47,8 +46,8 @@ test('As a user I can add items to the shopping list', async () => {
   await createShoppingList('Supermarket list')
   await selectShoppingList('Supermarket list');
 
-  await addShoppingListItem({ name: 'Ketchup' });
-  await addShoppingListItem({ name: 'Cake' });
+  await addShoppingListItem('Ketchup');
+  await addShoppingListItem('Cake');
 
   expect(await screen.findByText('Ketchup')).toBeInTheDocument();
   expect(await screen.findByText('Cake')).toBeInTheDocument();
