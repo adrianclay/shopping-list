@@ -6,6 +6,9 @@ import AuthenticationService from './services/AuthenticationService';
 
 import ItemListConstructor from "./ItemList";
 import AddItemFormConstructor from './AddItemForm';
+import ShoppingListViewerConstructor from './ShoppingListViewer';
+import ListSelectorConstructor from './ListSelector';
+
 import Login from "./Login";
 
 import { Container } from 'semantic-ui-react'
@@ -29,12 +32,12 @@ function App({ firebase }: AppProps) {
 
 export function AuthenticatedApp({ firebase }: AppProps) {
   const firestoreService = new FirestoreService(firebase);
-  const ItemList = ItemListConstructor(firestoreService);
-  const AddItemForm = AddItemFormConstructor(firestoreService);
-  return <div>
-    <AddItemForm />
-    <ItemList />
-  </div>;
+  const ShoppingListViewer = ShoppingListViewerConstructor(
+    ListSelectorConstructor(firestoreService),
+    AddItemFormConstructor(firestoreService),
+    ItemListConstructor(firestoreService)
+  );
+  return <ShoppingListViewer />;
 }
 
 export default App;
