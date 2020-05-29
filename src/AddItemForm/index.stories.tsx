@@ -9,4 +9,4 @@ export default {
   component: AddItemForm,
 };
 
-export const Example = () => <AddItemForm />
+export const Example = () => <AddItemForm shoppingList={{ id: '0800', name: 'Butchers list' }} />

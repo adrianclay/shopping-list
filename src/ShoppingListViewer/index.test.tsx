@@ -59,4 +59,8 @@ describe('selecting a shopping list', () => {
   test('renders the AddItemForm', async () => {
     expect(await screen.findByText('AddItemForm')).toBeInTheDocument();
   });
+
+  test('passes the shoppingList prop to the AddItemForm', () => {
+    expect(addItemFormSpy).toBeCalledWith({ shoppingList: stubShoppingList }, {});
+  })
 });

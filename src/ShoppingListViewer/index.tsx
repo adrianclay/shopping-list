@@ -11,7 +11,7 @@ function ShoppingListViewerConstructor(ListSelector: React.FunctionComponent<Lis
     const itemList = () => {
       if(shoppingList) {
         return (<div>
-          <AddItemForm />
+          <AddItemForm shoppingList={shoppingList} />
           <ItemList shoppingList={shoppingList} />
         </div>);
       }
