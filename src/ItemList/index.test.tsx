@@ -31,8 +31,13 @@ const shoppingListItemFetcherStub = {
 
 const ItemList = ItemListConstructor(shoppingListItemFetcherStub);
 
+const dummyShoppingList = {
+  name: '',
+  id: ''
+};
+
 test('with one item', async () => {
-  const { findByText } = render(<ItemList />);
+  const { findByText } = render(<ItemList shoppingList={dummyShoppingList} />);
 
   performItemsUpdate([{name: 'Cheese'}]);
 
@@ -40,13 +45,13 @@ test('with one item', async () => {
 });
 
 test('displays loading message before fetch is resolved', async () => {
-  const { findByText } = render(<ItemList />)
+  const { findByText } = render(<ItemList shoppingList={dummyShoppingList} />)
 
   expect(await findByText(/loading/i)).toBeInTheDocument()
 });
 
 test('hides loading message after fetch is resolved', async () => {
-  const { queryByText, findByText } = render(<ItemList />)
+  const { queryByText, findByText } = render(<ItemList shoppingList={dummyShoppingList} />)
 
   performItemsUpdate([{name: 'Cheese' }])
   await findByText(/cheese/i);
@@ -55,7 +60,7 @@ test('hides loading message after fetch is resolved', async () => {
 });
 
 test('displays error message if fetch fails', async () => {
-  const { findByText, queryByText } = render(<ItemList />)
+  const { findByText, queryByText } = render(<ItemList shoppingList={dummyShoppingList} />)
 
   performItemsUpdateError();
 
@@ -64,7 +69,7 @@ test('displays error message if fetch fails', async () => {
 })
 
 test('displays latest set of items when updating twice', async () => {
-  const { findByText } = render(<ItemList />)
+  const { findByText } = render(<ItemList shoppingList={dummyShoppingList} />)
 
   performItemsUpdate([]);
   performItemsUpdate([{ name: 'Lasagne Sheets' }])
@@ -73,7 +78,7 @@ test('displays latest set of items when updating twice', async () => {
 })
 
 test('calls the unsubscribe method when unmounting', async () => {
-  const { unmount } = render(<ItemList />);
+  const { unmount } = render(<ItemList shoppingList={dummyShoppingList} />);
 
   unmount();
 

@@ -7,7 +7,7 @@ interface ShoppingListItemFetcher {
 }
 
 export interface ItemListProps {
-  shoppingList?: ShoppingList;
+  shoppingList: ShoppingList;
 }
 
 function ItemListConstructor(shoppingListItemFetcher: ShoppingListItemFetcher) {
