@@ -2,6 +2,7 @@ import React from 'react';
 import ItemListConstructor from './';
 import {render, act} from '@testing-library/react';
 import ShoppingListItem from '../domain/ShoppingListItem';
+import ShoppingList from '../domain/ShoppingList';
 
 
 let stubOnUpdate: (value: ShoppingListItem[]) => void;
@@ -21,7 +22,8 @@ function performItemsUpdateError() {
 }
 
 const shoppingListItemFetcherStub = {
-  subscribeToItemChanges(onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void {
+  subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void {
+    expect(shoppingList).toEqual(shoppingList);
     stubOnUpdate = onUpdate;
     stubOnError = onError;
 
@@ -31,36 +33,36 @@ const shoppingListItemFetcherStub = {
 
 const ItemList = ItemListConstructor(shoppingListItemFetcherStub);
 
-const dummyShoppingList = {
-  name: '',
-  id: ''
+const shoppingList = {
+  name: 'Art supplies',
+  id: '1ARTYlist'
 };
 
 test('with one item', async () => {
-  const { findByText } = render(<ItemList shoppingList={dummyShoppingList} />);
+  const { findByText } = render(<ItemList shoppingList={shoppingList} />);
 
-  performItemsUpdate([{name: 'Cheese'}]);
+  performItemsUpdate([{name: 'Cheese', list: shoppingList}]);
 
   expect(await findByText('Cheese')).toBeInTheDocument();
 });
 
 test('displays loading message before fetch is resolved', async () => {
-  const { findByText } = render(<ItemList shoppingList={dummyShoppingList} />)
+  const { findByText } = render(<ItemList shoppingList={shoppingList} />)
 
   expect(await findByText(/loading/i)).toBeInTheDocument()
 });
 
 test('hides loading message after fetch is resolved', async () => {
-  const { queryByText, findByText } = render(<ItemList shoppingList={dummyShoppingList} />)
+  const { queryByText, findByText } = render(<ItemList shoppingList={shoppingList} />)
 
-  performItemsUpdate([{name: 'Cheese' }])
+  performItemsUpdate([{name: 'Cheese', list: shoppingList}])
   await findByText(/cheese/i);
 
   expect(await queryByText(/loading/i)).toBeNull()
 });
 
 test('displays error message if fetch fails', async () => {
-  const { findByText, queryByText } = render(<ItemList shoppingList={dummyShoppingList} />)
+  const { findByText, queryByText } = render(<ItemList shoppingList={shoppingList} />)
 
   performItemsUpdateError();
 
@@ -69,16 +71,16 @@ test('displays error message if fetch fails', async () => {
 })
 
 test('displays latest set of items when updating twice', async () => {
-  const { findByText } = render(<ItemList shoppingList={dummyShoppingList} />)
+  const { findByText } = render(<ItemList shoppingList={shoppingList} />)
 
   performItemsUpdate([]);
-  performItemsUpdate([{ name: 'Lasagne Sheets' }])
+  performItemsUpdate([{ name: 'Lasagne Sheets', list: shoppingList }])
 
   expect(await findByText(/lasagne sheets/i)).toBeInTheDocument();
 })
 
 test('calls the unsubscribe method when unmounting', async () => {
-  const { unmount } = render(<ItemList shoppingList={dummyShoppingList} />);
+  const { unmount } = render(<ItemList shoppingList={shoppingList} />);
 
   unmount();
 

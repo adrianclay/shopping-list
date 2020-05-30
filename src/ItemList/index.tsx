@@ -3,7 +3,7 @@ import ShoppingListItem from '../domain/ShoppingListItem';
 import ShoppingList from "../domain/ShoppingList";
 
 interface ShoppingListItemFetcher {
-  subscribeToItemChanges(onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void;
+  subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void;
 }
 
 export interface ItemListProps {
@@ -11,19 +11,19 @@ export interface ItemListProps {
 }
 
 function ItemListConstructor(shoppingListItemFetcher: ShoppingListItemFetcher) {
-  return function ItemList(_ : ItemListProps) {
+  return function ItemList({ shoppingList } : ItemListProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [fetchErrored, setFetchError] = useState(false);
     const [shoppingListItems, setShoppingListItems] = useState([] as ShoppingListItem[]);
 
     useEffect(() => {
-      return shoppingListItemFetcher.subscribeToItemChanges(stuff => {
+      return shoppingListItemFetcher.subscribeToItemChanges(shoppingList, stuff => {
         setIsLoading(false);
         setShoppingListItems(stuff);
       }, () => {
         setFetchError(true);
       });
-    }, []);
+    }, [shoppingList]);
 
     if (fetchErrored) {
       return <p>Error</p>

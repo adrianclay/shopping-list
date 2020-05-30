@@ -1,3 +1,6 @@
+import ShoppingList from "./ShoppingList";
+
 export default interface ShoppingListItem {
-  name: string
+  list: ShoppingList;
+  name: string;
 }

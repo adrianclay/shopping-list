@@ -12,7 +12,7 @@ export interface AddItemFormProps {
 }
 
 function AddItemFormConstructor(shoppingListItemAdder: ShoppingListItemAdder) {
-  return function AddItemForm(_ : AddItemFormProps) {
+  return function AddItemForm({ shoppingList } : AddItemFormProps) {
     const [itemName, setItemName] = useState('')
 
     const addItem = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -20,6 +20,7 @@ function AddItemFormConstructor(shoppingListItemAdder: ShoppingListItemAdder) {
 
       shoppingListItemAdder.addShoppingListItem({
         name: itemName,
+        list: shoppingList
       });
       setItemName('');
     };

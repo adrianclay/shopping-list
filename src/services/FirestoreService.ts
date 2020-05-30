@@ -9,9 +9,14 @@ export default class FirestoreService {
     this.firebase = firebase;
   }
 
-  subscribeToItemChanges(onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void {
+  subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void {
     return this.shoppingListItemCollection().onSnapshot(collection => {
-      const items = collection.docs.map(item => item.data() as ShoppingListItem);
+      const items = collection.docs.map(item => {
+        return {
+          ...item.data() as { name: string },
+          list: shoppingList
+        };
+      });
       onUpdate(items);
     }, onError);
   }
@@ -28,8 +33,10 @@ export default class FirestoreService {
     }, onError);
   }
 
-  async addShoppingListItem(item: ShoppingListItem) {
-    await this.shoppingListItemCollection().add(item);
+  async addShoppingListItem({ name }: ShoppingListItem) {
+    await this.shoppingListItemCollection().add({
+      name
+    });
   }
 
   async addShoppingList(list: { name: string}): Promise<ShoppingList> {

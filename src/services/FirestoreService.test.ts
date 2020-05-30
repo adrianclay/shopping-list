@@ -22,7 +22,30 @@ it('Creates a shopping list and retrieves it back', async (done) => {
   })
 })
 
+it('Creates a shopping list item and retrieves it back', async (done) => {
+  const shoppingList = {
+    id: 'partylist',
+    name: 'Party shopping list',
+  };
+
+  const expectedItem = {
+    name: 'Crisps',
+    list: shoppingList
+  };
+
+  await firestoreService.addShoppingListItem(expectedItem);
+
+  const unsubscribe = firestoreService.subscribeToItemChanges(shoppingList, items => {
+    unsubscribe();
+    expect(items).toEqual([expectedItem]);
+    done();
+  }, () => {
+    throw new Error();
+  });
+});
+
 afterAll(async () => {
   await emptyCollection(firebase, 'shopping-list');
+  await emptyCollection(firebase, 'shopping-list-items');
   firebase.firestore().terminate();
 })
