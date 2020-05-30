@@ -8,6 +8,10 @@ const firebase = initializeTestApp({
 });
 const firestoreService = new FirestoreService(firebase);
 
+const onError = () => {
+  throw new Error();
+};
+
 it('Creates a shopping list and retrieves it back', async (done) => {
   const addedShoppingList = await firestoreService.addShoppingList({
     name: 'Adrians fantastic shopping list'
@@ -17,9 +21,7 @@ it('Creates a shopping list and retrieves it back', async (done) => {
     unsubscribe();
     expect(lists).toEqual([addedShoppingList]);
     done();
-  }, () => {
-    throw new Error();
-  })
+  }, onError)
 })
 
 describe('Creating a Shopping list item', () => {
@@ -46,9 +48,7 @@ describe('Creating a Shopping list item', () => {
       unsubscribe();
       expect(items).toEqual([expectedItem]);
       done();
-    }, () => {
-      throw new Error();
-    });
+    }, onError);
   });
 
   it('does not retrieve it back, when querying with a different list', (done) => {
@@ -61,9 +61,7 @@ describe('Creating a Shopping list item', () => {
       unsubscribe();
       expect(items).toEqual([]);
       done();
-    }, () => {
-      throw new Error();
-    });
+    }, onError);
   });
 });
 
