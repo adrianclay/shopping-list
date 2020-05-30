@@ -22,7 +22,7 @@ it('Creates a shopping list and retrieves it back', async (done) => {
   })
 })
 
-it('Creates a shopping list item and retrieves it back', async (done) => {
+describe('Creating a Shopping list item', () => {
   const shoppingList = {
     id: 'partylist',
     name: 'Party shopping list',
@@ -33,19 +33,42 @@ it('Creates a shopping list item and retrieves it back', async (done) => {
     list: shoppingList
   };
 
-  await firestoreService.addShoppingListItem(expectedItem);
+  beforeEach(async () => {
+    await firestoreService.addShoppingListItem(expectedItem);
+  });
 
-  const unsubscribe = firestoreService.subscribeToItemChanges(shoppingList, items => {
-    unsubscribe();
-    expect(items).toEqual([expectedItem]);
-    done();
-  }, () => {
-    throw new Error();
+  afterEach(async () => {
+    await emptyCollection(firebase, `shopping-list/${shoppingList.id}/shopping-list-items`);
+  });
+
+  it('retrieves it back, when querying by the matching list', (done) => {
+    const unsubscribe = firestoreService.subscribeToItemChanges(shoppingList, items => {
+      unsubscribe();
+      expect(items).toEqual([expectedItem]);
+      done();
+    }, () => {
+      throw new Error();
+    });
+  });
+
+  it('does not retrieve it back, when querying with a different list', (done) => {
+    const notMatchingShoppingList = {
+      id: 'notPartyList',
+      name: 'Not the party list'
+    }
+
+    const unsubscribe = firestoreService.subscribeToItemChanges(notMatchingShoppingList, items => {
+      unsubscribe();
+      expect(items).toEqual([]);
+      done();
+    }, () => {
+      throw new Error();
+    });
   });
 });
 
+
 afterAll(async () => {
   await emptyCollection(firebase, 'shopping-list');
-  await emptyCollection(firebase, 'shopping-list-items');
   firebase.firestore().terminate();
 })

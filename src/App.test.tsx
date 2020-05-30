@@ -4,6 +4,7 @@ import {AuthenticatedApp} from './App';
 import {initializeTestApp} from "@firebase/testing";
 import { emptyCollection } from './setupTests';
 import FirestoreService from './services/FirestoreService';
+import { act } from 'react-dom/test-utils';
 
 const firebase = initializeTestApp({
   projectId: 'my-test-project',
@@ -12,7 +13,7 @@ const firebase = initializeTestApp({
 
 afterAll(async () => {
   try {
-    await emptyCollection(firebase, 'shopping-list-items');
+    await emptyCollection(firebase, `shopping-list/${shoppingListId}/shopping-list-items`);
     await emptyCollection(firebase, 'shopping-list');
   } finally {
     firebase.firestore().terminate()
@@ -28,10 +29,15 @@ async function addShoppingListItem(itemName: string) {
   fireEvent.click(screen.getByText(/add/i))
 }
 
+let shoppingListId: string
+
 async function createShoppingList(shoppingListName: string) {
   // TODO: Swap out with UI interaction when it exists.
   const service = new FirestoreService(firebase);
-  service.addShoppingList({ name: shoppingListName });
+  await act(async () => {
+    const shoppingList = await service.addShoppingList({ name: shoppingListName });
+    shoppingListId = shoppingList.id;
+  });
 }
 
 async function selectShoppingList(listName: string) {
