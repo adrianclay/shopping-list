@@ -1,7 +1,8 @@
 import React from "react";
 import {render, Matcher} from "@testing-library/react";
 import {act} from "react-dom/test-utils";
-import Login, {User} from "./";
+import User from "../domain/User";
+import Login from "./";
 
 function changeAuthState(currentUser: User | null) {
   act(() => {
@@ -28,6 +29,9 @@ beforeEach(() => {
 
   const component = <Login authenticator={authenticatorMock()}>
     Secret message for logged in users
+    <Login.LoggedInUserContext.Consumer>
+      {loggedInUser => `${loggedInUser?.displayName} with ID ${loggedInUser?.uid} logged in`}
+    </Login.LoggedInUserContext.Consumer>
   </Login>
   findByText = render(component).findByText;
 })
@@ -36,13 +40,21 @@ test('displays loading message if no auth state has been provided by firebase', 
   expect(await findByText(/loading/i)).toBeInTheDocument();
 })
 
-test('displays children if logged in', async () => {
-  changeAuthState({
-    displayName: 'Adrian',
-    uid: '1001',
+describe('logged in', () => {
+  beforeEach(() => {
+    changeAuthState({
+      displayName: 'Adrian',
+      uid: '1001',
+    });
   });
 
-  expect(await findByText(/secret message/i)).toBeInTheDocument();
+  test('displays children', async () => {
+    expect(await findByText(/secret message/i)).toBeInTheDocument();
+  });
+
+  test('populates LoggedInUserContext with the user', async () => {
+    expect(await findByText(/Adrian with ID 1001 logged in/)).toBeInTheDocument();
+  });
 });
 
 describe('not logged in', () => {

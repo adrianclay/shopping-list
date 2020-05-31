@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
+import React, {useEffect, useState, PropsWithChildren} from "react";
 import { Button, Icon, Loader } from "semantic-ui-react";
 import User from "../domain/User";
 
@@ -9,7 +9,9 @@ interface LoginProps {
   }
 }
 
-const Login: FunctionComponent<LoginProps> = ({authenticator, children}) => {
+const LoggedInUserContext = React.createContext<User|undefined>(undefined);
+
+const Login = ({authenticator, children}: PropsWithChildren<LoginProps>) => {
   const [currentUser, setCurrentUser] = useState<User|null|undefined>(undefined);
 
   useEffect(() => {
@@ -24,7 +26,9 @@ const Login: FunctionComponent<LoginProps> = ({authenticator, children}) => {
   }
 
   if (currentUser) {
-    return <div>{children}</div>;
+    return <LoggedInUserContext.Provider value={currentUser}>
+      {children}
+      </LoggedInUserContext.Provider>;
   }
 
   return <Button basic size="large" onClick={() => { authenticator.signInWithRedirect() }}>
@@ -32,5 +36,7 @@ const Login: FunctionComponent<LoginProps> = ({authenticator, children}) => {
     Sign in
   </Button>;
 }
+
+Login.LoggedInUserContext = LoggedInUserContext;
 
 export default Login;
