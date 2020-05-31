@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import ShoppingList from "../domain/ShoppingList";
 import { Dropdown, DropdownProps } from "semantic-ui-react";
+import ShoppingList from "../domain/ShoppingList";
+import User from "../domain/User";
 
 interface ShoppingListFetcher {
   subscribeToListChanges(onUpdate: (lists: ShoppingList[]) => void, onError: () => void): () => void;
@@ -8,6 +9,7 @@ interface ShoppingListFetcher {
 
 export interface ListSelectorProps {
   onSelect: (item: ShoppingList) => void;
+  loggedInUser?: User;
 }
 
 function ListSelectorConstructor(shoppingListFetcher: ShoppingListFetcher) {

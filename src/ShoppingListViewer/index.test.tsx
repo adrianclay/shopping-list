@@ -6,6 +6,12 @@ import ShoppingListViewerConstructor from ".";
 import { ItemListProps } from "../ItemList";
 import { ListSelectorProps } from "../ListSelector";
 import { AddItemFormProps } from "../AddItemForm";
+import Login from "../Login";
+
+const loggedInUser = {
+  uid: '100',
+  displayName: 'Barry'
+};
 
 let addItemFormSpy: jest.Mock<JSX.Element, [AddItemFormProps]>;
 let itemListSpy: jest.Mock<JSX.Element, [ItemListProps]>;
@@ -18,11 +24,20 @@ beforeEach(() => {
 
   const ShoppingListViewer = ShoppingListViewerConstructor(listSelectorSpy, addItemFormSpy, itemListSpy);
 
-  render(<ShoppingListViewer />);
+  render(<Login.LoggedInUserContext.Provider value={loggedInUser}>
+    <ShoppingListViewer />
+  </Login.LoggedInUserContext.Provider>);
 })
 
 test('renders the ListSelector', async () => {
   expect(await screen.findByText('ListSelector')).toBeInTheDocument();
+});
+
+test('passes the loggedInUser to the ListSelector', async () => {
+  expect(listSelectorSpy).toBeCalledWith(
+    expect.objectContaining({ loggedInUser }),
+    {}
+  )
 });
 
 describe('without selecting a shopping list', () => {

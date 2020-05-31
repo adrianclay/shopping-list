@@ -3,6 +3,7 @@ import ShoppingList from "../domain/ShoppingList";
 import { AddItemFormProps } from "../AddItemForm";
 import { ItemListProps } from "../ItemList";
 import { ListSelectorProps } from "../ListSelector";
+import Login from "../Login";
 
 function ShoppingListViewerConstructor(ListSelector: React.FunctionComponent<ListSelectorProps>, AddItemForm: React.FunctionComponent<AddItemFormProps>, ItemList: React.FunctionComponent<ItemListProps>) {
   return function ShoppingListViewer() {
@@ -21,10 +22,13 @@ function ShoppingListViewerConstructor(ListSelector: React.FunctionComponent<Lis
       setShoppingList(list);
     };
 
-    return (<div>
-      <ListSelector onSelect={onListSelect} />
-      {itemList()}
-    </div>);
+    return <Login.LoggedInUserContext.Consumer>
+      { loggedInUser => <>
+          <ListSelector onSelect={onListSelect} loggedInUser={loggedInUser!} />
+          {itemList()}
+        </>
+      }
+    </Login.LoggedInUserContext.Consumer>;
   }
 }
 
