@@ -4,7 +4,7 @@ import ShoppingList from "../domain/ShoppingList";
 import User from "../domain/User";
 
 interface ShoppingListFetcher {
-  subscribeToListChanges(onUpdate: (lists: ShoppingList[]) => void, onError: () => void): () => void;
+  subscribeToListChanges(loggedInUser: User, onUpdate: (lists: ShoppingList[]) => void, onError: () => void): () => void;
 }
 
 export interface ListSelectorProps {
@@ -14,19 +14,19 @@ export interface ListSelectorProps {
 
 function ListSelectorConstructor(shoppingListFetcher: ShoppingListFetcher) {
 
-  return function ListSelector({ onSelect }: ListSelectorProps) {
+  return function ListSelector({ onSelect, loggedInUser }: ListSelectorProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [fetchErrored, setFetchError] = useState(false);
     const [shoppingLists, setShoppingLists] = useState<ShoppingList[]>([]);
 
     useEffect(() => {
-      return shoppingListFetcher.subscribeToListChanges(shoppingLists => {
+      return shoppingListFetcher.subscribeToListChanges(loggedInUser, shoppingLists => {
         setIsLoading(false);
         setShoppingLists(shoppingLists);
       }, () => {
         setFetchError(true);
       });
-    }, []);
+    }, [loggedInUser]);
 
     if(fetchErrored) {
       return <p>Error</p>;

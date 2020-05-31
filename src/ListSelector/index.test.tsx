@@ -1,14 +1,17 @@
 import { render, act } from "@testing-library/react";
 import React from "react";
 import ShoppingList from "../domain/ShoppingList";
+import User from "../domain/User";
 import ListSelectorConstructor from ".";
 
 let makeUpdate: (lists: ShoppingList[]) => void;
 let makeError: () => void;
 let unsubscribeSpy = jest.fn();
+let loggedInUserSpy: User | undefined;
 
 const shoppingListFetcherStub = {
-  subscribeToListChanges: (onUpdate: (lists: ShoppingList[]) => void, onError: () => void) => {
+  subscribeToListChanges: (loggedInUser: User, onUpdate: (lists: ShoppingList[]) => void, onError: () => void) => {
+    loggedInUserSpy = loggedInUser;
     makeUpdate = onUpdate;
     makeError = onError;
     return unsubscribeSpy;
@@ -31,6 +34,12 @@ test('displays loading message before fetch is resolved', async () => {
   const { findByText } = renderListSelection();
 
   expect(await findByText(/loading/i)).toBeInTheDocument()
+});
+
+test('passes the loggedInUser to the fetcher', () => {
+  renderListSelection();
+
+  expect(loggedInUserSpy).toEqual(loggedInUser);
 });
 
 test('hides loading message after fetch is resolved', async () => {

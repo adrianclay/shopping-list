@@ -17,7 +17,12 @@ it('Creates a shopping list and retrieves it back', async (done) => {
     name: 'Adrians fantastic shopping list'
   });
 
-  const unsubscribe = firestoreService.subscribeToListChanges((lists) => {
+  const loggedInUser = {
+    uid: 'scarlet',
+    displayName: 'Scarlet'
+  }
+
+  const unsubscribe = firestoreService.subscribeToListChanges(loggedInUser, lists => {
     unsubscribe();
     expect(lists).toEqual([addedShoppingList]);
     done();

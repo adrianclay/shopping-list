@@ -1,6 +1,7 @@
 import * as firebase from "firebase/app";
 import ShoppingListItem from "../domain/ShoppingListItem";
 import ShoppingList from "../domain/ShoppingList";
+import User from "../domain/User";
 
 export default class FirestoreService {
   private firebase: firebase.app.App;
@@ -21,7 +22,7 @@ export default class FirestoreService {
     }, onError);
   }
 
-  subscribeToListChanges(onUpdate: (items: ShoppingList[]) => void, onError: () => void): () => void {
+  subscribeToListChanges(_: User, onUpdate: (items: ShoppingList[]) => void, onError: () => void): () => void {
     return this.firebase.firestore().collection('shopping-list').onSnapshot(collection => {
       const items = collection.docs.map(item => {
         return {
