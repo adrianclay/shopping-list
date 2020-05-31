@@ -5,6 +5,7 @@ import {initializeTestApp} from "@firebase/testing";
 import { emptyCollection } from './setupTests';
 import FirestoreService from './services/FirestoreService';
 import { act } from 'react-dom/test-utils';
+import Login from './Login';
 
 const firebase = initializeTestApp({
   projectId: 'my-test-project',
@@ -31,11 +32,11 @@ async function addShoppingListItem(itemName: string) {
 
 let shoppingListId: string
 
-async function createShoppingList(shoppingListName: string) {
+async function createShoppingList(shoppingListName: string, loggedInUserId: string) {
   // TODO: Swap out with UI interaction when it exists.
   const service = new FirestoreService(firebase);
   await act(async () => {
-    const shoppingList = await service.addShoppingList({ name: shoppingListName });
+    const shoppingList = await service.addShoppingList({ name: shoppingListName, owner_uid: loggedInUserId });
     shoppingListId = shoppingList.id;
   });
 }
@@ -45,11 +46,14 @@ async function selectShoppingList(listName: string) {
 }
 
 test('As a user I can add items to the shopping list', async () => {
-  render(<AuthenticatedApp firebase={firebase}/>);
+  const loggedInUser = { uid: 'bob', displayName: 'bobby' };
+  render(<Login.LoggedInUserContext.Provider value={loggedInUser}>
+    <AuthenticatedApp firebase={firebase}/>
+  </Login.LoggedInUserContext.Provider>);
 
   await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
 
-  await createShoppingList('Supermarket list')
+  await createShoppingList('Supermarket list', loggedInUser.uid)
   await selectShoppingList('Supermarket list');
 
   await addShoppingListItem('Ketchup');
