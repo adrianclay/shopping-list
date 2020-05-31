@@ -9,7 +9,7 @@ interface ShoppingListFetcher {
 
 export interface ListSelectorProps {
   onSelect: (item: ShoppingList) => void;
-  loggedInUser?: User;
+  loggedInUser: User;
 }
 
 function ListSelectorConstructor(shoppingListFetcher: ShoppingListFetcher) {

@@ -15,11 +15,16 @@ const shoppingListFetcherStub = {
   }
 };
 
+const loggedInUser = {
+  uid: 'rihanna',
+  displayName: 'Rihanna'
+}
+
 let onSelectSpy: jest.Mock
 function renderListSelection() {
   onSelectSpy = jest.fn();
   const ListSelector = ListSelectorConstructor(shoppingListFetcherStub);
-  return render(<ListSelector onSelect={onSelectSpy} />);
+  return render(<ListSelector onSelect={onSelectSpy} loggedInUser={loggedInUser} />);
 }
 
 test('displays loading message before fetch is resolved', async () => {
