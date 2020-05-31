@@ -26,7 +26,7 @@ test('renders the ListSelector', async () => {
 });
 
 describe('without selecting a shopping list', () => {
-  test('ListSelector is not displayed', () => {
+  test('ItemList is not displayed', () => {
     expect(itemListSpy).not.toBeCalled();
   });
 
