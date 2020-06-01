@@ -3,7 +3,7 @@ service cloud.firestore {
     match /shopping-list/{shoppingListId} {
       allow read, write: if request.auth.uid == 'alice';
 
-      match /shopping-list-items/{itemId} {
+      match /items/{itemId} {
         allow read, write: if request.auth.uid == 'alice';
       }
     }

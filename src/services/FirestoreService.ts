@@ -51,6 +51,6 @@ export default class FirestoreService {
   }
 
   private shoppingListItemCollection(shoppingList: ShoppingList) {
-    return this.firebase.firestore().collection(`shopping-list/${shoppingList.id}/shopping-list-items`);
+    return this.firebase.firestore().collection(`shopping-list/${shoppingList.id}/items`);
   }
 }

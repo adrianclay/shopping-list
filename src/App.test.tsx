@@ -14,7 +14,7 @@ const firebase = initializeTestApp({
 
 afterAll(async () => {
   try {
-    await emptyCollection(firebase, `shopping-list/${shoppingListId}/shopping-list-items`);
+    await emptyCollection(firebase, `shopping-list/${shoppingListId}/items`);
     await emptyCollection(firebase, 'shopping-list');
   } finally {
     firebase.firestore().terminate()

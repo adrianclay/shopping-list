@@ -69,7 +69,7 @@ describe('Creating a Shopping list item', () => {
   });
 
   afterEach(async () => {
-    await emptyCollection(firebase, `shopping-list/${shoppingList.id}/shopping-list-items`);
+    await emptyCollection(firebase, `shopping-list/${shoppingList.id}/items`);
   });
 
   it('retrieves it back, when querying by the matching list', (done) => {
