@@ -1,6 +1,5 @@
-import {initializeTestApp, firestore} from "@firebase/testing";
+import {initializeTestApp, firestore, clearFirestoreData} from "@firebase/testing";
 import FirestoreService from './FirestoreService'
-import { emptyCollection } from "../setupTests";
 import ShoppingList from "../domain/ShoppingList";
 
 const firebase = initializeTestApp({
@@ -12,6 +11,12 @@ const firestoreService = new FirestoreService(firebase);
 const onError = () => {
   throw new Error();
 };
+
+afterEach(async () => {
+  await clearFirestoreData({
+    projectId: firebase.options['projectId']
+  });
+});
 
 describe('Creating a shopping list', () => {
   const userWhoCreatedList = {
@@ -25,10 +30,6 @@ describe('Creating a shopping list', () => {
       name: 'Adrians fantastic shopping list',
       owner_uid: userWhoCreatedList.uid
     });
-  });
-
-  afterEach(async () => {
-    await emptyCollection(firebase, 'shopping-list');
   });
 
   it('can retrieve it back, when querying by user who created list', done => {
@@ -66,10 +67,6 @@ describe('Creating a Shopping list item', () => {
 
   beforeEach(async () => {
     await firestoreService.addShoppingListItem(expectedItem);
-  });
-
-  afterEach(async () => {
-    await emptyCollection(firebase, `shopping-list/${shoppingList.id}/items`);
   });
 
   it('retrieves it back, when querying by the matching list', (done) => {

@@ -1,8 +1,7 @@
 import React from 'react';
 import {render, screen, fireEvent, waitForElementToBeRemoved} from '@testing-library/react';
 import {AuthenticatedApp} from './App';
-import {initializeTestApp} from "@firebase/testing";
-import { emptyCollection } from './setupTests';
+import {initializeTestApp, clearFirestoreData} from "@firebase/testing";
 import FirestoreService from './services/FirestoreService';
 import { act } from 'react-dom/test-utils';
 import Login from './Login';
@@ -14,8 +13,9 @@ const firebase = initializeTestApp({
 
 afterAll(async () => {
   try {
-    await emptyCollection(firebase, `shopping-list/${shoppingListId}/items`);
-    await emptyCollection(firebase, 'shopping-list');
+    await clearFirestoreData({
+      projectId: firebase.options['projectId']
+    });
   } finally {
     firebase.firestore().terminate()
   }
