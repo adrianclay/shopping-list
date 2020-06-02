@@ -8,8 +8,8 @@ const firebase = initializeTestApp({
 });
 const firestoreService = new FirestoreService(firebase);
 
-const onError = () => {
-  throw new Error();
+const onError = (error: Error) => {
+  throw error;
 };
 
 afterEach(async () => {

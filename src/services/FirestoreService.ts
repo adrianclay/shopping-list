@@ -10,7 +10,7 @@ export default class FirestoreService {
     this.firebase = firebase;
   }
 
-  subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void {
+  subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: (error: Error) => void): () => void {
     return this.shoppingListItemCollection(shoppingList).onSnapshot(collection => {
       const items = collection.docs.map(item => {
         return {
@@ -22,7 +22,7 @@ export default class FirestoreService {
     }, onError);
   }
 
-  subscribeToListChanges(loggedInUser: User, onUpdate: (items: ShoppingList[]) => void, onError: () => void): () => void {
+  subscribeToListChanges(loggedInUser: User, onUpdate: (items: ShoppingList[]) => void, onError: (error: Error) => void): () => void {
     const shoppingListCollection = this.firebase.firestore().collection('shopping-list');
     const shoppingListsFilteredByLoggedInUser = shoppingListCollection.where('owner_uid', '==', loggedInUser.uid);
     return shoppingListsFilteredByLoggedInUser.onSnapshot(collection => {
