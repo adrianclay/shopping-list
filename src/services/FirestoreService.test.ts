@@ -71,63 +71,55 @@ describe('Firestore security rules', () => {
   });
 
   describe('shopping-list/{shoppingList}/items', () => {
-    it('Does not read items a different users list', async () => {
-      let shoppingList: ShoppingList;
+    let jeffsShoppingList: ShoppingList;
+    beforeEach(async () => {
       await withJeffAuthenticated(async firestoreService => {
-        shoppingList = await firestoreService.addShoppingList({ name: 'Big list', owner_uid: jeff.uid });
+        jeffsShoppingList = await firestoreService.addShoppingList({ name: 'List of Jeff', owner_uid: jeff.uid });
       });
+    });
 
+    const nonExistentList: ShoppingList = {
+      id: 'fake-list',
+      name: 'Big old fake list'
+    };
+
+    it('Does not read items a different users list', async () => {
       await assertFails(
         withAliceAuthenticated(async firestoreService =>
           new Promise((resolve, reject) => {
-            firestoreService.subscribeToItemChanges(shoppingList, resolve, reject);
+            firestoreService.subscribeToItemChanges(jeffsShoppingList, resolve, reject);
           })
         )
       );
     });
 
     it('Does not read items from a non-existent list', async () => {
-      const shoppingList: ShoppingList = {
-        id: 'fake-list',
-        name: 'Big old fake list'
-      };
-
       await assertFails(
         withAliceAuthenticated(async firestoreService =>
           new Promise((resolve, reject) => {
-            firestoreService.subscribeToItemChanges(shoppingList, resolve, reject);
+            firestoreService.subscribeToItemChanges(nonExistentList, resolve, reject);
           })
         )
       );
     });
 
     it('Does not allow creating items for a different users list', async () => {
-      let shoppingList: ShoppingList;
-      await withJeffAuthenticated(async firestoreService => {
-        shoppingList = await firestoreService.addShoppingList({ name: 'Big list', owner_uid: jeff.uid });
-      });
-
       await assertFails(
         withAliceAuthenticated(async firestoreService =>
           firestoreService.addShoppingListItem({
             name: 'Devils apple',
-            list: shoppingList,
+            list: jeffsShoppingList,
           })
         )
       );
     });
 
     it('Does not allow creating items for a non-existent list', async () => {
-      const shoppingList: ShoppingList = {
-        id: 'non-existent-list',
-        name: 'Non existent list'
-      };
-
       await assertFails(
         withAliceAuthenticated(async firestoreService =>
           firestoreService.addShoppingListItem({
             name: 'Devils apple',
-            list: shoppingList,
+            list: nonExistentList,
           })
         )
       );
