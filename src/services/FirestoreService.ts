@@ -3,6 +3,10 @@ import ShoppingListItem from "../domain/ShoppingListItem";
 import ShoppingList from "../domain/ShoppingList";
 import User from "../domain/User";
 
+interface ShoppingListRecord {
+  name: string;
+  owner_uid: string;
+}
 export default class FirestoreService {
   private firebase: firebase.app.App;
 
@@ -29,7 +33,7 @@ export default class FirestoreService {
       const items = collection.docs.map(item => {
         return {
           id: item.id,
-          ...item.data() as { name: string }
+          ...item.data() as ShoppingListRecord
         }
       });
       onUpdate(items);
@@ -42,7 +46,7 @@ export default class FirestoreService {
     });
   }
 
-  async addShoppingList(list: { name: string, owner_uid: string }): Promise<ShoppingList> {
+  async addShoppingList(list: ShoppingListRecord): Promise<ShoppingList> {
     const thing = await this.firebase.firestore().collection('shopping-list').add(list);
     return {
       id: thing.id,
