@@ -100,6 +100,38 @@ describe('Firestore security rules', () => {
         )
       );
     });
+
+    it('Does not allow creating items for a different users list', async () => {
+      let shoppingList: ShoppingList;
+      await withJeffAuthenticated(async firestoreService => {
+        shoppingList = await firestoreService.addShoppingList({ name: 'Big list', owner_uid: jeff.uid });
+      });
+
+      await assertFails(
+        withAliceAuthenticated(async firestoreService =>
+          firestoreService.addShoppingListItem({
+            name: 'Devils apple',
+            list: shoppingList,
+          })
+        )
+      );
+    });
+
+    it('Does not allow creating items for a non-existent list', async () => {
+      const shoppingList: ShoppingList = {
+        id: 'non-existent-list',
+        name: 'Non existent list'
+      };
+
+      await assertFails(
+        withAliceAuthenticated(async firestoreService =>
+          firestoreService.addShoppingListItem({
+            name: 'Devils apple',
+            list: shoppingList,
+          })
+        )
+      );
+    });
   });
 });
 

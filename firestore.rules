@@ -5,8 +5,7 @@ service cloud.firestore {
       allow read: if resource.data.owner_uid == request.auth.uid;
 
       match /items/{itemId} {
-        allow create: if request.auth.uid == 'alice';
-        allow read: if get(/databases/$(database)/documents/shopping-list/$(shoppingListId)).data.owner_uid == request.auth.uid;
+        allow read, create: if get(/databases/$(database)/documents/shopping-list/$(shoppingListId)).data.owner_uid == request.auth.uid;
       }
     }
   }
