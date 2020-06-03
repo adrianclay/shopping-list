@@ -1,6 +1,7 @@
 import {initializeTestApp, firestore, clearFirestoreData, assertFails} from "@firebase/testing";
 import FirestoreService from './FirestoreService'
 import ShoppingList from "../domain/ShoppingList";
+import ShoppingListItem from "../domain/ShoppingListItem";
 
 const projectId = 'my-test-project';
 
@@ -68,6 +69,38 @@ describe('Firestore security rules', () => {
       );
     });
   });
+
+  describe('shopping-list/{shoppingList}/items', () => {
+    it('Does not read items a different users list', async () => {
+      let shoppingList: ShoppingList;
+      await withJeffAuthenticated(async firestoreService => {
+        shoppingList = await firestoreService.addShoppingList({ name: 'Big list', owner_uid: jeff.uid });
+      });
+
+      await assertFails(
+        withAliceAuthenticated(async firestoreService =>
+          new Promise((resolve, reject) => {
+            firestoreService.subscribeToItemChanges(shoppingList, resolve, reject);
+          })
+        )
+      );
+    });
+
+    it('Does not read items from a non-existent list', async () => {
+      const shoppingList: ShoppingList = {
+        id: 'fake-list',
+        name: 'Big old fake list'
+      };
+
+      await assertFails(
+        withAliceAuthenticated(async firestoreService =>
+          new Promise((resolve, reject) => {
+            firestoreService.subscribeToItemChanges(shoppingList, resolve, reject);
+          })
+        )
+      );
+    });
+  });
 });
 
 describe('When Alice creates a shopping list', () => {
@@ -108,18 +141,16 @@ describe('When Alice creates a shopping list', () => {
 
 
 describe('Creating a Shopping list item', () => {
-  const shoppingList = {
-    id: 'partylist',
-    name: 'Party shopping list',
-  };
-
-  const expectedItem = {
-    name: 'Crisps',
-    list: shoppingList
-  };
+  let shoppingList: ShoppingList;
+  let expectedItem: ShoppingListItem;
 
   beforeEach(async () => {
     await withAliceAuthenticated(async (firestoreService) => {
+      shoppingList = await firestoreService.addShoppingList({ name: 'Party shopping list', owner_uid: alice.uid });
+      expectedItem = {
+        name: 'Crisps',
+        list: shoppingList
+      };
       await firestoreService.addShoppingListItem(expectedItem);
     })
   });
@@ -136,18 +167,19 @@ describe('Creating a Shopping list item', () => {
   });
 
   it('does not retrieve it back, when querying with a different list', async () => {
-    const notMatchingShoppingList = {
-      id: 'notPartyList',
-      name: 'Not the party list'
-    }
+    await withAliceAuthenticated(async firestoreService => {
+      const notMatchingShoppingList = await firestoreService.addShoppingList({
+        name: 'Not the party list',
+        owner_uid: alice.uid
+      });
 
-    await withAliceAuthenticated(async firestoreService =>
-      new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         const unsubscribe = firestoreService.subscribeToItemChanges(notMatchingShoppingList, items => {
           unsubscribe();
           expect(items).toEqual([]);
           resolve();
         }, reject);
-      }));
+      });
+    });
   });
 });
