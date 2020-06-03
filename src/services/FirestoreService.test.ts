@@ -1,55 +1,108 @@
-import {initializeTestApp, firestore, clearFirestoreData} from "@firebase/testing";
+import {initializeTestApp, firestore, clearFirestoreData, assertFails} from "@firebase/testing";
 import FirestoreService from './FirestoreService'
 import ShoppingList from "../domain/ShoppingList";
 
-const firebase = initializeTestApp({
-  projectId: 'my-test-project',
-  auth: { uid: 'alice', email: 'alice@example.com' }
-});
-const firestoreService = new FirestoreService(firebase);
+const projectId = 'my-test-project';
 
-const onError = (error: Error) => {
-  throw error;
-};
+type FirestoreServiceAction = (firestoreService: FirestoreService) => Promise<void>;
+
+const alice = { uid: 'alice', displayName: 'Alice' };
+function withAliceAuthenticated(action: FirestoreServiceAction) {
+  return withAuth(action, alice);
+}
+
+const jeff = { uid: 'jeff', displayName: 'Jeff' };
+function withJeffAuthenticated(action: FirestoreServiceAction) {
+  return withAuth(action, jeff);
+}
+
+function withUnauthenticated(action: FirestoreServiceAction) {
+  return withAuth(action, undefined);
+}
+
+async function withAuth(action: FirestoreServiceAction, auth?: { uid: string }) {
+  const firebase = initializeTestApp({ projectId, auth });
+  const firestoreService = new FirestoreService(firebase);
+  try {
+    await action(firestoreService);
+  } finally {
+    firebase.delete();
+  }
+}
 
 afterEach(async () => {
-  await clearFirestoreData({
-    projectId: firebase.options['projectId']
+  await clearFirestoreData({ projectId });
+});
+
+describe('Firestore security rules', () => {
+  describe('shopping-list', () => {
+    it('Does not create, where the owner_uid does not match who is logged in', async () => {
+      await assertFails(
+        withAliceAuthenticated(async firestoreService => {
+          await firestoreService.addShoppingList({
+            name: "This list should not be created",
+            owner_uid: 'not_alice',
+          })
+        })
+      );
+    });
+
+    it('Does not create, where the user is unauthenticated', async () => {
+      await assertFails(
+        withUnauthenticated(async firestoreService => {
+          await firestoreService.addShoppingList({
+            name: 'This list should not be created',
+            owner_uid: null,
+          })
+        })
+      );
+    });
+
+    it('Does not read a different users lists', async () => {
+      await assertFails(
+        withAliceAuthenticated(async firestoreService =>
+          new Promise((resolve, reject) => {
+            firestoreService.subscribeToListChanges(jeff, resolve, reject);
+          })
+        )
+      );
+    });
   });
 });
 
-describe('Creating a shopping list', () => {
-  const userWhoCreatedList = {
-    uid: 'scarlet',
-    displayName: 'Scarlet'
-  }
-
+describe('When Alice creates a shopping list', () => {
   let addedShoppingList: ShoppingList;
   beforeEach(async () => {
-    addedShoppingList = await firestoreService.addShoppingList({
-      name: 'Adrians fantastic shopping list',
-      owner_uid: userWhoCreatedList.uid
+    await withAliceAuthenticated(async firestoreService => {
+      addedShoppingList = await firestoreService.addShoppingList({
+        name: 'Adrians fantastic shopping list',
+        owner_uid: alice.uid
+      });
     });
   });
 
-  it('can retrieve it back, when querying by user who created list', done => {
-    const unsubscribe = firestoreService.subscribeToListChanges(userWhoCreatedList, lists => {
-      unsubscribe();
-      expect(lists).toEqual([addedShoppingList]);
-      done();
-    }, onError);
+  it('can retrieve it back, when querying alices lists', async () => {
+    await withAliceAuthenticated(async firestoreService =>
+      new Promise((resolve, reject) => {
+        const unsubscribe = firestoreService.subscribeToListChanges(alice, lists => {
+          unsubscribe();
+          expect(lists).toEqual([addedShoppingList]);
+          resolve();
+        }, reject);
+      })
+    );
   });
 
-  it('does not retrieve it back, when querying by a different user', done => {
-    const notUserWhoCreatedTheList = {
-      uid: 'jazzy',
-      displayName: 'Jeff'
-    };
-    const unsubscribe = firestoreService.subscribeToListChanges(notUserWhoCreatedTheList, lists => {
-      unsubscribe();
-      expect(lists).toEqual([]);
-      done();
-    }, onError);
+  it('does not retrieve it back, when querying jeffs list', async () => {
+    await withJeffAuthenticated(async firestoreService =>
+      new Promise((resolve, reject) => {
+        const unsubscribe = firestoreService.subscribeToListChanges(jeff, lists => {
+          unsubscribe();
+          expect(lists).toEqual([]);
+          resolve();
+        }, reject);
+      })
+    );
   });
 });
 
@@ -66,32 +119,35 @@ describe('Creating a Shopping list item', () => {
   };
 
   beforeEach(async () => {
-    await firestoreService.addShoppingListItem(expectedItem);
+    await withAliceAuthenticated(async (firestoreService) => {
+      await firestoreService.addShoppingListItem(expectedItem);
+    })
   });
 
-  it('retrieves it back, when querying by the matching list', (done) => {
-    const unsubscribe = firestoreService.subscribeToItemChanges(shoppingList, items => {
-      unsubscribe();
-      expect(items).toEqual([expectedItem]);
-      done();
-    }, onError);
+  it('retrieves it back, when querying by the matching list', async () => {
+    await withAliceAuthenticated(async firestoreService =>
+      new Promise((resolve, reject) => {
+        const unsubscribe = firestoreService.subscribeToItemChanges(shoppingList, items => {
+          unsubscribe();
+          expect(items).toEqual([expectedItem]);
+          resolve();
+        }, reject);
+    }));
   });
 
-  it('does not retrieve it back, when querying with a different list', (done) => {
+  it('does not retrieve it back, when querying with a different list', async () => {
     const notMatchingShoppingList = {
       id: 'notPartyList',
       name: 'Not the party list'
     }
 
-    const unsubscribe = firestoreService.subscribeToItemChanges(notMatchingShoppingList, items => {
-      unsubscribe();
-      expect(items).toEqual([]);
-      done();
-    }, onError);
+    await withAliceAuthenticated(async firestoreService =>
+      new Promise((resolve, reject) => {
+        const unsubscribe = firestoreService.subscribeToItemChanges(notMatchingShoppingList, items => {
+          unsubscribe();
+          expect(items).toEqual([]);
+          resolve();
+        }, reject);
+      }));
   });
 });
-
-
-afterAll(async () => {
-  firebase.firestore().terminate();
-})

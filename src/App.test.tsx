@@ -6,16 +6,16 @@ import FirestoreService from './services/FirestoreService';
 import { act } from 'react-dom/test-utils';
 import Login from './Login';
 
+const projectId = 'app-test-tsx';
+
 const firebase = initializeTestApp({
-  projectId: 'my-test-project',
+  projectId,
   auth: { uid: 'alice', email: 'alice@example.com' }
 });
 
 afterAll(async () => {
   try {
-    await clearFirestoreData({
-      projectId: firebase.options['projectId']
-    });
+    await clearFirestoreData({ projectId });
   } finally {
     firebase.firestore().terminate()
   }
@@ -46,7 +46,7 @@ async function selectShoppingList(listName: string) {
 }
 
 test('As a user I can add items to the shopping list', async () => {
-  const loggedInUser = { uid: 'bob', displayName: 'bobby' };
+  const loggedInUser = { uid: 'alice', displayName: 'bobby' };
   render(<Login.LoggedInUserContext.Provider value={loggedInUser}>
     <AuthenticatedApp firebase={firebase}/>
   </Login.LoggedInUserContext.Provider>);
