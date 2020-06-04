@@ -80,7 +80,8 @@ describe('Firestore security rules', () => {
 
     const nonExistentList: ShoppingList = {
       id: 'fake-list',
-      name: 'Big old fake list'
+      name: 'Big old fake list',
+      owner_uid: alice.uid
     };
 
     it('Does not read items a different users list', async () => {

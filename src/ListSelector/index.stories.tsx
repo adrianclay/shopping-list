@@ -10,10 +10,12 @@ const loggedInUser = {
 const ListSelectorWithItems = ListSelectorConstructor({ subscribeToListChanges: (loggedInUser, onUpdate, onError) => {
   onUpdate([{
     id: '101',
-    name: 'Christmas wish list'
+    name: 'Christmas wish list',
+    owner_uid: 'you',
   },{
     id: '102',
-    name: 'Weekly shop'
+    name: 'Weekly shop',
+    owner_uid: 'you',
   }]);
   return () => {};
 } });
