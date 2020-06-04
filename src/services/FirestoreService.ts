@@ -19,6 +19,7 @@ export default class FirestoreService {
       const items = collection.docs.map(item => {
         return {
           ...item.data() as { name: string },
+          id: item.id,
           list: shoppingList
         };
       });
@@ -40,10 +41,14 @@ export default class FirestoreService {
     }, onError);
   }
 
-  async addShoppingListItem({ name, list }: ShoppingListItem) {
-    await this.shoppingListItemCollection(list).add({
+  async addShoppingListItem({ name, list }: ShoppingListItem): Promise<ShoppingListItem> {
+    const { id } = await this.shoppingListItemCollection(list).add({
       name
     });
+
+    return {
+      list, name, id
+    };
   }
 
   async addShoppingList(list: ShoppingListRecord): Promise<ShoppingList> {

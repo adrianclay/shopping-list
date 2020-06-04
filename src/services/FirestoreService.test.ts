@@ -167,17 +167,20 @@ describe('When Alice creates a shopping list', () => {
 
 describe('Creating a Shopping list item', () => {
   let shoppingList: ShoppingList;
-  let expectedItem: ShoppingListItem;
+  let createdItem: ShoppingListItem;
 
   beforeEach(async () => {
     await withAliceAuthenticated(async (firestoreService) => {
       shoppingList = await firestoreService.addShoppingList({ name: 'Party shopping list', owner_uid: alice.uid });
-      expectedItem = {
+      createdItem = await firestoreService.addShoppingListItem({
         name: 'Crisps',
         list: shoppingList
-      };
-      await firestoreService.addShoppingListItem(expectedItem);
+      });
     })
+  });
+
+  it('returns the items id', () => {
+    expect(createdItem).toHaveProperty('id');
   });
 
   it('retrieves it back, when querying by the matching list', async () => {
@@ -185,7 +188,7 @@ describe('Creating a Shopping list item', () => {
       new Promise((resolve, reject) => {
         const unsubscribe = firestoreService.subscribeToItemChanges(shoppingList, items => {
           unsubscribe();
-          expect(items).toEqual([expectedItem]);
+          expect(items).toEqual([createdItem]);
           resolve();
         }, reject);
     }));
