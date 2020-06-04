@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import ShoppingListItem from '../domain/ShoppingListItem';
 import ShoppingList from "../domain/ShoppingList";
+import { Segment } from "semantic-ui-react";
 
 interface ShoppingListItemFetcher {
   subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void;
@@ -34,13 +35,13 @@ function ItemListConstructor(shoppingListItemFetcher: ShoppingListItemFetcher) {
     }
 
     return (
-      <ul>
+      <Segment.Group>
         { shoppingListItems.map(shoppingListItem =>
-          <li key={shoppingListItem.name}>
+          <Segment key={shoppingListItem.name}>
             {shoppingListItem.name}
-          </li>
+          </Segment>
         ) }
-      </ul>
+      </Segment.Group>
     )
   }
 };
