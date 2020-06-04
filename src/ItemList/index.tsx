@@ -31,7 +31,7 @@ function ItemListConstructor(shoppingListItemFetcher: ShoppingListItemFetcher) {
     }
 
     if (isLoading) {
-      return <p>Loading</p>
+      return <Segment loading>Loading</Segment>
     }
 
     return (
