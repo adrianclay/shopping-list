@@ -1,10 +1,9 @@
 import React, {useState} from "react";
 import { Button, Input, Form } from 'semantic-ui-react'
-import ShoppingListItem from '../domain/ShoppingListItem';
 import ShoppingList from "../domain/ShoppingList";
 
 interface ShoppingListItemAdder {
-  addShoppingListItem(item: ShoppingListItem): void
+  addShoppingListItem(item: { name: string, list: ShoppingList }): void
 }
 
 export interface AddItemFormProps {

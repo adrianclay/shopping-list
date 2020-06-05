@@ -41,7 +41,7 @@ export default class FirestoreService {
     }, onError);
   }
 
-  async addShoppingListItem({ name, list }: ShoppingListItem): Promise<ShoppingListItem> {
+  async addShoppingListItem({ name, list }: { name: string, list: ShoppingList }): Promise<ShoppingListItem> {
     const { id } = await this.shoppingListItemCollection(list).add({
       name
     });
