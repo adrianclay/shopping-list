@@ -31,22 +31,22 @@ async function withAuth(action: FirestoreServiceAction, auth?: { uid: string }) 
   }
 }
 
+const assertAliceCant = (action: FirestoreServiceAction) => assertFails(withAliceAuthenticated(action));
+
 afterEach(async () => {
   await clearFirestoreData({ projectId });
 });
 
 describe('Firestore security rules', () => {
   describe('shopping-list', () => {
-    it('Does not create, where the owner_uid does not match who is logged in', async () => {
-      await assertFails(
-        withAliceAuthenticated(async firestoreService => {
-          await firestoreService.addShoppingList({
-            name: "This list should not be created",
-            owner_uid: 'not_alice',
-          })
+    it('Does not create, where the owner_uid does not match who is logged in', () =>
+      assertAliceCant(firestoreService =>
+        firestoreService.addShoppingList({
+          name: "This list should not be created",
+          owner_uid: 'not_alice',
         })
-      );
-    });
+      )
+    );
 
     it('Does not create, where the user is unauthenticated', async () => {
       await assertFails(
@@ -59,15 +59,13 @@ describe('Firestore security rules', () => {
       );
     });
 
-    it('Does not read a different users lists', async () => {
-      await assertFails(
-        withAliceAuthenticated(async firestoreService =>
-          new Promise((resolve, reject) => {
-            firestoreService.subscribeToListChanges(jeff, resolve, reject);
-          })
-        )
-      );
-    });
+    it('Does not read a different users lists', () =>
+      assertAliceCant(async firestoreService =>
+        new Promise((resolve, reject) => {
+          firestoreService.subscribeToListChanges(jeff, resolve, reject);
+        })
+      )
+    );
   });
 
   describe('shopping-list/{shoppingList}/items', () => {
@@ -86,55 +84,43 @@ describe('Firestore security rules', () => {
       owner_uid: alice.uid
     };
 
-    it('Does not read items a different users list', async () => {
-      await assertFails(
-        withAliceAuthenticated(async firestoreService =>
-          new Promise((resolve, reject) => {
-            firestoreService.subscribeToItemChanges(jeffsShoppingList, resolve, reject);
-          })
-        )
-      );
-    });
+    it('Does not read items a different users list', () =>
+      assertAliceCant(firestoreService =>
+        new Promise((resolve, reject) => {
+          firestoreService.subscribeToItemChanges(jeffsShoppingList, resolve, reject);
+        })
+      )
+    );
 
-    it('Does not read items from a non-existent list', async () => {
-      await assertFails(
-        withAliceAuthenticated(async firestoreService =>
-          new Promise((resolve, reject) => {
-            firestoreService.subscribeToItemChanges(nonExistentList, resolve, reject);
-          })
-        )
-      );
-    });
+    it('Does not read items from a non-existent list', () =>
+      assertAliceCant(firestoreService =>
+        new Promise((resolve, reject) => {
+          firestoreService.subscribeToItemChanges(nonExistentList, resolve, reject);
+        })
+      )
+    );
 
-    it('Does not allow creating items for a different users list', async () => {
-      await assertFails(
-        withAliceAuthenticated(async firestoreService =>
-          firestoreService.addShoppingListItem({
-            name: 'Devils apple',
-            list: jeffsShoppingList,
-          })
-        )
-      );
-    });
+    it('Does not allow creating items for a different users list', () =>
+      assertAliceCant(firestoreService =>
+        firestoreService.addShoppingListItem({
+          name: 'Devils apple',
+          list: jeffsShoppingList,
+        })
+      )
+    );
 
-    it('Does not allow creating items for a non-existent list', async () => {
-      await assertFails(
-        withAliceAuthenticated(async firestoreService =>
-          firestoreService.addShoppingListItem({
-            name: 'Devils apple',
-            list: nonExistentList,
-          })
-        )
-      );
-    });
+    it('Does not allow creating items for a non-existent list', () =>
+      assertAliceCant(firestoreService =>
+        firestoreService.addShoppingListItem({
+          name: 'Devils apple',
+          list: nonExistentList,
+        })
+      )
+    );
 
-    it('Does not allow deleting items for a different users list', async () => {
-      await assertFails(
-        withAliceAuthenticated(async firestoreService =>
-          firestoreService.deleteItem(jeffsShoppingItem)
-        )
-      );
-    });
+    it('Does not allow deleting items for a different users list', () =>
+      assertAliceCant(firestoreService => firestoreService.deleteItem(jeffsShoppingItem))
+    );
   });
 });
 
