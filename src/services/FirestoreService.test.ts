@@ -183,6 +183,27 @@ describe('Creating a Shopping list item', () => {
     expect(createdItem).toHaveProperty('id');
   });
 
+  describe('deleting it', () => {
+    beforeEach(async () => {
+      await withAliceAuthenticated(async firestoreService => {
+        await firestoreService.deleteItem(createdItem);
+      });
+    });
+
+    it('does not retreive it back', async () => {
+      await withAliceAuthenticated(async firestoreService => {
+        return new Promise((resolve, reject) => {
+          const unsubscribe = firestoreService.subscribeToItemChanges(shoppingList, items => {
+            unsubscribe();
+            expect(items).toEqual([]);
+            resolve();
+          }, reject);
+        });
+      });
+    });
+
+  });
+
   it('retrieves it back, when querying by the matching list', async () => {
     await withAliceAuthenticated(async firestoreService =>
       new Promise((resolve, reject) => {

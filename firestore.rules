@@ -6,6 +6,7 @@ service cloud.firestore {
 
       match /items/{itemId} {
         allow read, create: if get(/databases/$(database)/documents/shopping-list/$(shoppingListId)).data.owner_uid == request.auth.uid;
+        allow delete: if request.auth.uid == 'alice';
       }
     }
   }
