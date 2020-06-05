@@ -1,6 +1,6 @@
 import React from 'react';
 import ItemListConstructor from './';
-import {render, act} from '@testing-library/react';
+import {render, act, fireEvent} from '@testing-library/react';
 import ShoppingListItem from '../domain/ShoppingListItem';
 import ShoppingList from '../domain/ShoppingList';
 
@@ -31,7 +31,11 @@ const shoppingListItemFetcherStub = {
   }
 }
 
-const ItemList = ItemListConstructor(shoppingListItemFetcherStub);
+const shoppingListItemDeleterSpy = {
+  deleteItem: jest.fn()
+};
+
+const ItemList = ItemListConstructor(shoppingListItemFetcherStub, shoppingListItemDeleterSpy);
 
 const shoppingList = {
   name: 'Art supplies',
@@ -86,3 +90,14 @@ test('calls the unsubscribe method when unmounting', async () => {
 
   expect(unsubscribeSpy).toBeCalledWith();
 })
+
+test('calls the shoppingListItemDeleter when clicking the delete button', async () => {
+  const { findByText } = render(<ItemList shoppingList={shoppingList} />);
+
+  const shoppingListItem = { name: 'Lasagne Sheets', id: '190', list: shoppingList };
+  performItemsUpdate([shoppingListItem]);
+
+  fireEvent.click(await findByText(/delete/i));
+
+  expect(shoppingListItemDeleterSpy.deleteItem).toBeCalledWith(shoppingListItem);
+});

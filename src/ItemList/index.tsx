@@ -1,17 +1,24 @@
 import React, {useEffect, useState} from "react";
 import ShoppingListItem from '../domain/ShoppingListItem';
 import ShoppingList from "../domain/ShoppingList";
-import { Segment } from "semantic-ui-react";
+import { Segment, Button } from "semantic-ui-react";
 
 interface ShoppingListItemFetcher {
   subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void;
+}
+
+interface ShoppingListItemDeleter {
+  deleteItem(shoppingListItem: ShoppingListItem): void;
 }
 
 export interface ItemListProps {
   shoppingList: ShoppingList;
 }
 
-function ItemListConstructor(shoppingListItemFetcher: ShoppingListItemFetcher) {
+function ItemListConstructor(
+  shoppingListItemFetcher: ShoppingListItemFetcher,
+  shoppingListItemDeleter: ShoppingListItemDeleter
+  ) {
   return function ItemList({ shoppingList } : ItemListProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [fetchErrored, setFetchError] = useState(false);
@@ -37,8 +44,11 @@ function ItemListConstructor(shoppingListItemFetcher: ShoppingListItemFetcher) {
     return (
       <Segment.Group>
         { shoppingListItems.map(shoppingListItem =>
-          <Segment key={shoppingListItem.name}>
+          <Segment key={shoppingListItem.name} clearing>
             {shoppingListItem.name}
+            <Button floated={"right"} size="mini" onClick={() => shoppingListItemDeleter.deleteItem(shoppingListItem)}>
+              Delete
+            </Button>
           </Segment>
         ) }
       </Segment.Group>

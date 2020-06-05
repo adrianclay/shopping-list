@@ -1,5 +1,10 @@
 import React from 'react';
 import ItemListConstructor from '.';
+import { action } from '@storybook/addon-actions';
+
+const ShoppingListItemDeleterSpy = {
+  deleteItem: action('deleteItem')
+};
 
 const ItemList = ItemListConstructor({
   subscribeToItemChanges(list, onUpdate, onError) {
@@ -9,7 +14,7 @@ const ItemList = ItemListConstructor({
     ]);
     return () => {};
   }
-});
+}, ShoppingListItemDeleterSpy);
 
 export default {
   title: 'ItemList',
@@ -24,7 +29,7 @@ const ItemListWithoutItems = ItemListConstructor({
     onUpdate([]);
     return () => {};
   }
-});
+}, ShoppingListItemDeleterSpy);
 
 export const WithoutItems = () => <ItemListWithoutItems shoppingList={{ id: 'adrians-list', name: 'Bits and Bobs', owner_uid: 'adrian' }}/>
 
@@ -32,6 +37,6 @@ const ItemListLoading = ItemListConstructor({
   subscribeToItemChanges(list, onUpdate, onError) {
     return () => {};
   }
-});
+}, ShoppingListItemDeleterSpy);
 
 export const Loading = () => <ItemListLoading shoppingList={{ id: 'adrians-list', name: 'Bits and Bobs', owner_uid: 'adrian' }}/>
