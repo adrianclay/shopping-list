@@ -32,6 +32,7 @@ async function withAuth(action: FirestoreServiceAction, auth?: { uid: string }) 
 }
 
 const assertAliceCant = (action: FirestoreServiceAction) => assertFails(withAliceAuthenticated(action));
+const assertUnauthenticatedCant = (action: FirestoreServiceAction) => assertFails(withUnauthenticated(action));
 
 afterEach(async () => {
   await clearFirestoreData({ projectId });
@@ -48,16 +49,14 @@ describe('Firestore security rules', () => {
       )
     );
 
-    it('Does not create, where the user is unauthenticated', async () => {
-      await assertFails(
-        withUnauthenticated(async firestoreService => {
-          await firestoreService.addShoppingList({
-            name: 'This list should not be created',
-            owner_uid: null,
-          })
+    it('Does not create, where the user is unauthenticated', () =>
+      assertUnauthenticatedCant(firestoreService =>
+        firestoreService.addShoppingList({
+          name: 'This list should not be created',
+          owner_uid: null,
         })
-      );
-    });
+      )
+    );
 
     it('Does not read a different users lists', () =>
       assertAliceCant(async firestoreService =>
