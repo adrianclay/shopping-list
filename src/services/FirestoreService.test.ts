@@ -1,11 +1,11 @@
-import {initializeTestApp, firestore, clearFirestoreData, assertFails} from "@firebase/testing";
+import {initializeTestApp, clearFirestoreData, assertFails} from "@firebase/testing";
 import FirestoreService from './FirestoreService'
 import ShoppingList from "../domain/ShoppingList";
 import ShoppingListItem from "../domain/ShoppingListItem";
 
 const projectId = 'my-test-project';
 
-type FirestoreServiceAction = (firestoreService: FirestoreService) => Promise<void>;
+type FirestoreServiceAction = (firestoreService: FirestoreService) => Promise<unknown>;
 
 const alice = { uid: 'alice', displayName: 'Alice' };
 function withAliceAuthenticated(action: FirestoreServiceAction) {
