@@ -4,8 +4,8 @@ import ItemListConstructor from '.';
 const ItemList = ItemListConstructor({
   subscribeToItemChanges(list, onUpdate, onError) {
     onUpdate([
-      { name: 'Pickles', list },
-      { name: 'Cream soda', list }
+      { name: 'Pickles', list, id: 'pickles' },
+      { name: 'Cream soda', list, id: 'cream-soda' }
     ]);
     return () => {};
   }
