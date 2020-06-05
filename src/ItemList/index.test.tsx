@@ -39,15 +39,22 @@ const ItemList = ItemListConstructor(shoppingListItemFetcherStub, shoppingListIt
 
 const shoppingList = {
   name: 'Art supplies',
-  id: '1ARTYlist'
+  id: '1ARTYlist',
+  owner_uid: 'neil'
+};
+
+const lasagneSheetItem = {
+  name: 'Lasagne Sheets',
+  id: '190',
+  list: shoppingList
 };
 
 test('with one item', async () => {
   const { findByText } = render(<ItemList shoppingList={shoppingList} />);
 
-  performItemsUpdate([{name: 'Cheese', list: shoppingList}]);
+  performItemsUpdate([lasagneSheetItem]);
 
-  expect(await findByText('Cheese')).toBeInTheDocument();
+  expect(await findByText(/lasagne/i)).toBeInTheDocument();
 });
 
 test('displays loading message before fetch is resolved', async () => {
@@ -59,8 +66,8 @@ test('displays loading message before fetch is resolved', async () => {
 test('hides loading message after fetch is resolved', async () => {
   const { queryByText, findByText } = render(<ItemList shoppingList={shoppingList} />)
 
-  performItemsUpdate([{name: 'Cheese', list: shoppingList}])
-  await findByText(/cheese/i);
+  performItemsUpdate([lasagneSheetItem])
+  await findByText(/lasagne/i);
 
   expect(await queryByText(/loading/i)).toBeNull()
 });
@@ -78,7 +85,7 @@ test('displays latest set of items when updating twice', async () => {
   const { findByText } = render(<ItemList shoppingList={shoppingList} />)
 
   performItemsUpdate([]);
-  performItemsUpdate([{ name: 'Lasagne Sheets', list: shoppingList }])
+  performItemsUpdate([lasagneSheetItem])
 
   expect(await findByText(/lasagne sheets/i)).toBeInTheDocument();
 })
@@ -94,10 +101,9 @@ test('calls the unsubscribe method when unmounting', async () => {
 test('calls the shoppingListItemDeleter when clicking the delete button', async () => {
   const { findByText } = render(<ItemList shoppingList={shoppingList} />);
 
-  const shoppingListItem = { name: 'Lasagne Sheets', id: '190', list: shoppingList };
-  performItemsUpdate([shoppingListItem]);
+  performItemsUpdate([lasagneSheetItem]);
 
   fireEvent.click(await findByText(/delete/i));
 
-  expect(shoppingListItemDeleterSpy.deleteItem).toBeCalledWith(shoppingListItem);
+  expect(shoppingListItemDeleterSpy.deleteItem).toBeCalledWith(lasagneSheetItem);
 });
