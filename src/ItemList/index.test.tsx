@@ -49,6 +49,14 @@ const lasagneSheetItem = {
   list: shoppingList
 };
 
+test('displays "no items in list" with zero items', async () => {
+  const { findByText } = render(<ItemList shoppingList={shoppingList} />);
+
+  performItemsUpdate([]);
+
+  expect(await findByText(/no items in Art supplies./i)).toBeInTheDocument();
+});
+
 test('with one item', async () => {
   const { findByText } = render(<ItemList shoppingList={shoppingList} />);
 

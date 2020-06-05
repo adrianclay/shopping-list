@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import ShoppingListItem from '../domain/ShoppingListItem';
 import ShoppingList from "../domain/ShoppingList";
-import { Segment, Button } from "semantic-ui-react";
+import { Segment, Button, Icon, Header } from "semantic-ui-react";
 
 interface ShoppingListItemFetcher {
   subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void;
@@ -39,6 +39,15 @@ function ItemListConstructor(
 
     if (isLoading) {
       return <Segment loading>Loading</Segment>
+    }
+
+    if (shoppingListItems.length === 0) {
+      return <Segment placeholder>
+        <Header icon>
+          <Icon name="shopping basket" />
+          No items in {shoppingList.name}.
+        </Header>
+      </Segment>;
     }
 
     return (
