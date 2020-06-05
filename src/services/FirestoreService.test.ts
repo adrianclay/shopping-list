@@ -72,9 +72,11 @@ describe('Firestore security rules', () => {
 
   describe('shopping-list/{shoppingList}/items', () => {
     let jeffsShoppingList: ShoppingList;
+    let jeffsShoppingItem: ShoppingListItem;
     beforeEach(async () => {
       await withJeffAuthenticated(async firestoreService => {
         jeffsShoppingList = await firestoreService.addShoppingList({ name: 'List of Jeff', owner_uid: jeff.uid });
+        jeffsShoppingItem = await firestoreService.addShoppingListItem({ name: 'Crab stick', list: jeffsShoppingList });
       });
     });
 
@@ -122,6 +124,14 @@ describe('Firestore security rules', () => {
             name: 'Devils apple',
             list: nonExistentList,
           })
+        )
+      );
+    });
+
+    it('Does not allow deleting items for a different users list', async () => {
+      await assertFails(
+        withAliceAuthenticated(async firestoreService =>
+          firestoreService.deleteItem(jeffsShoppingItem)
         )
       );
     });
