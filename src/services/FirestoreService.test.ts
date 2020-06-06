@@ -204,7 +204,7 @@ describe('Creating a Shopping list item', () => {
       new Promise((resolve, reject) => {
         const unsubscribe = firestoreService.subscribeToItemChanges(shoppingList, items => {
           unsubscribe();
-          expect(items).toEqual([createdItem]);
+          expect(items).toEqual([expect.objectContaining(createdItem)]);
           resolve();
         }, reject);
     }));
@@ -226,4 +226,33 @@ describe('Creating a Shopping list item', () => {
       });
     });
   });
+});
+
+describe('Creating 10 shopping list items', () => {
+  const orderedListNames = new Array(10).fill(0).map((_, index) => `Item ${index}`);
+
+  let list: ShoppingList;
+
+  beforeEach(() => withAliceAuthenticated(async firestoreService => {
+    list = await firestoreService.addShoppingList({
+      name: 'Multi-item list',
+      owner_uid: alice.uid
+    });
+
+    for(const name of orderedListNames) {
+      await firestoreService.addShoppingListItem({ name, list });
+    }
+  }));
+
+  it('retrieves them back in the same order', () =>
+    withAliceAuthenticated(firestoreService =>
+      new Promise((resolve, reject) => {
+        const unsubscribe = firestoreService.subscribeToItemChanges(list, items => {
+          unsubscribe();
+          expect(items.map(i => i.name)).toEqual(orderedListNames);
+          resolve();
+        }, reject);
+      })
+    )
+  );
 });

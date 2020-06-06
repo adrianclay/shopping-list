@@ -15,7 +15,8 @@ export default class FirestoreService {
   }
 
   subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: (error: Error) => void): () => void {
-    return this.shoppingListItemCollection(shoppingList).onSnapshot(collection => {
+    const itemCollection = this.shoppingListItemCollection(shoppingList);
+    return itemCollection.orderBy('created_on').onSnapshot(collection => {
       const items = collection.docs.map(item => {
         return {
           ...item.data() as { name: string },
@@ -43,7 +44,8 @@ export default class FirestoreService {
 
   async addShoppingListItem({ name, list }: { name: string, list: ShoppingList }): Promise<ShoppingListItem> {
     const { id } = await this.shoppingListItemCollection(list).add({
-      name
+      name,
+      created_on: firebase.firestore.FieldValue.serverTimestamp()
     });
 
     return {
