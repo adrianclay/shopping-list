@@ -1,6 +1,7 @@
 import React from 'react';
 import ItemListConstructor from '.';
 import { action } from '@storybook/addon-actions';
+import { Segment } from 'semantic-ui-react';
 
 const ShoppingListItemDeleterSpy = {
   deleteItem: action('deleteItem')
@@ -21,7 +22,9 @@ export default {
   component: ItemList,
 };
 
-export const WithItems = () => <ItemList shoppingList={{ id: 'adrians-list', name: 'Bits and Bobs', owner_uid: 'adrian' }}/>
+export const WithItems = () => <Segment.Group>
+  <ItemList shoppingList={{ id: 'adrians-list', name: 'Bits and Bobs', owner_uid: 'adrian' }}/>
+</Segment.Group>
 
 
 const ItemListWithoutItems = ItemListConstructor({
