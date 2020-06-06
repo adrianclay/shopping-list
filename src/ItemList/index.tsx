@@ -51,7 +51,7 @@ function ItemListConstructor(
     }
 
     return (
-      <Segment.Group>
+      <>
         { shoppingListItems.map(shoppingListItem =>
           <Segment key={shoppingListItem.name} clearing>
             {shoppingListItem.name}
@@ -60,7 +60,7 @@ function ItemListConstructor(
             </Button>
           </Segment>
         ) }
-      </Segment.Group>
+      </>
     )
   }
 };

@@ -4,6 +4,7 @@ import { AddItemFormProps } from "../AddItemForm";
 import { ItemListProps } from "../ItemList";
 import { ListSelectorProps } from "../ListSelector";
 import Login from "../Login";
+import { Segment } from "semantic-ui-react";
 
 function ShoppingListViewerConstructor(ListSelector: React.FunctionComponent<ListSelectorProps>, AddItemForm: React.FunctionComponent<AddItemFormProps>, ItemList: React.FunctionComponent<ItemListProps>) {
   return function ShoppingListViewer() {
@@ -11,10 +12,10 @@ function ShoppingListViewerConstructor(ListSelector: React.FunctionComponent<Lis
 
     const itemList = () => {
       if(shoppingList) {
-        return (<div>
+        return (<Segment.Group>
           <AddItemForm shoppingList={shoppingList} />
           <ItemList shoppingList={shoppingList} />
-        </div>);
+        </Segment.Group>);
       }
     }
 
