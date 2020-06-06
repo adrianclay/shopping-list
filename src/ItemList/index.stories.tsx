@@ -17,13 +17,19 @@ const ItemList = ItemListConstructor({
   }
 }, ShoppingListItemDeleterSpy);
 
+const shoppingList= {
+  id: 'adrians-list',
+  name: 'Bits and Bobs',
+  owner_uid: 'adrian'
+};
+
 export default {
   title: 'ItemList',
   component: ItemList,
 };
 
 export const WithItems = () => <Segment.Group>
-  <ItemList shoppingList={{ id: 'adrians-list', name: 'Bits and Bobs', owner_uid: 'adrian' }}/>
+  <ItemList shoppingList={shoppingList}/>
 </Segment.Group>
 
 
@@ -34,7 +40,7 @@ const ItemListWithoutItems = ItemListConstructor({
   }
 }, ShoppingListItemDeleterSpy);
 
-export const WithoutItems = () => <ItemListWithoutItems shoppingList={{ id: 'adrians-list', name: 'Bits and Bobs', owner_uid: 'adrian' }}/>
+export const WithoutItems = () => <ItemListWithoutItems shoppingList={shoppingList}/>
 
 const ItemListLoading = ItemListConstructor({
   subscribeToItemChanges(list, onUpdate, onError) {
@@ -42,4 +48,4 @@ const ItemListLoading = ItemListConstructor({
   }
 }, ShoppingListItemDeleterSpy);
 
-export const Loading = () => <ItemListLoading shoppingList={{ id: 'adrians-list', name: 'Bits and Bobs', owner_uid: 'adrian' }}/>
+export const Loading = () => <ItemListLoading shoppingList={shoppingList}/>
