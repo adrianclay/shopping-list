@@ -44,7 +44,7 @@ describe('Firestore security rules', () => {
       assertAliceCant(firestoreService =>
         firestoreService.addShoppingList({
           name: "This list should not be created",
-          owner_uid: 'not_alice',
+          owner_uids: ['not_alice'],
         })
       )
     );
@@ -53,7 +53,7 @@ describe('Firestore security rules', () => {
       assertUnauthenticatedCant(firestoreService =>
         firestoreService.addShoppingList({
           name: 'This list should not be created',
-          owner_uid: null,
+          owner_uids: null,
         })
       )
     );
@@ -72,7 +72,7 @@ describe('Firestore security rules', () => {
     let jeffsShoppingItem: ShoppingListItem;
     beforeEach(async () => {
       await withJeffAuthenticated(async firestoreService => {
-        jeffsShoppingList = await firestoreService.addShoppingList({ name: 'List of Jeff', owner_uid: jeff.uid });
+        jeffsShoppingList = await firestoreService.addShoppingList({ name: 'List of Jeff', owner_uids: [jeff.uid] });
         jeffsShoppingItem = await firestoreService.addShoppingListItem({ name: 'Crab stick', list: jeffsShoppingList });
       });
     });
@@ -129,7 +129,7 @@ describe('When Alice creates a shopping list', () => {
     await withAliceAuthenticated(async firestoreService => {
       addedShoppingList = await firestoreService.addShoppingList({
         name: 'Adrians fantastic shopping list',
-        owner_uid: alice.uid
+        owner_uids: [alice.uid]
       });
     });
   });
@@ -166,7 +166,7 @@ describe('Creating a Shopping list item', () => {
 
   beforeEach(async () => {
     await withAliceAuthenticated(async (firestoreService) => {
-      shoppingList = await firestoreService.addShoppingList({ name: 'Party shopping list', owner_uid: alice.uid });
+      shoppingList = await firestoreService.addShoppingList({ name: 'Party shopping list', owner_uids: [alice.uid] });
       createdItem = await firestoreService.addShoppingListItem({
         name: 'Crisps',
         list: shoppingList
@@ -214,7 +214,7 @@ describe('Creating a Shopping list item', () => {
     await withAliceAuthenticated(async firestoreService => {
       const notMatchingShoppingList = await firestoreService.addShoppingList({
         name: 'Not the party list',
-        owner_uid: alice.uid
+        owner_uids: [alice.uid]
       });
 
       return new Promise((resolve, reject) => {
@@ -236,7 +236,7 @@ describe('Creating 10 shopping list items', () => {
   beforeEach(() => withAliceAuthenticated(async firestoreService => {
     list = await firestoreService.addShoppingList({
       name: 'Multi-item list',
-      owner_uid: alice.uid
+      owner_uids: [alice.uid]
     });
 
     for(const name of orderedListNames) {

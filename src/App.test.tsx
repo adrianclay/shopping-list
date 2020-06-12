@@ -36,7 +36,7 @@ async function createShoppingList(shoppingListName: string, loggedInUserId: stri
   // TODO: Swap out with UI interaction when it exists.
   const service = new FirestoreService(firebase);
   await act(async () => {
-    const shoppingList = await service.addShoppingList({ name: shoppingListName, owner_uid: loggedInUserId });
+    const shoppingList = await service.addShoppingList({ name: shoppingListName, owner_uids: [loggedInUserId] });
     shoppingListId = shoppingList.id;
   });
 }

@@ -5,7 +5,7 @@ import User from "../domain/User";
 
 interface ShoppingListRecord {
   name: string;
-  owner_uid: string;
+  owner_uids: string[];
 }
 export default class FirestoreService {
   private firebase: firebase.app.App;
@@ -30,13 +30,15 @@ export default class FirestoreService {
 
   subscribeToListChanges(loggedInUser: User, onUpdate: (items: ShoppingList[]) => void, onError: (error: Error) => void): () => void {
     const shoppingListCollection = this.firebase.firestore().collection('shopping-list');
-    const shoppingListsFilteredByLoggedInUser = shoppingListCollection.where('owner_uid', '==', loggedInUser.uid);
+    const shoppingListsFilteredByLoggedInUser = shoppingListCollection.where('owner_uids', 'array-contains', loggedInUser.uid);
     return shoppingListsFilteredByLoggedInUser.onSnapshot(collection => {
       const items = collection.docs.map(item => {
+        const document = item.data() as ShoppingListRecord;
         return {
           id: item.id,
-          ...item.data() as ShoppingListRecord
-        }
+          name: document.name,
+          owner_uid: document.owner_uids[0]
+        };
       });
       onUpdate(items);
     }, onError);
@@ -54,10 +56,12 @@ export default class FirestoreService {
   }
 
   async addShoppingList(list: ShoppingListRecord): Promise<ShoppingList> {
-    const thing = await this.firebase.firestore().collection('shopping-list').add(list);
+    const docReference = await this.firebase.firestore().collection('shopping-list').add(list);
+    const {name, owner_uids} = list;
     return {
-      id: thing.id,
-      ...list,
+      id: docReference.id,
+      name,
+      owner_uid: owner_uids[0],
     }
   }
 
