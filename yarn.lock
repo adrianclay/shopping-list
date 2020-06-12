@@ -2193,9 +2193,9 @@
     "@testing-library/dom" "^6.15.0"
     "@types/testing-library__react" "^9.1.2"
 
-"@testing-library/user-event@^11.2.1":
-  version "11.2.1"
-  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-11.2.1.tgz#2de8327e4cf89c145bcf9a0f17773a632bc58b26"
+"@testing-library/user-event@^11.4.2":
+  version "11.4.2"
+  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-11.4.2.tgz#90d98fd18455ae81d008e9b26e94d25e8d5bf846"
   dependencies:
     "@babel/runtime" "^7.10.2"
 
