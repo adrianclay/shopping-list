@@ -22,12 +22,16 @@ afterAll(async () => {
 });
 
 async function addShoppingListItem(itemName: string) {
-  fireEvent.change(
-    screen.getByLabelText(/item/i),
-    { target: { value: itemName } }
-  )
+  act(() => {
+    fireEvent.change(
+      screen.getByLabelText(/item/i),
+      { target: { value: itemName } }
+    );
+  });
 
-  fireEvent.click(screen.getByText(/add/i))
+  act(() => {
+    fireEvent.click(screen.getByText(/add/i));
+  });
 }
 
 let shoppingListId: string
