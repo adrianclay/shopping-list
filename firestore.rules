@@ -1,11 +1,15 @@
 service cloud.firestore {
   match /databases/{database}/documents {
     match /shopping-list/{shoppingListId} {
-      allow create: if request.auth.uid != null && request.auth.uid in request.resource.data.owner_uids;
-      allow read: if request.auth.uid in resource.data.owner_uids;
+      function is_owner(resource) {
+        return request.auth.uid in resource.data.owner_uids;
+      }
+
+      allow create: if request.auth.uid != null && is_owner(request.resource);
+      allow read: if is_owner(resource);
 
       match /items/{itemId} {
-        allow read, create, delete: if request.auth.uid in get(/databases/$(database)/documents/shopping-list/$(shoppingListId)).data.owner_uids;
+        allow read, create, delete: if is_owner(get(/databases/$(database)/documents/shopping-list/$(shoppingListId)));
       }
     }
   }
