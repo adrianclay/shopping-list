@@ -21,7 +21,13 @@ const shoppingListFetcherStub = {
 const loggedInUser = {
   uid: 'rihanna',
   displayName: 'Rihanna'
-}
+};
+
+const shoppingList: ShoppingList = {
+  id: 'xmas',
+  name: 'Adrians Christmas List',
+  owner_uids: []
+};
 
 let onSelectSpy: jest.Mock
 function renderListSelection() {
@@ -68,10 +74,7 @@ test('displays latest set of lists when updating twice', async () => {
 
   act(() => {
     makeUpdate([]);
-    makeUpdate([{
-      id: 'xmas',
-      name: 'Adrians Christmas List'
-    }]);
+    makeUpdate([shoppingList]);
   });
 
   expect(await findByText(/Adrians Christmas List/i)).toBeInTheDocument();
@@ -88,16 +91,11 @@ test('calls the unsubscribe method when unmounting', async () => {
 test('raises onSelect event when interacting with dropdown', async () => {
   const { findByText } = renderListSelection();
 
-  const list = {
-    id: 'xmas',
-    name: 'Adrians Christmas List'
-  };
-
   act(() => {
-    makeUpdate([list]);
+    makeUpdate([shoppingList]);
   });
 
-  (await findByText(list.name)).click();
+  (await findByText(shoppingList.name)).click();
 
-  expect(onSelectSpy).toHaveBeenCalledWith(list);
+  expect(onSelectSpy).toHaveBeenCalledWith(shoppingList);
 });

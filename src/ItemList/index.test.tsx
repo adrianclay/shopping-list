@@ -40,7 +40,7 @@ const ItemList = ItemListConstructor(shoppingListItemFetcherStub, shoppingListIt
 const shoppingList = {
   name: 'Art supplies',
   id: '1ARTYlist',
-  owner_uid: 'neil'
+  owner_uids: ['neil']
 };
 
 const lasagneSheetItem = {

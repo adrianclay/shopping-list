@@ -20,7 +20,7 @@ const ItemList = ItemListConstructor({
 const shoppingList= {
   id: 'adrians-list',
   name: 'Bits and Bobs',
-  owner_uid: 'adrian'
+  owner_uids: ['adrian']
 };
 
 export default {

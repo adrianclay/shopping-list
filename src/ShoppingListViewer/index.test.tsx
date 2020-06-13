@@ -54,6 +54,7 @@ describe('selecting a shopping list', () => {
   const stubShoppingList: ShoppingList = {
     name: 'Adrians fantastic list',
     id: '200',
+    owner_uids: []
   };
 
   beforeEach(() => {

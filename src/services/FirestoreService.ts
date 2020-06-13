@@ -36,8 +36,7 @@ export default class FirestoreService {
         const document = item.data() as ShoppingListRecord;
         return {
           id: item.id,
-          name: document.name,
-          owner_uid: document.owner_uids[0]
+          ...document
         };
       });
       onUpdate(items);
@@ -57,12 +56,10 @@ export default class FirestoreService {
 
   async addShoppingList(list: ShoppingListRecord): Promise<ShoppingList> {
     const docReference = await this.firebase.firestore().collection('shopping-list').add(list);
-    const {name, owner_uids} = list;
     return {
       id: docReference.id,
-      name,
-      owner_uid: owner_uids[0],
-    }
+      ...list
+    };
   }
 
   async deleteItem(shoppingListItem: ShoppingListItem) {

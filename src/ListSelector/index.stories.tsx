@@ -11,11 +11,11 @@ const ListSelectorWithItems = ListSelectorConstructor({ subscribeToListChanges: 
   onUpdate([{
     id: '101',
     name: 'Christmas wish list',
-    owner_uid: 'you',
+    owner_uids: ['you'],
   },{
     id: '102',
     name: 'Weekly shop',
-    owner_uid: 'you',
+    owner_uids: ['you'],
   }]);
   return () => {};
 } });
