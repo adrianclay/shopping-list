@@ -6,10 +6,15 @@ let addShoppingListSpy: jest.Mock;
 let nameTextBox: HTMLElement;
 let createButton: HTMLElement;
 
+const loggedInUser = {
+  displayName: 'Mickey',
+  uid: '777'
+};
+
 beforeEach(() => {
   addShoppingListSpy = jest.fn();
   const CreateShoppingListForm = CreateShoppingListFormConstructor({ addShoppingList: addShoppingListSpy });
-  const { getByLabelText, getByText } = render(<CreateShoppingListForm />);
+  const { getByLabelText, getByText } = render(<CreateShoppingListForm loggedInUser={loggedInUser} />);
 
   nameTextBox = getByLabelText(/name/i);
   createButton = getByText(/create/i);
@@ -19,11 +24,11 @@ test('displays item text in text box', () => {
   fireEvent.change(nameTextBox, {target: {value: 'Underwear list'}});
 
   expect(nameTextBox).toHaveValue('Underwear list');
-})
+});
 
 test('adds shopping list', () => {
   fireEvent.change(nameTextBox, {target: {value: 'Party bag items'}});
   fireEvent.click(createButton);
 
-  expect(addShoppingListSpy).toBeCalledWith({name: 'Party bag items'});
-})
+  expect(addShoppingListSpy).toBeCalledWith({name: 'Party bag items', owner_uids: [loggedInUser.uid]});
+});

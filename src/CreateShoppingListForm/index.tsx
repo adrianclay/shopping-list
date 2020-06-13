@@ -1,21 +1,22 @@
 import React, { useState } from "react";
 import { Form, Button } from "semantic-ui-react";
+import User from "../domain/User";
 
 interface ShoppingListAdder {
-  addShoppingList: (shoppingList: { name: string }) => void
+  addShoppingList: (shoppingList: { name: string, owner_uids: string[] }) => void
 }
 
 interface CreateShoppingListFormProps {
-
+  loggedInUser: User;
 }
 
 function CreateShoppingListFormConstructor(shoppingListAdder: ShoppingListAdder) {
-  return function CreateShoppingListForm({}: CreateShoppingListFormProps) {
+  return function CreateShoppingListForm({ loggedInUser }: CreateShoppingListFormProps) {
     const [name, setName] = useState('');
 
     const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      shoppingListAdder.addShoppingList({ name });
+      shoppingListAdder.addShoppingList({ name, owner_uids: [loggedInUser.uid] });
     };
 
     const nameChangeHandler = ({ target }: React.ChangeEvent<HTMLInputElement>) => {

@@ -9,4 +9,7 @@ export default {
   component: CreateShoppingListForm,
 };
 
-export const Example = () => <CreateShoppingListForm />
+export const Example = () => <CreateShoppingListForm loggedInUser={{
+  displayName: 'Dmitri',
+  uid: 'dmitri',
+}} />
