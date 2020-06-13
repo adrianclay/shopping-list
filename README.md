@@ -37,13 +37,24 @@ You will also see any lint errors in the console.
 
 Launches the test runner in the interactive watch mode.
 
+## Component designs ![storybook](https://github.com/adrianclay/shopping-list/workflows/storybook/badge.svg)
+
+This proect uses [Storybook][storybook] to create fast design feedback.
+
+Use `yarn storybook` to run Storybook locally at [http://localhost:9009](http://localhost:9009)
+or visit
+[https://adrianclay.github.io/shopping-list](https://adrianclay.github.io/shopping-list)
+to view the compiled version for master.
+
+[storybook]: https://storybook.js.org/
+
 ## Deployment
 
 GitHub Actions has jobs which test, build and deploy the application.
 
 ### GitHub secrets
 
-To Deploy to [Firebase Hosting][firebase_hosting] the deploy job needs the following [GitHub secrets][github_secrets_docs]. 
+To Deploy to [Firebase Hosting][firebase_hosting] the deploy job needs the following [GitHub secrets][github_secrets_docs].
 
 * FIREBASE_PROJECT_ID - see [Setting up a Firebase Project][firebase_project_id]
 * FIREBASE_TOKEN - generated via `firebase login:ci`
