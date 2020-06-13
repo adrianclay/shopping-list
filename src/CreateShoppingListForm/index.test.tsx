@@ -1,6 +1,6 @@
 import { render, fireEvent } from "@testing-library/react";
 import React from "react";
-import CreateShoppingListForm from ".";
+import CreateShoppingListFormConstructor from ".";
 
 let addShoppingListSpy: jest.Mock;
 let nameTextBox: HTMLElement;
@@ -8,9 +8,8 @@ let createButton: HTMLElement;
 
 beforeEach(() => {
   addShoppingListSpy = jest.fn();
-  const { getByLabelText, getByText } = render(<CreateShoppingListForm shoppingListAdder={{
-    addShoppingList: addShoppingListSpy
-  }} />);
+  const CreateShoppingListForm = CreateShoppingListFormConstructor({ addShoppingList: addShoppingListSpy });
+  const { getByLabelText, getByText } = render(<CreateShoppingListForm />);
 
   nameTextBox = getByLabelText(/name/i);
   createButton = getByText(/create/i);

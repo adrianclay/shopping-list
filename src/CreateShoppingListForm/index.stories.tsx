@@ -1,10 +1,12 @@
 import React from 'react';
-import CreateShoppingListForm from "./";
+import CreateShoppingListFormConstructor from "./";
 import {action} from '@storybook/addon-actions';
+
+const CreateShoppingListForm = CreateShoppingListFormConstructor({ addShoppingList: action('addShoppingList') })
 
 export default {
   title: 'CreateShoppingListForm',
   component: CreateShoppingListForm,
 };
 
-export const Example = () => <CreateShoppingListForm shoppingListAdder={{addShoppingList: action('addShoppingList')}}/>
+export const Example = () => <CreateShoppingListForm />
