@@ -125,13 +125,23 @@ describe('Firestore security rules', () => {
 
 describe('When Alice creates a shopping list', () => {
   let addedShoppingList: ShoppingList;
+  const shoppingListRecord = {
+    name: 'Adrians fantastic shopping list',
+    owner_uids: [alice.uid]
+  };
+
   beforeEach(async () => {
     await withAliceAuthenticated(async firestoreService => {
-      addedShoppingList = await firestoreService.addShoppingList({
-        name: 'Adrians fantastic shopping list',
-        owner_uids: [alice.uid]
-      });
+      addedShoppingList = await firestoreService.addShoppingList(shoppingListRecord);
     });
+  });
+
+  it('created record contains same data passed in', () => {
+    expect(addedShoppingList).toEqual(expect.objectContaining(shoppingListRecord));
+  });
+
+  it('created recor contains an id field', () => {
+    expect(addedShoppingList.id).toBeTruthy();
   });
 
   it('can retrieve it back, when querying alices lists', async () => {
