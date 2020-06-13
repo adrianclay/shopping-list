@@ -6,7 +6,7 @@ interface ShoppingListAdder {
   addShoppingList: (shoppingList: { name: string, owner_uids: string[] }) => void
 }
 
-interface CreateShoppingListFormProps {
+export interface CreateShoppingListFormProps {
   loggedInUser: User;
 }
 

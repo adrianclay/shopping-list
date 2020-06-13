@@ -6,6 +6,7 @@ import ShoppingListViewerConstructor from ".";
 import { ItemListProps } from "../ItemList";
 import { ListSelectorProps } from "../ListSelector";
 import { AddItemFormProps } from "../AddItemForm";
+import { CreateShoppingListFormProps } from "../CreateShoppingListForm";
 import Login from "../Login";
 
 const loggedInUser = {
@@ -16,13 +17,15 @@ const loggedInUser = {
 let addItemFormSpy: jest.Mock<JSX.Element, [AddItemFormProps]>;
 let itemListSpy: jest.Mock<JSX.Element, [ItemListProps]>;
 let listSelectorSpy: jest.Mock<JSX.Element, [ListSelectorProps]>;
+let createShoppingListFormSpy: jest.Mock<JSX.Element, [CreateShoppingListFormProps]>;
 
 beforeEach(() => {
   addItemFormSpy = jest.fn<JSX.Element, [AddItemFormProps]>(() => <p>AddItemForm</p>);
   itemListSpy = jest.fn<JSX.Element, [ItemListProps]>(() => <p>ItemList</p>);
   listSelectorSpy = jest.fn<JSX.Element, [ListSelectorProps]>(() => <p>ListSelector</p>);
+  createShoppingListFormSpy = jest.fn<JSX.Element, [CreateShoppingListFormProps]>(() => <p>CreateShoppingListForm</p>)
 
-  const ShoppingListViewer = ShoppingListViewerConstructor(listSelectorSpy, addItemFormSpy, itemListSpy);
+  const ShoppingListViewer = ShoppingListViewerConstructor(listSelectorSpy, addItemFormSpy, itemListSpy, createShoppingListFormSpy);
 
   render(<Login.LoggedInUserContext.Provider value={loggedInUser}>
     <ShoppingListViewer />
@@ -47,6 +50,22 @@ describe('without selecting a shopping list', () => {
 
   test('AddItemForm is not displayed', () => {
     expect(addItemFormSpy).not.toBeCalled();
+  });
+});
+
+describe('creating a shopping list', () => {
+  beforeEach(async () => {
+    await act(async () => {
+      (await screen.findByText(/create/i)).click();
+    });
+  });
+
+  test('renders the CreateShoppingListForm', async () => {
+    expect(await screen.findByText('CreateShoppingListForm')).toBeInTheDocument();
+  });
+
+  test('passes the loggedInUser to the CreateShoppingListForm', () => {
+    expect(createShoppingListFormSpy).toBeCalledWith({ loggedInUser }, {});
   });
 });
 
