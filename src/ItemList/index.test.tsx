@@ -68,7 +68,7 @@ test('with one item', async () => {
 test('displays loading message before fetch is resolved', async () => {
   const { findByText } = render(<ItemList shoppingList={shoppingList} />)
 
-  expect(await findByText(/loading/i)).toBeInTheDocument()
+  expect(await findByText(/loading art supplies items/i)).toBeInTheDocument()
 });
 
 test('hides loading message after fetch is resolved', async () => {
