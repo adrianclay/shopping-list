@@ -1,8 +1,7 @@
 import React from 'react';
-import {render, screen, fireEvent, waitForElementToBeRemoved} from '@testing-library/react';
+import {render, fireEvent, waitForElementToBeRemoved, RenderResult} from '@testing-library/react';
 import {AuthenticatedApp} from './App';
 import {initializeTestApp, clearFirestoreData} from "@firebase/testing";
-import FirestoreService from './services/FirestoreService';
 import { act } from 'react-dom/test-utils';
 import Login from './Login';
 
@@ -12,6 +11,8 @@ const firebase = initializeTestApp({
   projectId,
   auth: { uid: 'alice', email: 'alice@example.com' }
 });
+
+let screen: RenderResult;
 
 afterAll(async () => {
   try {
@@ -34,14 +35,16 @@ async function addShoppingListItem(itemName: string) {
   });
 }
 
-let shoppingListId: string
-
-async function createShoppingList(shoppingListName: string, loggedInUserId: string) {
-  // TODO: Swap out with UI interaction when it exists.
-  const service = new FirestoreService(firebase);
+async function createShoppingList(shoppingListName: string) {
   await act(async () => {
-    const shoppingList = await service.addShoppingList({ name: shoppingListName, owner_uids: [loggedInUserId] });
-    shoppingListId = shoppingList.id;
+    (await screen.findByText(/create list/i)).click();
+
+    fireEvent.change(
+      screen.getByLabelText(/name/i),
+      { target: { value: shoppingListName } }
+    );
+
+    (await screen.findByText('Create')).click();
   });
 }
 
@@ -51,14 +54,17 @@ async function selectShoppingList(listName: string) {
 
 test('As a user I can add items to the shopping list', async () => {
   const loggedInUser = { uid: 'alice', displayName: 'bobby' };
-  render(<Login.LoggedInUserContext.Provider value={loggedInUser}>
+  screen = render(<Login.LoggedInUserContext.Provider value={loggedInUser}>
     <AuthenticatedApp firebase={firebase}/>
   </Login.LoggedInUserContext.Provider>);
 
   await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
 
-  await createShoppingList('Supermarket list', loggedInUser.uid)
+  await createShoppingList('Supermarket list');
+  await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
+
   await selectShoppingList('Supermarket list');
+  await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
 
   await addShoppingListItem('Ketchup');
   await addShoppingListItem('Cake');

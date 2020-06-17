@@ -37,7 +37,7 @@ function ShoppingListViewerConstructor(
     return <Login.LoggedInUserContext.Consumer>
       { loggedInUser => <>
           <ListSelector onSelect={onListSelect} loggedInUser={loggedInUser!} />
-          <Button icon='add' content='Create' onClick={() => { setShoppingList(null) }} />
+          <Button icon='add' content='Create list' onClick={() => { setShoppingList(null) }} />
           {itemList(loggedInUser!)}
         </>
       }

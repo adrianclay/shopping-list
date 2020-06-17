@@ -56,7 +56,7 @@ describe('without selecting a shopping list', () => {
 describe('creating a shopping list', () => {
   beforeEach(async () => {
     await act(async () => {
-      (await screen.findByText(/create/i)).click();
+      (await screen.findByText(/create list/i)).click();
     });
   });
 
