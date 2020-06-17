@@ -1,10 +1,11 @@
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, screen, waitForElementToBeRemoved, act } from "@testing-library/react";
 import React from "react";
 import CreateShoppingListFormConstructor from ".";
 
 let addShoppingListSpy: jest.Mock;
 let nameTextBox: HTMLElement;
 let createButton: HTMLElement;
+let finishAddingShoppingList: () => void;
 
 const loggedInUser = {
   displayName: 'Mickey',
@@ -12,7 +13,9 @@ const loggedInUser = {
 };
 
 beforeEach(() => {
-  addShoppingListSpy = jest.fn();
+  addShoppingListSpy = jest.fn(() => new Promise(resolve => {
+    finishAddingShoppingList = resolve;
+  }));
   const CreateShoppingListForm = CreateShoppingListFormConstructor({ addShoppingList: addShoppingListSpy });
   const { getByLabelText, getByText } = render(<CreateShoppingListForm loggedInUser={loggedInUser} />);
 
@@ -20,15 +23,35 @@ beforeEach(() => {
   createButton = getByText(/create/i);
 });
 
-test('displays item text in text box', () => {
-  fireEvent.change(nameTextBox, {target: {value: 'Underwear list'}});
+describe('populating the name', () => {
 
-  expect(nameTextBox).toHaveValue('Underwear list');
-});
+  beforeEach(() => {
+    fireEvent.change(nameTextBox, {target: {value: 'Underwear list'}});
+  })
 
-test('adds shopping list', () => {
-  fireEvent.change(nameTextBox, {target: {value: 'Party bag items'}});
-  fireEvent.click(createButton);
+  test('displays item text in text box', () => {
+    expect(nameTextBox).toHaveValue('Underwear list');
+  });
 
-  expect(addShoppingListSpy).toBeCalledWith({name: 'Party bag items', owner_uids: [loggedInUser.uid]});
+  describe('submitting the form', () => {
+    beforeEach(() => {
+      fireEvent.click(createButton);
+    });
+
+    test('adds shopping list', () => {
+      expect(addShoppingListSpy).toBeCalledWith({name: 'Underwear list', owner_uids: [loggedInUser.uid]});
+    });
+
+    test('displays loading message', () => {
+      expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    });
+
+    test('finish loading, hides the loading message', () =>
+      act(async () => {
+        finishAddingShoppingList();
+        await waitForElementToBeRemoved(() => screen.queryByText(/loading/i))
+      })
+    );
+  });
+
 });

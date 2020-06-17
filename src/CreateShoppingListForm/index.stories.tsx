@@ -2,7 +2,13 @@ import React from 'react';
 import CreateShoppingListFormConstructor from "./";
 import {action} from '@storybook/addon-actions';
 
-const CreateShoppingListForm = CreateShoppingListFormConstructor({ addShoppingList: action('addShoppingList') })
+const simulatedSaveDelayInMs = 500;
+const addShoppingList = (...args: any[]) => {
+  action('addShoppingList')(args);
+  return new Promise((resolve) => setTimeout(resolve, simulatedSaveDelayInMs));
+};
+
+const CreateShoppingListForm = CreateShoppingListFormConstructor({ addShoppingList })
 
 export default {
   title: 'CreateShoppingListForm',

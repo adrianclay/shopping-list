@@ -3,7 +3,7 @@ import { Form, Button } from "semantic-ui-react";
 import User from "../domain/User";
 
 interface ShoppingListAdder {
-  addShoppingList: (shoppingList: { name: string, owner_uids: string[] }) => void
+  addShoppingList: (shoppingList: { name: string, owner_uids: string[] }) => Promise<unknown>
 }
 
 export interface CreateShoppingListFormProps {
@@ -13,10 +13,13 @@ export interface CreateShoppingListFormProps {
 function CreateShoppingListFormConstructor(shoppingListAdder: ShoppingListAdder) {
   return function CreateShoppingListForm({ loggedInUser }: CreateShoppingListFormProps) {
     const [name, setName] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+    const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      shoppingListAdder.addShoppingList({ name, owner_uids: [loggedInUser.uid] });
+      setIsLoading(true);
+      await shoppingListAdder.addShoppingList({ name, owner_uids: [loggedInUser.uid] });
+      setIsLoading(false);
     };
 
     const nameChangeHandler = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,7 +33,7 @@ function CreateShoppingListFormConstructor(shoppingListAdder: ShoppingListAdder)
           <input onChange={nameChangeHandler} value={name} />
         </label>
       </Form.Field>
-      <Button>Create</Button>
+      <Button loading={isLoading}>{isLoading ? 'Loading' : 'Create'}</Button>
     </Form>);
   }
 }
