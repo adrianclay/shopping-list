@@ -1,14 +1,19 @@
 import React from 'react';
 import CreateShoppingListFormConstructor from "./";
 import {action} from '@storybook/addon-actions';
+import ShoppingList from '../domain/ShoppingList';
 
 const simulatedSaveDelayInMs = 500;
-const addShoppingList = (...args: any[]) => {
-  action('addShoppingList')(args);
-  return new Promise((resolve) => setTimeout(resolve, simulatedSaveDelayInMs));
-};
 
-const CreateShoppingListForm = CreateShoppingListFormConstructor({ addShoppingList })
+const CreateShoppingListForm = CreateShoppingListFormConstructor({
+  addShoppingList: (list) => {
+    action('addShoppingList')(list);
+
+    return new Promise<ShoppingList>((resolve) => setTimeout(() => resolve({
+      ...list, id: 'random-' + Math.floor(Math.random() * 900 + 100)
+    }), simulatedSaveDelayInMs));
+  }
+});
 
 export default {
   title: 'CreateShoppingListForm',
@@ -18,4 +23,4 @@ export default {
 export const Example = () => <CreateShoppingListForm loggedInUser={{
   displayName: 'Dmitri',
   uid: 'dmitri',
-}} />
+}} onCreate={action('onCreate')} />
