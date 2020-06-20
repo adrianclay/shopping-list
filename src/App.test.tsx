@@ -63,9 +63,6 @@ test('As a user I can add items to the shopping list', async () => {
   await createShoppingList('Supermarket list');
   await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
 
-  await selectShoppingList('Supermarket list');
-  await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
-
   await addShoppingListItem('Ketchup');
   await addShoppingListItem('Cake');
 

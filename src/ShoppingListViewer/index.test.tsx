@@ -37,7 +37,7 @@ test('renders the ListSelector', async () => {
 });
 
 test('passes the loggedInUser to the ListSelector', async () => {
-  expect(listSelectorSpy).toBeCalledWith(
+  expect(listSelectorSpy).toHaveBeenLastCalledWith(
     expect.objectContaining({ loggedInUser }),
     {}
   )
@@ -53,7 +53,7 @@ describe('without selecting a shopping list', () => {
   });
 });
 
-describe('creating a shopping list', () => {
+describe('clicking create list', () => {
   beforeEach(async () => {
     await act(async () => {
       (await screen.findByText(/create list/i)).click();
@@ -65,12 +65,44 @@ describe('creating a shopping list', () => {
   });
 
   test('passes the loggedInUser to the CreateShoppingListForm', () => {
-    expect(createShoppingListFormSpy).toBeCalledWith({ loggedInUser }, {});
+    expect(createShoppingListFormSpy).toHaveBeenLastCalledWith(
+      expect.objectContaining({ loggedInUser }),
+      {}
+    );
+  });
+
+  test('clears the ListSelector value', () => {
+    expect(listSelectorSpy).toHaveBeenLastCalledWith(
+      expect.objectContaining({ value: null }),
+      {}
+    );
+  });
+
+  describe('and creating a list', () => {
+    const newlyCreatedShoppingList: ShoppingList = {
+      id: 'fresh-list',
+      name: 'List of freshness',
+      owner_uids: [],
+    };
+
+    beforeEach(() => {
+      act(() => {
+        const createShoppingListFormProps = createShoppingListFormSpy.mock.calls[0][0];
+        createShoppingListFormProps.onCreate!(newlyCreatedShoppingList);
+      });
+    });
+
+    test('switches the ListSelector to the newly created list', () => {
+      expect(listSelectorSpy).toHaveBeenLastCalledWith(
+        expect.objectContaining({ value: newlyCreatedShoppingList }),
+        {}
+      );
+    });
   });
 });
 
 describe('selecting a shopping list', () => {
-  const stubShoppingList: ShoppingList = {
+  const selectedShoppingList: ShoppingList = {
     name: 'Adrians fantastic list',
     id: '200',
     owner_uids: []
@@ -79,8 +111,15 @@ describe('selecting a shopping list', () => {
   beforeEach(() => {
     act(() => {
       const listSelectorProps = listSelectorSpy.mock.calls[0][0];
-      listSelectorProps.onSelect(stubShoppingList);
+      listSelectorProps.onSelect(selectedShoppingList);
     });
+  });
+
+  test('passes the list to the ListSelector', () => {
+    expect(listSelectorSpy).toHaveBeenLastCalledWith(
+      expect.objectContaining({ value: selectedShoppingList }),
+      {}
+    );
   });
 
   test('renders the ItemList', async () => {
@@ -88,7 +127,7 @@ describe('selecting a shopping list', () => {
   });
 
   test('passes the shoppingList prop to the ItemList', () => {
-    expect(itemListSpy).toBeCalledWith({ shoppingList: stubShoppingList }, {});
+    expect(itemListSpy).toHaveBeenLastCalledWith({ shoppingList: selectedShoppingList }, {});
   })
 
   test('renders the AddItemForm', async () => {
@@ -96,6 +135,6 @@ describe('selecting a shopping list', () => {
   });
 
   test('passes the shoppingList prop to the AddItemForm', () => {
-    expect(addItemFormSpy).toBeCalledWith({ shoppingList: stubShoppingList }, {});
+    expect(addItemFormSpy).toHaveBeenLastCalledWith({ shoppingList: selectedShoppingList }, {});
   })
 });

@@ -26,7 +26,7 @@ function ShoppingListViewerConstructor(
       }
 
       if(null === shoppingList) {
-        return <CreateShoppingListForm loggedInUser={loggedInUser} />
+        return <CreateShoppingListForm loggedInUser={loggedInUser} onCreate={(list: ShoppingList) => {setShoppingList(list)}} />
       }
     }
 
@@ -36,7 +36,7 @@ function ShoppingListViewerConstructor(
 
     return <Login.LoggedInUserContext.Consumer>
       { loggedInUser => <>
-          <ListSelector onSelect={onListSelect} loggedInUser={loggedInUser!} />
+          <ListSelector onSelect={onListSelect} loggedInUser={loggedInUser!} value={shoppingList} />
           <Button icon='add' content='Create list' onClick={() => { setShoppingList(null) }} />
           {itemList(loggedInUser!)}
         </>
