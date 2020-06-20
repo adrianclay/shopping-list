@@ -17,6 +17,7 @@ const shoppingListFetcherStub = {
     return unsubscribeSpy;
   }
 };
+const ListSelector = ListSelectorConstructor(shoppingListFetcherStub);
 
 const loggedInUser = {
   uid: 'rihanna',
@@ -29,10 +30,12 @@ const shoppingList: ShoppingList = {
   owner_uids: []
 };
 
-let onSelectSpy: jest.Mock
-function renderListSelection() {
+let onSelectSpy: jest.Mock;
+beforeEach(() => {
   onSelectSpy = jest.fn();
-  const ListSelector = ListSelectorConstructor(shoppingListFetcherStub);
+});
+
+function renderListSelection() {
   return render(<ListSelector onSelect={onSelectSpy} loggedInUser={loggedInUser} />);
 }
 
@@ -88,14 +91,33 @@ test('calls the unsubscribe method when unmounting', async () => {
   expect(unsubscribeSpy).toBeCalledWith();
 })
 
-test('raises onSelect event when interacting with dropdown', async () => {
-  const { findByText } = renderListSelection();
+describe('with one shopping list', () => {
+  function withOneShoppingList() {
+    act(() => {
+      makeUpdate([shoppingList]);
+    });
+  }
 
-  act(() => {
-    makeUpdate([shoppingList]);
+  test('raises onSelect event when interacting with dropdown', async () => {
+    const { findByText } = renderListSelection();
+    withOneShoppingList();
+
+    (await findByText(shoppingList.name)).click();
+
+    expect(onSelectSpy).toHaveBeenCalledWith(shoppingList);
   });
 
-  (await findByText(shoppingList.name)).click();
+  test('with shopping list selected, displays item as selected', async () => {
+    const { findByRole } = render(<ListSelector loggedInUser={loggedInUser} onSelect={onSelectSpy} value={shoppingList} />);
+    withOneShoppingList();
 
-  expect(onSelectSpy).toHaveBeenCalledWith(shoppingList);
+    expect(await findByRole('alert')).toHaveTextContent(shoppingList.name);
+  });
+
+  test('with no shopping list selected, displays blank', async () => {
+    const { findByRole } = render(<ListSelector loggedInUser={loggedInUser} onSelect={onSelectSpy} value={null} />);
+    withOneShoppingList();
+
+    expect(await findByRole('alert')).toHaveTextContent('Switch shopping list');
+  });
 });
