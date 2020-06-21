@@ -56,18 +56,16 @@ function ItemListConstructor(
       </Segment>;
     }
 
-    return (
-      <>
-        { shoppingListItems.map(shoppingListItem =>
-          <Segment key={shoppingListItem.name} clearing>
-            {shoppingListItem.name}
-            <Button floated={"right"} size="mini" onClick={() => shoppingListItemDeleter.deleteItem(shoppingListItem)}>
-              Delete
-            </Button>
-          </Segment>
-        ) }
-      </>
-    )
+    return <> { shoppingListItems.map(item => <ListItem item={item} key={item.id} />) } </>;
+  }
+
+  function ListItem({ item } : { item: ShoppingListItem }) {
+    return <Segment clearing>
+      {item.name}
+      <Button floated={"right"} size="mini" onClick={() => shoppingListItemDeleter.deleteItem(item)}>
+        Delete
+      </Button>
+    </Segment>
   }
 };
 
