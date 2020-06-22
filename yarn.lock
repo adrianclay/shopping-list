@@ -1326,6 +1326,19 @@
     "@grpc/proto-loader" "^0.5.0"
     tslib "^1.11.1"
 
+"@firebase/firestore@1.15.3":
+  version "1.15.3"
+  resolved "https://registry.yarnpkg.com/@firebase/firestore/-/firestore-1.15.3.tgz#34446efceb9a10b0974342337bc7aa2e273ecc78"
+  dependencies:
+    "@firebase/component" "0.1.14"
+    "@firebase/firestore-types" "1.11.0"
+    "@firebase/logger" "0.2.5"
+    "@firebase/util" "0.2.49"
+    "@firebase/webchannel-wrapper" "0.2.41"
+    "@grpc/grpc-js" "^1.0.0"
+    "@grpc/proto-loader" "^0.5.0"
+    tslib "^1.11.1"
+
 "@firebase/functions-types@0.3.17":
   version "0.3.17"
   resolved "https://registry.yarnpkg.com/@firebase/functions-types/-/functions-types-0.3.17.tgz#348bf5528b238eeeeeae1d52e8ca547b21d33a94"
@@ -5730,7 +5743,7 @@ find-up@^2.0.0, find-up@^2.1.0:
   dependencies:
     locate-path "^2.0.0"
 
-firebase@7.15.2, firebase@^7.14.5:
+firebase@7.15.2:
   version "7.15.2"
   resolved "https://registry.yarnpkg.com/firebase/-/firebase-7.15.2.tgz#6d51d05fe1124253b2b466a8a61f303f82cbef47"
   dependencies:
@@ -5740,6 +5753,25 @@ firebase@7.15.2, firebase@^7.14.5:
     "@firebase/auth" "0.14.7"
     "@firebase/database" "0.6.5"
     "@firebase/firestore" "1.15.2"
+    "@firebase/functions" "0.4.46"
+    "@firebase/installations" "0.4.12"
+    "@firebase/messaging" "0.6.18"
+    "@firebase/performance" "0.3.7"
+    "@firebase/polyfill" "0.3.36"
+    "@firebase/remote-config" "0.1.23"
+    "@firebase/storage" "0.3.36"
+    "@firebase/util" "0.2.49"
+
+firebase@^7.15.3:
+  version "7.15.3"
+  resolved "https://registry.yarnpkg.com/firebase/-/firebase-7.15.3.tgz#ba098ef90f105ad3aedd4171adc1902dd258711e"
+  dependencies:
+    "@firebase/analytics" "0.3.7"
+    "@firebase/app" "0.6.6"
+    "@firebase/app-types" "0.6.1"
+    "@firebase/auth" "0.14.7"
+    "@firebase/database" "0.6.5"
+    "@firebase/firestore" "1.15.3"
     "@firebase/functions" "0.4.46"
     "@firebase/installations" "0.4.12"
     "@firebase/messaging" "0.6.18"
