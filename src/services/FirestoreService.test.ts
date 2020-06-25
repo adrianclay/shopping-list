@@ -5,34 +5,34 @@ import ShoppingListItem from "../domain/ShoppingListItem";
 
 const projectId = 'my-test-project';
 
-type FirestoreServiceAction = (firestoreService: FirestoreService) => Promise<unknown>;
+type FirestoreServiceAction<T> = (firestoreService: FirestoreService) => Promise<T>;
 
 const alice = { uid: 'alice', displayName: 'Alice' };
-function withAliceAuthenticated(action: FirestoreServiceAction) {
+function withAliceAuthenticated<T>(action: FirestoreServiceAction<T>) {
   return withAuth(action, alice);
 }
 
 const jeff = { uid: 'jeff', displayName: 'Jeff' };
-function withJeffAuthenticated(action: FirestoreServiceAction) {
+function withJeffAuthenticated<T>(action: FirestoreServiceAction<T>) {
   return withAuth(action, jeff);
 }
 
-function withUnauthenticated(action: FirestoreServiceAction) {
+function withUnauthenticated<T>(action: FirestoreServiceAction<T>) {
   return withAuth(action, undefined);
 }
 
-async function withAuth(action: FirestoreServiceAction, auth?: { uid: string }) {
+ async function withAuth<T>(action: FirestoreServiceAction<T>, auth?: { uid: string }) {
   const firebase = initializeTestApp({ projectId, auth });
   const firestoreService = new FirestoreService(firebase);
   try {
-    await action(firestoreService);
+    return await action(firestoreService);
   } finally {
     firebase.delete();
   }
 }
 
-const assertAliceCant = (action: FirestoreServiceAction) => assertFails(withAliceAuthenticated(action));
-const assertUnauthenticatedCant = (action: FirestoreServiceAction) => assertFails(withUnauthenticated(action));
+const assertAliceCant = <T>(action: FirestoreServiceAction<T>) => assertFails(withAliceAuthenticated(action));
+const assertUnauthenticatedCant = <T>(action: FirestoreServiceAction<T>) => assertFails(withUnauthenticated(action));
 
 afterEach(async () => {
   await clearFirestoreData({ projectId });
