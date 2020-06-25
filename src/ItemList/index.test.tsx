@@ -35,7 +35,11 @@ const shoppingListItemDeleterSpy = {
   deleteItem: jest.fn()
 };
 
-const ItemList = ItemListConstructor(shoppingListItemFetcherStub, shoppingListItemDeleterSpy);
+const shoppingListItemUpdaterSpy = {
+  updateItem: jest.fn()
+};
+
+const ItemList = ItemListConstructor(shoppingListItemFetcherStub, shoppingListItemDeleterSpy, shoppingListItemUpdaterSpy);
 
 const shoppingList = {
   name: 'Art supplies',

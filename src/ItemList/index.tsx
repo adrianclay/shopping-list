@@ -11,13 +11,18 @@ interface ShoppingListItemDeleter {
   deleteItem(shoppingListItem: ShoppingListItem): void;
 }
 
+interface ShoppingListItemUpdater {
+  updateItem(shoppingListItem: ShoppingListItem): Promise<unknown>;
+}
+
 export interface ItemListProps {
   shoppingList: ShoppingList;
 }
 
 function ItemListConstructor(
   shoppingListItemFetcher: ShoppingListItemFetcher,
-  shoppingListItemDeleter: ShoppingListItemDeleter
+  shoppingListItemDeleter: ShoppingListItemDeleter,
+  shoppingListItemUpdater: ShoppingListItemUpdater,
   ) {
   return function ItemList({ shoppingList } : ItemListProps) {
     const [isLoading, setIsLoading] = useState(true);

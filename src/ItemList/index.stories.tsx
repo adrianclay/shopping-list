@@ -7,6 +7,13 @@ const ShoppingListItemDeleterSpy = {
   deleteItem: action('deleteItem')
 };
 
+const ShoppingListItemUpdaterSpy = {
+  updateItem: (item: any) => {
+    action('updateItem')(item);
+    return Promise.resolve(100);
+  }
+};
+
 const ItemList = ItemListConstructor({
   subscribeToItemChanges(list, onUpdate, onError) {
     onUpdate([
@@ -15,7 +22,7 @@ const ItemList = ItemListConstructor({
     ]);
     return () => {};
   }
-}, ShoppingListItemDeleterSpy);
+}, ShoppingListItemDeleterSpy, ShoppingListItemUpdaterSpy);
 
 const shoppingList= {
   id: 'adrians-list',
@@ -38,7 +45,7 @@ const ItemListWithoutItems = ItemListConstructor({
     onUpdate([]);
     return () => {};
   }
-}, ShoppingListItemDeleterSpy);
+}, ShoppingListItemDeleterSpy, ShoppingListItemUpdaterSpy);
 
 export const WithoutItems = () => <ItemListWithoutItems shoppingList={shoppingList}/>
 
@@ -46,6 +53,6 @@ const ItemListLoading = ItemListConstructor({
   subscribeToItemChanges(list, onUpdate, onError) {
     return () => {};
   }
-}, ShoppingListItemDeleterSpy);
+}, ShoppingListItemDeleterSpy, ShoppingListItemUpdaterSpy);
 
 export const Loading = () => <ItemListLoading shoppingList={shoppingList}/>

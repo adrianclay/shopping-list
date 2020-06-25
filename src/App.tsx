@@ -36,7 +36,7 @@ export function AuthenticatedApp({ firebase }: AppProps) {
   const ShoppingListViewer = ShoppingListViewerConstructor(
     ListSelectorConstructor(firestoreService),
     AddItemFormConstructor(firestoreService),
-    ItemListConstructor(firestoreService, firestoreService),
+    ItemListConstructor(firestoreService, firestoreService, firestoreService),
     CreateShoppingListFormConstructor(firestoreService)
   );
   return <ShoppingListViewer />;
