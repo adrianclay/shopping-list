@@ -209,6 +209,30 @@ describe('Creating a Shopping list item', () => {
 
   });
 
+  describe('updating it with new name', () => {
+    let updatedItem: ShoppingListItem;
+
+    beforeEach(async () => {
+      updatedItem = {
+        ...createdItem,
+        name: 'Brand new name'
+      };
+      await withAliceAuthenticated(firestoreService => firestoreService.updateItem(updatedItem));
+    });
+
+    it('retrieves it back with the new name', async () => {
+      await withAliceAuthenticated(async firestoreService => {
+        return new Promise((resolve, reject) => {
+          const unsubscribe = firestoreService.subscribeToItemChanges(shoppingList, items => {
+            unsubscribe();
+            expect(items).toEqual([expect.objectContaining({name: 'Brand new name'})]);
+            resolve(items);
+          }, reject);
+        });
+      });
+    });
+  });
+
   it('retrieves it back, when querying by the matching list', async () => {
     await withAliceAuthenticated(async firestoreService =>
       new Promise((resolve, reject) => {

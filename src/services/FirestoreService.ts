@@ -68,6 +68,14 @@ export default class FirestoreService {
     await item.delete();
   }
 
+  async updateItem(shoppingListItem: ShoppingListItem) {
+    const itemsCollection = this.shoppingListItemCollection(shoppingListItem.list);
+    const item = itemsCollection.doc(shoppingListItem.id);
+    await item.update({
+      name: shoppingListItem.name
+    });
+  }
+
   private shoppingListItemCollection(shoppingList: ShoppingList) {
     return this.firebase.firestore().collection(`shopping-list/${shoppingList.id}/items`);
   }
