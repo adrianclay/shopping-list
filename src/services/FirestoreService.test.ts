@@ -120,6 +120,10 @@ describe('Firestore security rules', () => {
     it('Does not allow deleting items for a different users list', () =>
       assertAliceCant(firestoreService => firestoreService.deleteItem(jeffsShoppingItem))
     );
+
+    it('Does not allow updating items for a different users list', () =>
+      assertAliceCant(firestoreService => firestoreService.updateItem(jeffsShoppingItem))
+    );
   });
 });
 

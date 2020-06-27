@@ -9,8 +9,7 @@ service cloud.firestore {
       allow read: if is_owner(resource);
 
       match /items/{itemId} {
-        allow read, create, delete: if is_owner(get(/databases/$(database)/documents/shopping-list/$(shoppingListId)));
-        allow update: if request.auth.uid == "alice";
+        allow read, create, update, delete: if is_owner(get(/databases/$(database)/documents/shopping-list/$(shoppingListId)));
       }
     }
   }
