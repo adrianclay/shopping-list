@@ -3,7 +3,7 @@ import {render, fireEvent, waitForElementToBeRemoved, RenderResult} from '@testi
 import AppConstructor from './App';
 import {initializeTestApp, clearFirestoreData} from "@firebase/testing";
 import { act } from 'react-dom/test-utils';
-import { LoggedInUserContext } from './Login';
+import User from './domain/User';
 
 const projectId = 'app-test-tsx';
 
@@ -52,11 +52,16 @@ async function selectShoppingList(listName: string) {
   (await screen.findByText(listName)).click();
 }
 
-const loggedInUser = { uid: 'alice', displayName: 'bobby' };
-const LoginStub = ({children}: React.PropsWithChildren<{}>) => <LoggedInUserContext.Provider value={loggedInUser}>{children}</LoggedInUserContext.Provider>
-
 test('As a user I can add items to the shopping list', async () => {
-  const App = AppConstructor(LoginStub, firebase)
+  const authenticatorStub = {
+    onAuthStateChanged: (onUpdate: (currentUser: User | null) => void) => {
+      const loggedInUser = { uid: 'alice', displayName: 'bobby' };
+      onUpdate(loggedInUser)
+    },
+    signInWithRedirect: () => { throw new Error('signInWithRedirect not implemented')},
+  };
+
+  const App = AppConstructor(authenticatorStub, firebase)
   screen = render(<App />);
 
   await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));

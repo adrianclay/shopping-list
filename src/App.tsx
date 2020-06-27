@@ -10,17 +10,19 @@ import CreateShoppingListFormConstructor from './CreateShoppingListForm';
 
 import { Container } from 'semantic-ui-react'
 import AlphaBanner from './AlphaBanner';
+import LoginConstructor, { Authenticator } from './Login';
 
-function AppConstructor(Login: React.FunctionComponent, firebase: firebase.app.App) {
+function AppConstructor(authenticator: Authenticator, firebase: firebase.app.App) {
+  const firestoreService = new FirestoreService(firebase);
+  const Login = LoginConstructor(authenticator);
+  const ShoppingListViewer = ShoppingListViewerConstructor(
+    ListSelectorConstructor(firestoreService),
+    AddItemFormConstructor(firestoreService),
+    ItemListConstructor(firestoreService, firestoreService, firestoreService),
+    CreateShoppingListFormConstructor(firestoreService)
+  );
+
   return function App() {
-    const firestoreService = new FirestoreService(firebase);
-    const ShoppingListViewer = ShoppingListViewerConstructor(
-      ListSelectorConstructor(firestoreService),
-      AddItemFormConstructor(firestoreService),
-      ItemListConstructor(firestoreService, firestoreService, firestoreService),
-      CreateShoppingListFormConstructor(firestoreService)
-    );
-
     return (
       <Container>
         <h1>Shopping List</h1>

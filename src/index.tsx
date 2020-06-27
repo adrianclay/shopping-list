@@ -4,12 +4,10 @@ import './index.css';
 import AppConstructor from './App';
 import * as serviceWorker from './serviceWorker';
 import initFirebase from "./initFirebase";
-import LoginConstructor from './Login';
 import AuthenticationService from './services/AuthenticationService';
 
 initFirebase().then(firebase => {
-    const Login = LoginConstructor(new AuthenticationService(firebase));
-    const App = AppConstructor(Login, firebase);
+    const App = AppConstructor(new AuthenticationService(firebase), firebase);
 
     ReactDOM.render(<App />, document.getElementById('root'));
 })
