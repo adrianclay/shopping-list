@@ -13,6 +13,7 @@ import CreateShoppingListFormConstructor from './CreateShoppingListForm';
 import Login from "./Login";
 
 import { Container } from 'semantic-ui-react'
+import AlphaBanner from './AlphaBanner';
 
 interface AppProps {
   firebase: firebase.app.App
@@ -24,6 +25,7 @@ function App({ firebase }: AppProps) {
   return (
     <Container>
       <h1>Shopping List</h1>
+      <AlphaBanner />
       <Login authenticator={authenticationService}>
         <AuthenticatedApp firebase={firebase} />
       </Login>
