@@ -1,6 +1,6 @@
 import React from 'react';
 import {render, fireEvent, waitForElementToBeRemoved, RenderResult} from '@testing-library/react';
-import {AuthenticatedApp} from './App';
+import AppConstructor from './App';
 import {initializeTestApp, clearFirestoreData} from "@firebase/testing";
 import { act } from 'react-dom/test-utils';
 import { LoggedInUserContext } from './Login';
@@ -52,11 +52,12 @@ async function selectShoppingList(listName: string) {
   (await screen.findByText(listName)).click();
 }
 
+const loggedInUser = { uid: 'alice', displayName: 'bobby' };
+const LoginStub = ({children}: React.PropsWithChildren<{}>) => <LoggedInUserContext.Provider value={loggedInUser}>{children}</LoggedInUserContext.Provider>
+
 test('As a user I can add items to the shopping list', async () => {
-  const loggedInUser = { uid: 'alice', displayName: 'bobby' };
-  screen = render(<LoggedInUserContext.Provider value={loggedInUser}>
-    <AuthenticatedApp firebase={firebase}/>
-  </LoggedInUserContext.Provider>);
+  const App = AppConstructor(LoginStub, firebase)
+  screen = render(<App />);
 
   await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
 

@@ -1,12 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import AppConstructor from './App';
 import * as serviceWorker from './serviceWorker';
 import initFirebase from "./initFirebase";
+import LoginConstructor from './Login';
+import AuthenticationService from './services/AuthenticationService';
 
 initFirebase().then(firebase => {
-    ReactDOM.render(<App firebase={firebase} />, document.getElementById('root'));
+    const Login = LoginConstructor(new AuthenticationService(firebase));
+    const App = AppConstructor(Login, firebase);
+
+    ReactDOM.render(<App />, document.getElementById('root'));
 })
 
 // If you want your app to work offline and load faster, you can change
