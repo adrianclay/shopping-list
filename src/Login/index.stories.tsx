@@ -1,23 +1,21 @@
 import React from 'react';
 import {action} from '@storybook/addon-actions';
 
-import Login from "./";
+import LoginConstructor from './';
 import User from '../domain/User';
 
 function createLoginStory(onAuthStateChanged: (onUpdate: (user: User|null) => void) => void) {
-  const authenticatorStub = {
+  const Login = LoginConstructor({
     onAuthStateChanged,
     signInWithRedirect: action('signInWithRedirect')
-  };
-
-  return (<Login authenticator={authenticatorStub}>
+  });
+  return (<Login>
     <p>This child node only gets rendered if you're authenticated</p>
   </Login>);
 }
 
 export default {
   title: 'Login',
-  component: Login,
 };
 
 export const NotLoggedIn = () => createLoginStory((onUpdate) => {

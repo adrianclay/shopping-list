@@ -2,7 +2,7 @@ import React from "react";
 import {render, Matcher} from "@testing-library/react";
 import {act} from "react-dom/test-utils";
 import User from "../domain/User";
-import Login from "./";
+import LoginConstructor, { LoggedInUserContext } from "./";
 
 function changeAuthState(currentUser: User | null) {
   act(() => {
@@ -26,12 +26,12 @@ let signInWithRedirect: jest.Mock;
 
 beforeEach(() => {
   signInWithRedirect = jest.fn();
-
-  const component = <Login authenticator={authenticatorMock()}>
+  const Login = LoginConstructor(authenticatorMock());
+  const component = <Login>
     Secret message for logged in users
-    <Login.LoggedInUserContext.Consumer>
+    <LoggedInUserContext.Consumer>
       {loggedInUser => `${loggedInUser?.displayName} with ID ${loggedInUser?.uid} logged in`}
-    </Login.LoggedInUserContext.Consumer>
+    </LoggedInUserContext.Consumer>
   </Login>
   findByText = render(component).findByText;
 })

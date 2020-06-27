@@ -4,7 +4,7 @@ import { AddItemFormProps } from "../AddItemForm";
 import { ItemListProps } from "../ItemList";
 import { ListSelectorProps } from "../ListSelector";
 import { CreateShoppingListFormProps } from "../CreateShoppingListForm";
-import Login from "../Login";
+import { LoggedInUserContext } from "../Login";
 import { Segment, Button } from "semantic-ui-react";
 import User from "../domain/User";
 
@@ -34,14 +34,14 @@ function ShoppingListViewerConstructor(
       setShoppingList(list);
     };
 
-    return <Login.LoggedInUserContext.Consumer>
+    return <LoggedInUserContext.Consumer>
       { loggedInUser => <>
           <ListSelector onSelect={onListSelect} loggedInUser={loggedInUser!} value={shoppingList} />
           <Button icon='add' content='Create list' onClick={() => { setShoppingList(null) }} />
           {itemList(loggedInUser!)}
         </>
       }
-    </Login.LoggedInUserContext.Consumer>;
+    </LoggedInUserContext.Consumer>;
   }
 }
 

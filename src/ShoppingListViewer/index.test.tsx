@@ -7,7 +7,7 @@ import { ItemListProps } from "../ItemList";
 import { ListSelectorProps } from "../ListSelector";
 import { AddItemFormProps } from "../AddItemForm";
 import { CreateShoppingListFormProps } from "../CreateShoppingListForm";
-import Login from "../Login";
+import { LoggedInUserContext } from "../Login";
 
 const loggedInUser = {
   uid: '100',
@@ -27,9 +27,9 @@ beforeEach(() => {
 
   const ShoppingListViewer = ShoppingListViewerConstructor(listSelectorSpy, addItemFormSpy, itemListSpy, createShoppingListFormSpy);
 
-  render(<Login.LoggedInUserContext.Provider value={loggedInUser}>
+  render(<LoggedInUserContext.Provider value={loggedInUser}>
     <ShoppingListViewer />
-  </Login.LoggedInUserContext.Provider>);
+  </LoggedInUserContext.Provider>);
 })
 
 test('renders the ListSelector', async () => {

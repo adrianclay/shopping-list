@@ -10,7 +10,7 @@ import ShoppingListViewerConstructor from './ShoppingListViewer';
 import ListSelectorConstructor from './ListSelector';
 import CreateShoppingListFormConstructor from './CreateShoppingListForm';
 
-import Login from "./Login";
+import LoginConstructor from './Login';
 
 import { Container } from 'semantic-ui-react'
 import AlphaBanner from './AlphaBanner';
@@ -20,13 +20,13 @@ interface AppProps {
 }
 
 function App({ firebase }: AppProps) {
-  const authenticationService = new AuthenticationService(firebase);
+  const Login = LoginConstructor(new AuthenticationService(firebase));
 
   return (
     <Container>
       <h1>Shopping List</h1>
       <AlphaBanner />
-      <Login authenticator={authenticationService}>
+      <Login>
         <AuthenticatedApp firebase={firebase} />
       </Login>
     </Container>

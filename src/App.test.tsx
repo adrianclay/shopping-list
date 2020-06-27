@@ -3,7 +3,7 @@ import {render, fireEvent, waitForElementToBeRemoved, RenderResult} from '@testi
 import {AuthenticatedApp} from './App';
 import {initializeTestApp, clearFirestoreData} from "@firebase/testing";
 import { act } from 'react-dom/test-utils';
-import Login from './Login';
+import { LoggedInUserContext } from './Login';
 
 const projectId = 'app-test-tsx';
 
@@ -54,9 +54,9 @@ async function selectShoppingList(listName: string) {
 
 test('As a user I can add items to the shopping list', async () => {
   const loggedInUser = { uid: 'alice', displayName: 'bobby' };
-  screen = render(<Login.LoggedInUserContext.Provider value={loggedInUser}>
+  screen = render(<LoggedInUserContext.Provider value={loggedInUser}>
     <AuthenticatedApp firebase={firebase}/>
-  </Login.LoggedInUserContext.Provider>);
+  </LoggedInUserContext.Provider>);
 
   await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
 
