@@ -1,6 +1,6 @@
 import React from 'react';
 import ItemListConstructor from './';
-import {render, act, fireEvent} from '@testing-library/react';
+import {render, act, fireEvent, screen} from '@testing-library/react';
 import ShoppingListItem from '../domain/ShoppingListItem';
 import ShoppingList from '../domain/ShoppingList';
 
@@ -61,14 +61,6 @@ test('displays "no items in list" with zero items', async () => {
   expect(await findByText(/no items in Art supplies./i)).toBeInTheDocument();
 });
 
-test('with one item', async () => {
-  const { findByText } = render(<ItemList shoppingList={shoppingList} />);
-
-  performItemsUpdate([lasagneSheetItem]);
-
-  expect(await findByText(/lasagne/i)).toBeInTheDocument();
-});
-
 test('displays loading message before fetch is resolved', async () => {
   const { findByText } = render(<ItemList shoppingList={shoppingList} />)
 
@@ -110,12 +102,69 @@ test('calls the unsubscribe method when unmounting', async () => {
   expect(unsubscribeSpy).toBeCalledWith();
 })
 
-test('calls the shoppingListItemDeleter when clicking the delete button', async () => {
-  const { findByText } = render(<ItemList shoppingList={shoppingList} />);
+describe('with one item on the shopping list', () => {
+  beforeEach(() => {
+    render(<ItemList shoppingList={shoppingList} />);
 
-  performItemsUpdate([lasagneSheetItem]);
+    performItemsUpdate([lasagneSheetItem]);
+  });
 
-  fireEvent.click(await findByText(/delete/i));
+  test('it displays the items name', async () => {
+    expect(await screen.findByText(/lasagne/i)).toBeInTheDocument();
+  });
 
-  expect(shoppingListItemDeleterSpy.deleteItem).toBeCalledWith(lasagneSheetItem);
+  test('calls the shoppingListItemDeleter when clicking the delete button', async () => {
+    fireEvent.click(await screen.findByText(/delete/i));
+
+    expect(shoppingListItemDeleterSpy.deleteItem).toBeCalledWith(lasagneSheetItem);
+  });
+
+  test('hides the edit form', () => {
+    expect(screen.queryByLabelText(/name/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/save/i)).not.toBeInTheDocument();
+  });
+
+  describe('editing the item', () => {
+    beforeEach(async () => {
+      fireEvent.click(await screen.findByText(/edit/i));
+    });
+
+    describe('saving a new name', () => {
+      beforeEach(async () => {
+        fireEvent.change(
+          await screen.findByLabelText(/name/i),
+          { target: { value: 'Chicken nuggets' } }
+        );
+
+        await act(async () => {
+          fireEvent.click(await screen.findByText(/save/i));
+        });
+      });
+
+      test('calls the shoppingListItemUpdater', async () => {
+        expect(shoppingListItemUpdaterSpy.updateItem).toHaveBeenLastCalledWith({
+          ...lasagneSheetItem,
+          name: 'Chicken nuggets'
+        });
+      });
+
+      test('hides the edit form', () => {
+        expect(screen.queryByLabelText(/name/i)).not.toBeInTheDocument();
+        expect(screen.queryByText(/save/i)).not.toBeInTheDocument();
+      });
+    });
+
+    test('prepopulates the name field', async () => {
+      expect(await screen.getByLabelText(/name/i)).toHaveValue(lasagneSheetItem.name);
+    });
+
+    test('hides the delete button', () => {
+      expect(screen.queryByText(/delete/i)).not.toBeInTheDocument();
+    });
+
+    test('hides the edit button', () => {
+      expect(screen.queryByText(/edit/i)).not.toBeInTheDocument();
+    });
+
+  });
 });
