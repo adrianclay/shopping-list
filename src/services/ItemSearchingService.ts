@@ -1,7 +1,7 @@
 import ShoppingListItem from "../domain/ShoppingListItem";
 import { ItemToAdd } from "../AddItemForm";
 
-type Searchable<T> = T & { search_queries: string[] };
+export type Searchable<T> = T & { search_queries: string[] };
 
 interface ItemStore {
   addShoppingListItem(item: Searchable<ItemToAdd>): Promise<ShoppingListItem>;

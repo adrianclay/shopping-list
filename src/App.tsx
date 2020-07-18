@@ -11,14 +11,16 @@ import CreateShoppingListFormConstructor from './CreateShoppingListForm';
 import { Container } from 'semantic-ui-react'
 import AlphaBanner from './AlphaBanner';
 import LoginConstructor, { Authenticator } from './Login';
+import ItemSearchingService from './services/ItemSearchingService';
 
 function AppConstructor(authenticator: Authenticator, firebase: firebase.app.App) {
   const firestoreService = new FirestoreService(firebase);
   const Login = LoginConstructor(authenticator);
+  const searchAdaptor = new ItemSearchingService(firestoreService);
   const ShoppingListViewer = ShoppingListViewerConstructor(
     ListSelectorConstructor(firestoreService),
-    AddItemFormConstructor(firestoreService),
-    ItemListConstructor(firestoreService, firestoreService, firestoreService),
+    AddItemFormConstructor(searchAdaptor),
+    ItemListConstructor(firestoreService, firestoreService, searchAdaptor),
     CreateShoppingListFormConstructor(firestoreService)
   );
 

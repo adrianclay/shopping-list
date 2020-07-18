@@ -2,6 +2,7 @@ import {initializeTestApp, clearFirestoreData, assertFails} from "@firebase/test
 import FirestoreService from './FirestoreService'
 import ShoppingList from "../domain/ShoppingList";
 import ShoppingListItem from "../domain/ShoppingListItem";
+import { Searchable } from "./ItemSearchingService";
 
 const projectId = 'my-test-project';
 
@@ -73,7 +74,7 @@ describe('Firestore security rules', () => {
     beforeEach(async () => {
       await withJeffAuthenticated(async firestoreService => {
         jeffsShoppingList = await firestoreService.addShoppingList({ name: 'List of Jeff', owner_uids: [jeff.uid] });
-        jeffsShoppingItem = await firestoreService.addShoppingListItem({ name: 'Crab stick', list: jeffsShoppingList });
+        jeffsShoppingItem = await firestoreService.addShoppingListItem({ name: 'Crab stick', list: jeffsShoppingList, search_queries: ['crab'] });
       });
     });
 
@@ -104,6 +105,7 @@ describe('Firestore security rules', () => {
         firestoreService.addShoppingListItem({
           name: 'Devils apple',
           list: jeffsShoppingList,
+          search_queries: ['apple']
         })
       )
     );
@@ -113,6 +115,7 @@ describe('Firestore security rules', () => {
         firestoreService.addShoppingListItem({
           name: 'Devils apple',
           list: nonExistentList,
+          search_queries: ['apple']
         })
       )
     );
@@ -122,7 +125,10 @@ describe('Firestore security rules', () => {
     );
 
     it('Does not allow updating items for a different users list', () =>
-      assertAliceCant(firestoreService => firestoreService.updateItem(jeffsShoppingItem))
+      assertAliceCant(firestoreService => firestoreService.updateItem({
+        ...jeffsShoppingItem,
+        search_queries: ['alices malicious update']
+      }))
     );
   });
 });
@@ -183,7 +189,8 @@ describe('Creating a Shopping list item', () => {
       shoppingList = await firestoreService.addShoppingList({ name: 'Party shopping list', owner_uids: [alice.uid] });
       createdItem = await firestoreService.addShoppingListItem({
         name: 'Crisps',
-        list: shoppingList
+        list: shoppingList,
+        search_queries: ['c']
       });
     })
   });
@@ -214,12 +221,13 @@ describe('Creating a Shopping list item', () => {
   });
 
   describe('updating it with new name', () => {
-    let updatedItem: ShoppingListItem;
+    let updatedItem: Searchable<ShoppingListItem>;
 
     beforeEach(async () => {
       updatedItem = {
         ...createdItem,
-        name: 'Brand new name'
+        name: 'Brand new name',
+        search_queries: ['new']
       };
       await withAliceAuthenticated(firestoreService => firestoreService.updateItem(updatedItem));
     });
@@ -235,7 +243,25 @@ describe('Creating a Shopping list item', () => {
         });
       });
     });
+
+    it('retrieves it back when searching with new search query', () =>
+      expect(withAliceAuthenticated(firestoreService =>
+        firestoreService.searchForItems(shoppingList, 'new')
+      )).resolves.toEqual([expect.objectContaining({name: 'Brand new name'})])
+    );
   });
+
+  it('retrieves it back, when searching', () =>
+    expect(withAliceAuthenticated(firestoreService =>
+      firestoreService.searchForItems(shoppingList, 'c')
+    )).resolves.toEqual([expect.objectContaining(createdItem)])
+  );
+
+  it('does not retrieve it back, when searching with non-matching search', () =>
+    expect(withAliceAuthenticated(firestoreService =>
+      firestoreService.searchForItems(shoppingList, 'z')
+    )).resolves.toEqual([])
+  );
 
   it('retrieves it back, when querying by the matching list', async () => {
     await withAliceAuthenticated(async firestoreService =>
@@ -278,7 +304,7 @@ describe('Creating 10 shopping list items', () => {
     });
 
     for(const name of orderedListNames) {
-      await firestoreService.addShoppingListItem({ name, list });
+      await firestoreService.addShoppingListItem({ name, list, search_queries: [] });
     }
   }));
 

@@ -3,6 +3,7 @@ import ShoppingListItem from "../domain/ShoppingListItem";
 import ShoppingList from "../domain/ShoppingList";
 import User from "../domain/User";
 import { ItemToAdd } from "../AddItemForm";
+import { Searchable } from "./ItemSearchingService";
 
 interface ShoppingListRecord {
   name: string;
@@ -17,15 +18,8 @@ export default class FirestoreService {
 
   subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: (error: Error) => void): () => void {
     const itemCollection = this.shoppingListItemCollection(shoppingList);
-    return itemCollection.orderBy('created_on').onSnapshot(collection => {
-      const items = collection.docs.map(item => {
-        return {
-          ...item.data() as { name: string },
-          id: item.id,
-          list: shoppingList
-        };
-      });
-      onUpdate(items);
+    return itemCollection.orderBy('created_on').onSnapshot(snapshot => {
+      onUpdate(this.snapshotToShoppingListItemArray(snapshot, shoppingList));
     }, onError);
   }
 
@@ -44,9 +38,16 @@ export default class FirestoreService {
     }, onError);
   }
 
-  async addShoppingListItem({ name, list }: ItemToAdd): Promise<ShoppingListItem> {
+  async searchForItems(shoppingList: ShoppingList, search: string) {
+    const itemCollection = this.shoppingListItemCollection(shoppingList);
+    const snapshot = await itemCollection.where('search_queries', 'array-contains', search).get();
+    return this.snapshotToShoppingListItemArray(snapshot, shoppingList);
+  }
+
+  async addShoppingListItem({ name, list, search_queries }: Searchable<ItemToAdd>): Promise<ShoppingListItem> {
     const { id } = await this.shoppingListItemCollection(list).add({
       name,
+      search_queries,
       created_on: firebase.firestore.FieldValue.serverTimestamp()
     });
 
@@ -69,15 +70,26 @@ export default class FirestoreService {
     await item.delete();
   }
 
-  async updateItem(shoppingListItem: ShoppingListItem) {
+  async updateItem(shoppingListItem: Searchable<ShoppingListItem>) {
     const itemsCollection = this.shoppingListItemCollection(shoppingListItem.list);
     const item = itemsCollection.doc(shoppingListItem.id);
     await item.update({
-      name: shoppingListItem.name
+      name: shoppingListItem.name,
+      search_queries: shoppingListItem.search_queries,
     });
   }
 
   private shoppingListItemCollection(shoppingList: ShoppingList) {
     return this.firebase.firestore().collection(`shopping-list/${shoppingList.id}/items`);
+  }
+
+  private snapshotToShoppingListItemArray(snapshot: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>, shoppingList: ShoppingList) {
+    return snapshot.docs.map(document => {
+      return {
+        ...document.data() as { name: string; },
+        id: document.id,
+        list: shoppingList
+      };
+    });
   }
 }
