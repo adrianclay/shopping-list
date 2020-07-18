@@ -1,10 +1,5 @@
 import ShoppingListItem from "../domain/ShoppingListItem";
-import ShoppingList from "../domain/ShoppingList";
-
-interface ItemToAdd {
-  name: string;
-  list: ShoppingList;
-}
+import { ItemToAdd } from "../AddItemForm";
 
 type Searchable<T> = T & { search_queries: string[] };
 

@@ -2,6 +2,7 @@ import * as firebase from "firebase/app";
 import ShoppingListItem from "../domain/ShoppingListItem";
 import ShoppingList from "../domain/ShoppingList";
 import User from "../domain/User";
+import { ItemToAdd } from "../AddItemForm";
 
 interface ShoppingListRecord {
   name: string;
@@ -43,7 +44,7 @@ export default class FirestoreService {
     }, onError);
   }
 
-  async addShoppingListItem({ name, list }: { name: string, list: ShoppingList }): Promise<ShoppingListItem> {
+  async addShoppingListItem({ name, list }: ItemToAdd): Promise<ShoppingListItem> {
     const { id } = await this.shoppingListItemCollection(list).add({
       name,
       created_on: firebase.firestore.FieldValue.serverTimestamp()
