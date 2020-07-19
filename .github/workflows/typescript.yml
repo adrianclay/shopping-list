@@ -49,7 +49,7 @@ jobs:
           name: build
           path: build
       - name: Deploy to Firebase
-        uses: w9jds/firebase-action@87205012142442d1108642c986ab5698e4f0e822
+        uses: w9jds/firebase-action@v1.5.0
         with:
           args: deploy
         env:
