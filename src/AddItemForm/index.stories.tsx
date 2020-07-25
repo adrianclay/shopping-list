@@ -2,7 +2,11 @@ import React from 'react';
 import AddItemFormConstructor from "./";
 import {action} from '@storybook/addon-actions';
 
-const AddItemForm = AddItemFormConstructor({addShoppingListItem: action('addShoppingListItem')})
+const AddItemForm = AddItemFormConstructor({
+  addShoppingListItem: action('addShoppingListItem')
+}, {
+  searchForItems: (list, query) => { action('searchForItems')(list, query); return Promise.resolve([]); }
+});
 
 export default {
   title: 'AddItemForm',

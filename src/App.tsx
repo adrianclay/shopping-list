@@ -19,7 +19,7 @@ function AppConstructor(authenticator: Authenticator, firebase: firebase.app.App
   const searchAdaptor = new ItemSearchingService(firestoreService);
   const ShoppingListViewer = ShoppingListViewerConstructor(
     ListSelectorConstructor(firestoreService),
-    AddItemFormConstructor(searchAdaptor),
+    AddItemFormConstructor(searchAdaptor, searchAdaptor),
     ItemListConstructor(firestoreService, firestoreService, searchAdaptor),
     CreateShoppingListFormConstructor(firestoreService)
   );

@@ -23,16 +23,13 @@ afterAll(async () => {
 });
 
 async function addShoppingListItem(itemName: string) {
-  act(() => {
-    fireEvent.change(
-      screen.getByLabelText(/item/i),
-      { target: { value: itemName } }
-    );
-  });
+  fireEvent.change(
+    await screen.findByRole('textbox'),
+    { target: { value: itemName } }
+  );
 
-  act(() => {
-    fireEvent.click(screen.getByText(/add/i));
-  });
+  fireEvent.click(await screen.findByRole((role, element) => role == 'option' && element.textContent == 'Add ' + itemName))
+  fireEvent.click(await screen.findByText(/add/i));
 }
 
 async function createShoppingList(shoppingListName: string) {

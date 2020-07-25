@@ -1,9 +1,9 @@
 import AddItemFormConstructor from "./";
 import React from "react";
-import {fireEvent, render} from "@testing-library/react";
+import {fireEvent, render, screen} from "@testing-library/react";
 import ShoppingListItem from '../domain/ShoppingListItem';
 
-let itemTextBox: HTMLElement, addItemButton: HTMLElement
+let itemSearchBox: HTMLElement, addItemButton: HTMLElement
 let addShoppingListItemMock: jest.Mock<void, ShoppingListItem[]>
 
 const shoppingList = {
@@ -11,44 +11,89 @@ const shoppingList = {
   id: '08CAKE90'
 };
 
+const searchForItemSpy = jest.fn((list) => {return Promise.resolve([{list, id: 'x', name: 'Granulated Sugar' }])});
+
 beforeEach(() => {
   addShoppingListItemMock = jest.fn<void, ShoppingListItem[]>();
-  const AddItemForm = AddItemFormConstructor({ addShoppingListItem: addShoppingListItemMock });
+  const AddItemForm = AddItemFormConstructor({ addShoppingListItem: addShoppingListItemMock }, { searchForItems: searchForItemSpy });
 
-  const { getByLabelText, getByText } = render(<AddItemForm shoppingList={shoppingList} />);
+  render(<AddItemForm shoppingList={shoppingList} />);
 
-  itemTextBox = getByLabelText(/item/i);
-  addItemButton = getByText(/add/i);
-})
+  itemSearchBox = screen.getByRole('textbox');
+  expect(itemSearchBox).toBeInTheDocument();
 
-test('displays item text in text box', () => {
-  fireEvent.change(
-    itemTextBox,
-    { target: { value: 'input text'} }
-  )
-
-  expect(itemTextBox).toHaveValue('input text')
-})
-
-test('adds shopping list item', () => {
-  fireEvent.change(
-    itemTextBox,
-    { target: { value: 'Granulated Sugar'} }
-  )
-  fireEvent.click(addItemButton)
-
-  expect(addShoppingListItemMock).toBeCalledWith<[ShoppingListItem]>({
-    name: 'Granulated Sugar',
-    list: shoppingList,
-  })
+  addItemButton = screen.getByText(/add/i);
+  expect(addItemButton).toBeInTheDocument();
 });
 
-test('clears item name when adding an item', () => {
-  fireEvent.change(
-    itemTextBox,
-    { target: { value: 'Maple Syrup'} }
-  )
-  fireEvent.click(addItemButton)
+describe('Searching for "Granulated"', () => {
+  beforeEach(async () => {
+    fireEvent.change(
+      itemSearchBox,
+      { target: { value: 'Granulated'} }
+    );
 
-  expect(itemTextBox).toHaveValue('')
-})
+    await screen.findByRole('listbox');
+  });
+
+  test('calls the shoppingListItemSearcher', () => {
+    expect(searchForItemSpy).toHaveBeenLastCalledWith(shoppingList, 'Granulated')
+  });
+
+  test('displays "Granulated sugar" search result', async () => {
+    expect(await screen.findByText(/Granulated sugar/i)).toBeInTheDocument();
+  });
+
+  test('displays option to "Add Granulated"', async () => {
+    const options = await screen.findAllByRole('option');
+    expect(options.map(o => o.textContent)).toContain('Add Granulated');
+  });
+
+  describe('and adding "Granulated Sugar" to the list', () => {
+    beforeEach(async () => {
+      fireEvent.click(await screen.findByText(/Granulated Sugar/i));
+
+      fireEvent.click(addItemButton);
+    });
+
+    test('calls the addShoppingListItem service', () => {
+      expect(addShoppingListItemMock).toBeCalledWith<[ShoppingListItem]>({
+        name: 'Granulated Sugar',
+        list: shoppingList,
+      })
+    });
+
+    test('empties the search box', () => {
+      expect(itemSearchBox).toHaveValue('')
+    });
+  });
+
+  describe('clicking on "Add Granulated"', () => {
+    beforeEach(async () => {
+      fireEvent.click(await screen.findByRole((role, element) => {
+        return role == 'option' && element.textContent == "Add Granulated";
+      }));
+    });
+
+    test('displays "Granulated" in search box', async () => {
+      expect(await screen.getByRole('alert')).toHaveTextContent('Granulated');
+    });
+
+    describe('and clicking on add', () => {
+      beforeEach(() => {
+        fireEvent.click(addItemButton);
+      });
+
+      test('calls the addShoppingListItem service', () => {
+        expect(addShoppingListItemMock).toBeCalledWith<[ShoppingListItem]>({
+          name: 'Granulated',
+          list: shoppingList,
+        })
+      });
+
+      test('empties the search box', () => {
+        expect(itemSearchBox).toHaveValue('')
+      });
+    });
+  });
+});
