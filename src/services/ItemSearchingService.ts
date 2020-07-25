@@ -1,4 +1,5 @@
 import ShoppingListItem from "../domain/ShoppingListItem";
+import ShoppingList from "../domain/ShoppingList";
 import { ItemToAdd } from "../AddItemForm";
 
 export type Searchable<T> = T & { search_queries: string[] };
@@ -6,6 +7,7 @@ export type Searchable<T> = T & { search_queries: string[] };
 interface ItemStore {
   addShoppingListItem(item: Searchable<ItemToAdd>): Promise<ShoppingListItem>;
   updateItem(shoppingListItem: Searchable<ShoppingListItem>): Promise<unknown>;
+  searchForItems(shoppingList: ShoppingList, search: string): Promise<ShoppingListItem[]>;
 }
 
 export default class ItemSearchingService {
@@ -21,6 +23,10 @@ export default class ItemSearchingService {
 
   updateItem(item: ShoppingListItem) {
     return this.itemStore.updateItem({ ...item, search_queries: this.searchQueries(item.name) });
+  }
+
+  searchForItems(shoppingList: ShoppingList, query: string) {
+    return this.itemStore.searchForItems(shoppingList, query.toLowerCase().split(' ')[0].substr(0, 5));
   }
 
   private searchQueries(name: string) {
