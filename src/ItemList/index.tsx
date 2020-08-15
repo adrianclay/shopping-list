@@ -4,7 +4,7 @@ import ShoppingList from "../domain/ShoppingList";
 import { Segment, Button, Icon, Header, Loader, Dimmer, Form, Input } from "semantic-ui-react";
 
 interface ShoppingListItemFetcher {
-  subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void;
+  subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: (error: Error) => void): () => void;
 }
 
 interface ShoppingListItemDeleter {
@@ -26,20 +26,20 @@ function ItemListConstructor(
   ) {
   return function ItemList({ shoppingList } : ItemListProps) {
     const [isLoading, setIsLoading] = useState(true);
-    const [fetchErrored, setFetchError] = useState(false);
+    const [fetchError, setFetchError] = useState<Error|undefined>(undefined);
     const [shoppingListItems, setShoppingListItems] = useState([] as ShoppingListItem[]);
 
     useEffect(() => {
       return shoppingListItemFetcher.subscribeToItemChanges(shoppingList, stuff => {
         setIsLoading(false);
         setShoppingListItems(stuff);
-      }, () => {
-        setFetchError(true);
+      }, (error) => {
+        setFetchError(error);
       });
     }, [shoppingList]);
 
-    if (fetchErrored) {
-      return <p>Error</p>
+    if (fetchError) {
+      return <p>Error: {fetchError.message}</p>;
     }
 
     if (isLoading) {

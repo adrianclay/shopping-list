@@ -6,7 +6,7 @@ import ShoppingList from '../domain/ShoppingList';
 
 
 let stubOnUpdate: (value: ShoppingListItem[]) => void;
-let stubOnError: () => void;
+let stubOnError: (error: Error) => void;
 let unsubscribeSpy = jest.fn();
 
 function performItemsUpdate(items: ShoppingListItem[]) {
@@ -15,14 +15,16 @@ function performItemsUpdate(items: ShoppingListItem[]) {
   });
 }
 
+const error = new Error("Unhealthy snake, please check snake health.");
+
 function performItemsUpdateError() {
   act(() => {
-    stubOnError();
+    stubOnError(error);
   });
 }
 
 const shoppingListItemFetcherStub = {
-  subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: () => void): () => void {
+  subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: (error: Error) => void): () => void {
     expect(shoppingList).toEqual(shoppingList);
     stubOnUpdate = onUpdate;
     stubOnError = onError;
@@ -81,8 +83,10 @@ test('displays error message if fetch fails', async () => {
 
   performItemsUpdateError();
 
-  expect(await findByText(/error/i)).toBeInTheDocument()
-  expect(await queryByText(/loading/i)).toBeNull()
+  const errorMessage = await findByText(/error/i);
+  expect(errorMessage).toBeInTheDocument();
+  expect(errorMessage).toHaveTextContent(error.message);
+  expect(await queryByText(/loading/i)).toBeNull();
 })
 
 test('displays latest set of items when updating twice', async () => {
