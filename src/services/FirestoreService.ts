@@ -18,7 +18,8 @@ export default class FirestoreService {
 
   subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: (error: Error) => void): () => void {
     const itemCollection = this.shoppingListItemCollection(shoppingList);
-    return itemCollection.orderBy('created_on').onSnapshot(snapshot => {
+    const undeletedItems = itemCollection.where('deleted', '==', false)
+    return undeletedItems.orderBy('created_on').onSnapshot(snapshot => {
       onUpdate(this.snapshotToShoppingListItemArray(snapshot, shoppingList));
     }, onError);
   }
@@ -48,7 +49,8 @@ export default class FirestoreService {
     const { id } = await this.shoppingListItemCollection(list).add({
       name,
       search_queries,
-      created_on: firebase.firestore.FieldValue.serverTimestamp()
+      created_on: firebase.firestore.FieldValue.serverTimestamp(),
+      deleted: false,
     });
 
     return {
@@ -67,7 +69,7 @@ export default class FirestoreService {
   async deleteItem(shoppingListItem: ShoppingListItem) {
     const itemsCollection = this.shoppingListItemCollection(shoppingListItem.list);
     const item = itemsCollection.doc(shoppingListItem.id);
-    await item.delete();
+    await item.update({ deleted: true });
   }
 
   async updateItem(shoppingListItem: Searchable<ShoppingListItem>) {

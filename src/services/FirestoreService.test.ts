@@ -218,6 +218,12 @@ describe('Creating a Shopping list item', () => {
       });
     });
 
+    it('can still be searched for', () =>
+      expect(withAliceAuthenticated(firestoreService =>
+        firestoreService.searchForItems(shoppingList, 'c')
+      )).resolves.toEqual([expect.objectContaining(createdItem)])
+    );
+
   });
 
   describe('updating it with new name', () => {
