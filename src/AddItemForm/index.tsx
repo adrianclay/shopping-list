@@ -66,13 +66,15 @@ function AddItemFormConstructor(
         <Form>
           <Form.Group inline>
             <Form.Field>
-              Item
-              <Dropdown allowAdditions search selection
-                loading={isLoading}
-                options={dropdownOptions()}
-                onSearchChange={(_e, { searchQuery }) => updateOptions(searchQuery)}
-                onChange={(_e, {value}) => setItemName(value as string)}
-                value={itemName} />
+              <label>
+                Item
+                <Dropdown allowAdditions search selection
+                  loading={isLoading}
+                  options={dropdownOptions()}
+                  onSearchChange={(_e, { searchQuery }) => updateOptions(searchQuery)}
+                  onChange={(_e, {value}) => setItemName(value as string)}
+                  value={itemName} />
+              </label>
             </Form.Field>
             <Form.Field>
               <Button onClick={addItem}>
