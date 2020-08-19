@@ -21,6 +21,7 @@ export interface AddItemFormProps {
 }
 
 function AddItemFormConstructor(
+  readdShoppingListItem: (item : ShoppingListItem) => void,
   shoppingListItemAdder: ShoppingListItemAdder,
   shoppingListItemSearcher: ShoppingListItemSearcher
 ) {
@@ -32,10 +33,16 @@ function AddItemFormConstructor(
     const addItem = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       event.preventDefault();
 
-      shoppingListItemAdder.addShoppingListItem({
-        name: itemName,
-        list: shoppingList
-      });
+      const selectedItem = options.find(o => o.name === itemName);
+      if (selectedItem) {
+        readdShoppingListItem(selectedItem);
+      } else {
+        shoppingListItemAdder.addShoppingListItem({
+          name: itemName,
+          list: shoppingList
+        });
+      }
+
       setItemName('');
     };
 
