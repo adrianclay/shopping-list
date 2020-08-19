@@ -58,6 +58,13 @@ export default class FirestoreService {
     };
   }
 
+  async readdShoppingListItem({ list, id }: ShoppingListItem) {
+    const collection = this.shoppingListItemCollection(list);
+    await collection.doc(id).update({
+      deleted: false
+    })
+  }
+
   async addShoppingList(list: ShoppingListRecord): Promise<ShoppingList> {
     const docReference = await this.firebase.firestore().collection('shopping-list').add(list);
     return {

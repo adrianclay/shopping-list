@@ -224,6 +224,25 @@ describe('Creating a Shopping list item', () => {
       )).resolves.toEqual([expect.objectContaining(createdItem)])
     );
 
+    describe('readding the item', () => {
+      beforeEach(() =>
+        withAliceAuthenticated(firestoreService =>
+          firestoreService.readdShoppingListItem(createdItem)
+        )
+      );
+
+      it('retrieves it back', () =>
+        withAliceAuthenticated(firestoreService =>
+          new Promise((resolve, reject) => {
+            const unsubscribe = firestoreService.subscribeToItemChanges(shoppingList, items => {
+              unsubscribe();
+              expect(items).toEqual([expect.objectContaining(createdItem)]);
+              resolve();
+            }, reject);
+          })
+        )
+      );
+    });
   });
 
   describe('updating it with new name', () => {
