@@ -3,6 +3,7 @@ import FirestoreService from './FirestoreService'
 import ShoppingList from "../domain/ShoppingList";
 import ShoppingListItem from "../domain/ShoppingListItem";
 import { Searchable } from "./ItemSearchingService";
+import User from "../domain/User";
 
 const projectId = 'my-test-project';
 
@@ -30,6 +31,15 @@ function withUnauthenticated<T>(action: FirestoreServiceAction<T>) {
   } finally {
     firebase.delete();
   }
+}
+
+function fetchShoppingLists(firestoreService: FirestoreService, user: User) {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = firestoreService.subscribeToListChanges(user, lists => {
+      unsubscribe();
+      resolve(lists);
+    }, reject);
+  });
 }
 
 const assertAliceCant = <T>(action: FirestoreServiceAction<T>) => assertFails(withAliceAuthenticated(action));
@@ -60,11 +70,7 @@ describe('Firestore security rules', () => {
     );
 
     it('Does not read a different users lists', () =>
-      assertAliceCant(async firestoreService =>
-        new Promise((resolve, reject) => {
-          firestoreService.subscribeToListChanges(jeff, resolve, reject);
-        })
-      )
+      assertAliceCant(firestoreService => fetchShoppingLists(firestoreService, jeff))
     );
   });
 
@@ -154,29 +160,17 @@ describe('When Alice creates a shopping list', () => {
     expect(addedShoppingList.id).toBeTruthy();
   });
 
-  it('can retrieve it back, when querying alices lists', async () => {
-    await withAliceAuthenticated(async firestoreService =>
-      new Promise((resolve, reject) => {
-        const unsubscribe = firestoreService.subscribeToListChanges(alice, lists => {
-          unsubscribe();
-          expect(lists).toEqual([addedShoppingList]);
-          resolve();
-        }, reject);
-      })
-    );
-  });
+  it('can retrieve it back, when querying alices lists', () =>
+    expect(withAliceAuthenticated(
+      firestoreService => fetchShoppingLists(firestoreService, alice)
+    )).resolves.toEqual([addedShoppingList])
+  );
 
-  it('does not retrieve it back, when querying jeffs list', async () => {
-    await withJeffAuthenticated(async firestoreService =>
-      new Promise((resolve, reject) => {
-        const unsubscribe = firestoreService.subscribeToListChanges(jeff, lists => {
-          unsubscribe();
-          expect(lists).toEqual([]);
-          resolve();
-        }, reject);
-      })
-    );
-  });
+  it('does not retrieve it back, when querying jeffs list', () =>
+    expect(withJeffAuthenticated(
+      firestoreService => fetchShoppingLists(firestoreService, jeff)
+    )).resolves.toEqual([])
+  );
 });
 
 
