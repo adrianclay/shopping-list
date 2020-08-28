@@ -172,3 +172,23 @@ describe('with one item on the shopping list', () => {
 
   });
 });
+
+describe('with an item with a quantity', () => {
+  const manyLasagneSheetItem: ShoppingListItem = {
+    ...lasagneSheetItem,
+    quantity: {
+      scalar: 9900,
+      units: 'g'
+    }
+  };
+
+  beforeEach(() => {
+    render(<ItemList shoppingList={shoppingList} />);
+
+    performItemsUpdate([manyLasagneSheetItem]);
+  });
+
+  test('it displays the items quantity', async () => {
+    expect(await screen.findByText(/9900\s*g/)).toBeInTheDocument();
+  });
+});

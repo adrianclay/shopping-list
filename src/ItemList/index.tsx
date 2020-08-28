@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import ShoppingListItem from '../domain/ShoppingListItem';
 import ShoppingList from "../domain/ShoppingList";
-import { Segment, Button, Icon, Header, Loader, Dimmer, Form, Input } from "semantic-ui-react";
+import { Segment, Button, Icon, Header, Loader, Dimmer, Form, Input, Label } from "semantic-ui-react";
 
 interface ShoppingListItemFetcher {
   subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: (error: Error) => void): () => void;
@@ -87,7 +87,7 @@ function ItemListConstructor(
     }
 
     return <>
-      {item.name}
+      {item.name} {quantity(item)}
       <Button floated={"right"} size="mini" onClick={() => shoppingListItemDeleter.deleteItem(item)}>
         Delete
       </Button>
@@ -95,6 +95,15 @@ function ItemListConstructor(
         Edit
       </Button>
     </>;
+  }
+
+  function quantity(item: ShoppingListItem) {
+    if(item.quantity) {
+      return <Label circular style={{ marginLeft: '1em' }}>
+        {item.quantity?.scalar}
+        {item.quantity?.units}
+      </Label>;
+    }
   }
 };
 

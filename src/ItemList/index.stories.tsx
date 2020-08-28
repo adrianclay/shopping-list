@@ -18,7 +18,8 @@ const ItemList = ItemListConstructor({
   subscribeToItemChanges(list, onUpdate, onError) {
     onUpdate([
       { name: 'Pickles', list, id: 'pickles' },
-      { name: 'Cream soda', list, id: 'cream-soda' }
+      { name: 'Cream soda', list, id: 'cream-soda', quantity: { scalar: 12 } },
+      { name: 'Cream', list, id: 'cream', quantity: { scalar: 150, units: 'ml' } }
     ]);
     return () => {};
   }
