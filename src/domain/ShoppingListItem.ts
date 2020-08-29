@@ -1,4 +1,5 @@
 import ShoppingList from "./ShoppingList";
+import UnitsOfMeasurement from "./UnitsOfMeasurement";
 
 export default interface ShoppingListItem {
   list: ShoppingList;
@@ -6,6 +7,6 @@ export default interface ShoppingListItem {
   name: string;
   quantity?: {
     scalar: number;
-    units?: 'g' | 'ml'
+    units?: UnitsOfMeasurement;
   }
 }
