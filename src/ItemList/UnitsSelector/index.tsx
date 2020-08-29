@@ -19,11 +19,12 @@ interface UnitsSelectorProps {
 function UnitsSelector({ value, onChange }: UnitsSelectorProps) {
   const selectProps : SelectProps = {
     options,
-    defaultValue: EMPTY_DROPDOWN_VALUE,
   };
 
   if (value) {
     selectProps.value = value;
+  } else {
+    selectProps.defaultValue = EMPTY_DROPDOWN_VALUE;
   }
 
   if (onChange) {
