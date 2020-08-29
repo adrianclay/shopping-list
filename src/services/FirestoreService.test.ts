@@ -34,7 +34,7 @@ function withUnauthenticated<T>(action: FirestoreServiceAction<T>) {
 }
 
 function fetchShoppingLists(firestoreService: FirestoreService, user: User) {
-  return new Promise((resolve, reject) => {
+  return new Promise<ShoppingList[]>((resolve, reject) => {
     const unsubscribe = firestoreService.subscribeToListChanges(user, lists => {
       unsubscribe();
       resolve(lists);
