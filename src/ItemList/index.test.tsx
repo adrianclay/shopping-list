@@ -3,6 +3,7 @@ import ItemListConstructor from './';
 import {render, act, fireEvent, screen} from '@testing-library/react';
 import ShoppingListItem from '../domain/ShoppingListItem';
 import ShoppingList from '../domain/ShoppingList';
+import { EditItemFormProps } from './EditItemForm';
 
 
 let stubOnUpdate: (value: ShoppingListItem[]) => void;
@@ -37,11 +38,9 @@ const shoppingListItemDeleterSpy = {
   deleteItem: jest.fn()
 };
 
-const shoppingListItemUpdaterSpy = {
-  updateItem: jest.fn()
-};
+const editItemFormSpy = jest.fn<JSX.Element, [EditItemFormProps]>(() => <p>EditItemForm</p>);
 
-const ItemList = ItemListConstructor(shoppingListItemFetcherStub, shoppingListItemDeleterSpy, shoppingListItemUpdaterSpy);
+const ItemList = ItemListConstructor(shoppingListItemFetcherStub, shoppingListItemDeleterSpy, editItemFormSpy);
 
 const shoppingList = {
   name: 'Art supplies',
@@ -133,76 +132,14 @@ describe('with one item on the shopping list', () => {
       fireEvent.click(await screen.findByText(/edit/i));
     });
 
-    describe('saving a new name', () => {
-      beforeEach(async () => {
-        fireEvent.change(
-          await screen.findByLabelText(/name/i),
-          { target: { value: 'Chicken nuggets' } }
-        );
-
-        await act(async () => {
-          fireEvent.click(await screen.findByText(/save/i));
-        });
-      });
-
-      test('calls the shoppingListItemUpdater', async () => {
-        expect(shoppingListItemUpdaterSpy.updateItem).toHaveBeenLastCalledWith({
-          ...lasagneSheetItem,
-          name: 'Chicken nuggets'
-        });
-      });
-
-      test('hides the edit form', () => {
-        expect(screen.queryByLabelText(/name/i)).not.toBeInTheDocument();
-        expect(screen.queryByText(/save/i)).not.toBeInTheDocument();
-      });
+    test('passes the item into the editItemFormSpy', () => {
+      expect(editItemFormSpy).toHaveBeenLastCalledWith(expect.objectContaining({
+        item: lasagneSheetItem
+      }), {});
     });
 
-    describe('saving a quantity without units', () => {
-      beforeEach(async () => {
-        fireEvent.change(
-          await screen.findByLabelText(/quantity/i),
-          { target: { value: '900' } }
-        );
-
-        await act(async () => {
-          fireEvent.click(await screen.findByText(/save/i));
-        });
-      });
-
-      test('calls the shoppingListItemUpdater', async () => {
-        expect(shoppingListItemUpdaterSpy.updateItem).toHaveBeenLastCalledWith({
-          ...lasagneSheetItem,
-          quantity: { scalar: 900 }
-        });
-      });
-    });
-
-    describe('saving a quantity with units', () => {
-      beforeEach(async () => {
-        fireEvent.change(
-          await screen.findByLabelText(/quantity/i),
-          { target: { value: '10' } }
-        );
-
-        screen.getByRole('listbox').click();
-        screen.getByText('ml').click();
-
-        await act(async () => {
-          fireEvent.click(await screen.findByText(/save/i));
-        });
-      });
-
-      test('calls the shoppingListItemUpdater', async () => {
-        expect(shoppingListItemUpdaterSpy.updateItem).toHaveBeenLastCalledWith({
-          ...lasagneSheetItem,
-          quantity: { scalar: 10, units: 'ml' }
-        });
-      });
-    });
-
-    test('prepopulates the name field', async () => {
-      expect(await screen.getByLabelText(/name/i)).toHaveValue(lasagneSheetItem.name);
+    test('displays the EditItemForm', () => {
+      expect(screen.queryByText('EditItemForm')).toBeInTheDocument();
     });
 
     test('hides the delete button', () => {
@@ -210,7 +147,7 @@ describe('with one item on the shopping list', () => {
     });
 
     test('hides the edit button', () => {
-      expect(screen.queryByText(/edit/i)).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'Edit' })).not.toBeInTheDocument();
     });
 
   });

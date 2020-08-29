@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import ShoppingListItem from '../domain/ShoppingListItem';
 import ShoppingList from "../domain/ShoppingList";
 import { Segment, Button, Icon, Header, Loader, Dimmer, Label } from "semantic-ui-react";
-import EditItemFormConstructor from "./EditItemForm";
+import { EditItemFormProps } from "./EditItemForm";
 
 interface ShoppingListItemFetcher {
   subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: (error: Error) => void): () => void;
@@ -23,10 +23,8 @@ export interface ItemListProps {
 function ItemListConstructor(
   shoppingListItemFetcher: ShoppingListItemFetcher,
   shoppingListItemDeleter: ShoppingListItemDeleter,
-  shoppingListItemUpdater: ShoppingListItemUpdater,
+  EditItemForm: React.FunctionComponent<EditItemFormProps>,
   ) {
-  const EditItemForm = EditItemFormConstructor(shoppingListItemUpdater);
-
   return function ItemList({ shoppingList } : ItemListProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [fetchError, setFetchError] = useState<Error|undefined>(undefined);

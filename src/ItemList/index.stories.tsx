@@ -1,18 +1,21 @@
 import React from 'react';
 import ItemListConstructor from '.';
 import { action } from '@storybook/addon-actions';
-import { Segment } from 'semantic-ui-react';
+import { Button, Segment } from 'semantic-ui-react';
+import { EditItemFormProps } from './EditItemForm';
 
 const ShoppingListItemDeleterSpy = {
   deleteItem: action('deleteItem')
 };
 
-const ShoppingListItemUpdaterSpy = {
-  updateItem: (item: any) => {
-    action('updateItem')(item);
-    return Promise.resolve(100);
-  }
-};
+const EditItemForm = ({ onSave }: EditItemFormProps) => {
+  return <>
+    Edit Form
+    <Button floated='right' size='mini' onClick={onSave}>
+      Close
+    </Button>
+  </>;
+}
 
 const ItemList = ItemListConstructor({
   subscribeToItemChanges(list, onUpdate, onError) {
@@ -23,7 +26,7 @@ const ItemList = ItemListConstructor({
     ]);
     return () => {};
   }
-}, ShoppingListItemDeleterSpy, ShoppingListItemUpdaterSpy);
+}, ShoppingListItemDeleterSpy, EditItemForm);
 
 const shoppingList= {
   id: 'adrians-list',
@@ -46,7 +49,7 @@ const ItemListWithoutItems = ItemListConstructor({
     onUpdate([]);
     return () => {};
   }
-}, ShoppingListItemDeleterSpy, ShoppingListItemUpdaterSpy);
+}, ShoppingListItemDeleterSpy, EditItemForm);
 
 export const WithoutItems = () => <ItemListWithoutItems shoppingList={shoppingList}/>
 
@@ -54,6 +57,6 @@ const ItemListLoading = ItemListConstructor({
   subscribeToItemChanges(list, onUpdate, onError) {
     return () => {};
   }
-}, ShoppingListItemDeleterSpy, ShoppingListItemUpdaterSpy);
+}, ShoppingListItemDeleterSpy, EditItemForm);
 
 export const Loading = () => <ItemListLoading shoppingList={shoppingList}/>

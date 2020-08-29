@@ -3,6 +3,7 @@ import React from 'react';
 import FirestoreService from "./services/FirestoreService";
 
 import ItemListConstructor from "./ItemList";
+import EditItemFormConstructor from './ItemList/EditItemForm';
 import AddItemFormConstructor from './AddItemForm';
 import ShoppingListViewerConstructor from './ShoppingListViewer';
 import ListSelectorConstructor from './ListSelector';
@@ -20,7 +21,7 @@ function AppConstructor(authenticator: Authenticator, firebase: firebase.app.App
   const ShoppingListViewer = ShoppingListViewerConstructor(
     ListSelectorConstructor(firestoreService),
     AddItemFormConstructor(firestoreService.readdShoppingListItem.bind(firestoreService), searchAdaptor, searchAdaptor),
-    ItemListConstructor(firestoreService, firestoreService, searchAdaptor),
+    ItemListConstructor(firestoreService, firestoreService, EditItemFormConstructor(searchAdaptor)),
     CreateShoppingListFormConstructor(firestoreService)
   );
 
