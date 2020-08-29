@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import ShoppingListItem from '../domain/ShoppingListItem';
 import ShoppingList from "../domain/ShoppingList";
-import { Segment, Button, Icon, Header, Loader, Dimmer, Form, Input, Label } from "semantic-ui-react";
-import UnitsSelector from "./UnitsSelector";
+import { Segment, Button, Icon, Header, Loader, Dimmer, Label } from "semantic-ui-react";
+import EditItemFormConstructor from "./EditItemForm";
 
 interface ShoppingListItemFetcher {
   subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: (error: Error) => void): () => void;
@@ -12,7 +12,7 @@ interface ShoppingListItemDeleter {
   deleteItem(shoppingListItem: ShoppingListItem): void;
 }
 
-interface ShoppingListItemUpdater {
+export interface ShoppingListItemUpdater {
   updateItem(shoppingListItem: ShoppingListItem): Promise<unknown>;
 }
 
@@ -25,6 +25,8 @@ function ItemListConstructor(
   shoppingListItemDeleter: ShoppingListItemDeleter,
   shoppingListItemUpdater: ShoppingListItemUpdater,
   ) {
+  const EditItemForm = EditItemFormConstructor(shoppingListItemUpdater);
+
   return function ItemList({ shoppingList } : ItemListProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [fetchError, setFetchError] = useState<Error|undefined>(undefined);
@@ -66,47 +68,10 @@ function ItemListConstructor(
   }
 
   function ListItem({ item } : { item: ShoppingListItem }) {
-    const [itemName, setItemName] = useState(item.name);
-    const [itemQuantityScalar, setQuantityScalar] = useState(item.quantity?.scalar);
-    const [itemQuantityUnits, setQuantityUnits] = useState(item.quantity?.units);
     const [isEditing, setIsEditing] = useState(false);
 
     if(isEditing) {
-      return <Form>
-        <Form.Field>
-          <label>
-            Name
-            <Input value={itemName} onChange={({ target }) => setItemName(target.value) } />
-          </label>
-        </Form.Field>
-        <Form.Group inline>
-          <Form.Field>
-            <label>
-              Quantity
-              <Input value={itemQuantityScalar} onChange={({ target }) => setQuantityScalar(Number.parseInt(target.value)) } style={{paddingLeft: '1em'}} />
-            </label>
-          </Form.Field>
-          <Form.Field>
-            <UnitsSelector value={itemQuantityUnits} onChange={setQuantityUnits}/>
-          </Form.Field>
-        </Form.Group>
-        <Button type="submit" onClick={async () => {
-          const updatedItem = {
-            ...item,
-            name: itemName
-          };
-          if(itemQuantityScalar) {
-            updatedItem.quantity = {
-              scalar: itemQuantityScalar
-            }
-            if(itemQuantityUnits) {
-              updatedItem.quantity.units = itemQuantityUnits
-            }
-          }
-          await shoppingListItemUpdater.updateItem(updatedItem);
-          setIsEditing(false);
-        }}>Save</Button>
-      </Form>;
+      return <EditItemForm item={item} onSave={() => setIsEditing(false)} />;
     }
 
     return <>
