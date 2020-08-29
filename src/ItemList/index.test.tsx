@@ -158,6 +158,49 @@ describe('with one item on the shopping list', () => {
       });
     });
 
+    describe('saving a quantity without units', () => {
+      beforeEach(async () => {
+        fireEvent.change(
+          await screen.findByLabelText(/quantity/i),
+          { target: { value: '900' } }
+        );
+
+        await act(async () => {
+          fireEvent.click(await screen.findByText(/save/i));
+        });
+      });
+
+      test('calls the shoppingListItemUpdater', async () => {
+        expect(shoppingListItemUpdaterSpy.updateItem).toHaveBeenLastCalledWith({
+          ...lasagneSheetItem,
+          quantity: { scalar: 900 }
+        });
+      });
+    });
+
+    describe('saving a quantity with units', () => {
+      beforeEach(async () => {
+        fireEvent.change(
+          await screen.findByLabelText(/quantity/i),
+          { target: { value: '10' } }
+        );
+
+        screen.getByRole('listbox').click();
+        screen.getByText('ml').click();
+
+        await act(async () => {
+          fireEvent.click(await screen.findByText(/save/i));
+        });
+      });
+
+      test('calls the shoppingListItemUpdater', async () => {
+        expect(shoppingListItemUpdaterSpy.updateItem).toHaveBeenLastCalledWith({
+          ...lasagneSheetItem,
+          quantity: { scalar: 10, units: 'ml' }
+        });
+      });
+    });
+
     test('prepopulates the name field', async () => {
       expect(await screen.getByLabelText(/name/i)).toHaveValue(lasagneSheetItem.name);
     });

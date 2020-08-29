@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import ShoppingListItem from '../domain/ShoppingListItem';
 import ShoppingList from "../domain/ShoppingList";
 import { Segment, Button, Icon, Header, Loader, Dimmer, Form, Input, Label } from "semantic-ui-react";
+import UnitsSelector from "./UnitsSelector";
 
 interface ShoppingListItemFetcher {
   subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: (error: Error) => void): () => void;
@@ -66,6 +67,8 @@ function ItemListConstructor(
 
   function ListItem({ item } : { item: ShoppingListItem }) {
     const [itemName, setItemName] = useState(item.name);
+    const [itemQuantityScalar, setQuantityScalar] = useState(item.quantity?.scalar);
+    const [itemQuantityUnits, setQuantityUnits] = useState(item.quantity?.units);
     const [isEditing, setIsEditing] = useState(false);
 
     if(isEditing) {
@@ -76,11 +79,31 @@ function ItemListConstructor(
             <Input value={itemName} onChange={({ target }) => setItemName(target.value) } />
           </label>
         </Form.Field>
+        <Form.Group inline>
+          <Form.Field>
+            <label>
+              Quantity
+              <Input value={itemQuantityScalar} onChange={({ target }) => setQuantityScalar(Number.parseInt(target.value)) } style={{paddingLeft: '1em'}} />
+            </label>
+          </Form.Field>
+          <Form.Field>
+            <UnitsSelector value={itemQuantityUnits} onChange={setQuantityUnits}/>
+          </Form.Field>
+        </Form.Group>
         <Button type="submit" onClick={async () => {
-          await shoppingListItemUpdater.updateItem({
+          const updatedItem = {
             ...item,
-            name: itemName,
-          });
+            name: itemName
+          };
+          if(itemQuantityScalar) {
+            updatedItem.quantity = {
+              scalar: itemQuantityScalar
+            }
+            if(itemQuantityUnits) {
+              updatedItem.quantity.units = itemQuantityUnits
+            }
+          }
+          await shoppingListItemUpdater.updateItem(updatedItem);
           setIsEditing(false);
         }}>Save</Button>
       </Form>;
