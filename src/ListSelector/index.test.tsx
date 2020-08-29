@@ -30,30 +30,25 @@ const shoppingList: ShoppingList = {
   owner_uids: []
 };
 
-let onSelectSpy: jest.Mock;
-beforeEach(() => {
-  onSelectSpy = jest.fn();
-});
-
 function renderListSelection() {
   return render(<ListSelector onSelect={onSelectSpy} loggedInUser={loggedInUser} />);
 }
 
-test('displays loading message before fetch is resolved', async () => {
+const onSelectSpy = jest.fn<void, [ShoppingList]>();
+beforeEach(() => {
+  onSelectSpy.mockReset();
   renderListSelection();
+});
 
+test('displays loading message before fetch is resolved', async () => {
   expect(await screen.findByText(/loading/i)).toBeInTheDocument()
 });
 
 test('passes the loggedInUser to the fetcher', () => {
-  renderListSelection();
-
   expect(loggedInUserSpy).toEqual(loggedInUser);
 });
 
 test('hides loading message after fetch is resolved', async () => {
-  renderListSelection();
-
   act(() => {
     makeUpdate([]);
   });
@@ -62,8 +57,6 @@ test('hides loading message after fetch is resolved', async () => {
 });
 
 test('displays error message if fetch fails', async () => {
-  renderListSelection();
-
   act(() => {
     makeError();
   });
@@ -73,8 +66,6 @@ test('displays error message if fetch fails', async () => {
 })
 
 test('displays latest set of lists when updating twice', async () => {
-  renderListSelection();
-
   act(() => {
     makeUpdate([]);
     makeUpdate([shoppingList]);
@@ -99,7 +90,6 @@ describe('with one shopping list', () => {
   }
 
   test('raises onSelect event when interacting with dropdown', async () => {
-    renderListSelection();
     withOneShoppingList();
 
     (await screen.findByText(shoppingList.name)).click();
