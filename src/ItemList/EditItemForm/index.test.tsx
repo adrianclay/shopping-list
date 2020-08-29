@@ -20,81 +20,78 @@ const lasagneSheetItem = {
 
 const onSaveSpy = jest.fn();
 
-describe('editing the item', () => {
+beforeEach(async () => {
+  const EditItemForm = EditItemFormConstructor(shoppingListItemUpdaterSpy);
+  render(<EditItemForm item={lasagneSheetItem} onSave={onSaveSpy} />);
+});
+
+describe('saving a new name', () => {
   beforeEach(async () => {
-    const EditItemForm = EditItemFormConstructor(shoppingListItemUpdaterSpy);
-    render(<EditItemForm item={lasagneSheetItem} onSave={onSaveSpy} />);
-  });
+    fireEvent.change(
+      await screen.findByLabelText(/name/i),
+      { target: { value: 'Chicken nuggets' } }
+    );
 
-  describe('saving a new name', () => {
-    beforeEach(async () => {
-      fireEvent.change(
-        await screen.findByLabelText(/name/i),
-        { target: { value: 'Chicken nuggets' } }
-      );
-
-      await act(async () => {
-        fireEvent.click(await screen.findByText(/save/i));
-      });
-    });
-
-    test('calls the shoppingListItemUpdater', async () => {
-      expect(shoppingListItemUpdaterSpy.updateItem).toHaveBeenLastCalledWith({
-        ...lasagneSheetItem,
-        name: 'Chicken nuggets'
-      });
-    });
-
-    test('calls the onSave prop', () => {
-      expect(onSaveSpy).toHaveBeenCalled();
+    await act(async () => {
+      fireEvent.click(await screen.findByText(/save/i));
     });
   });
 
-  describe('saving a quantity without units', () => {
-    beforeEach(async () => {
-      fireEvent.change(
-        await screen.findByLabelText(/quantity/i),
-        { target: { value: '900' } }
-      );
-
-      await act(async () => {
-        fireEvent.click(await screen.findByText(/save/i));
-      });
-    });
-
-    test('calls the shoppingListItemUpdater', async () => {
-      expect(shoppingListItemUpdaterSpy.updateItem).toHaveBeenLastCalledWith({
-        ...lasagneSheetItem,
-        quantity: { scalar: 900 }
-      });
+  test('calls the shoppingListItemUpdater', async () => {
+    expect(shoppingListItemUpdaterSpy.updateItem).toHaveBeenLastCalledWith({
+      ...lasagneSheetItem,
+      name: 'Chicken nuggets'
     });
   });
 
-  describe('saving a quantity with units', () => {
-    beforeEach(async () => {
-      fireEvent.change(
-        await screen.findByLabelText(/quantity/i),
-        { target: { value: '10' } }
-      );
+  test('calls the onSave prop', () => {
+    expect(onSaveSpy).toHaveBeenCalled();
+  });
+});
 
-      screen.getByRole('listbox').click();
-      screen.getByText('ml').click();
+describe('saving a quantity without units', () => {
+  beforeEach(async () => {
+    fireEvent.change(
+      await screen.findByLabelText(/quantity/i),
+      { target: { value: '900' } }
+    );
 
-      await act(async () => {
-        fireEvent.click(await screen.findByText(/save/i));
-      });
-    });
-
-    test('calls the shoppingListItemUpdater', async () => {
-      expect(shoppingListItemUpdaterSpy.updateItem).toHaveBeenLastCalledWith({
-        ...lasagneSheetItem,
-        quantity: { scalar: 10, units: 'ml' }
-      });
+    await act(async () => {
+      fireEvent.click(await screen.findByText(/save/i));
     });
   });
 
-  test('prepopulates the name field', async () => {
-    expect(await screen.getByLabelText(/name/i)).toHaveValue(lasagneSheetItem.name);
+  test('calls the shoppingListItemUpdater', async () => {
+    expect(shoppingListItemUpdaterSpy.updateItem).toHaveBeenLastCalledWith({
+      ...lasagneSheetItem,
+      quantity: { scalar: 900 }
+    });
+  });
+});
+
+describe('saving a quantity with units', () => {
+  beforeEach(async () => {
+    fireEvent.change(
+      await screen.findByLabelText(/quantity/i),
+      { target: { value: '10' } }
+    );
+
+    screen.getByRole('listbox').click();
+    screen.getByText('ml').click();
+
+    await act(async () => {
+      fireEvent.click(await screen.findByText(/save/i));
+    });
   });
 
+  test('calls the shoppingListItemUpdater', async () => {
+    expect(shoppingListItemUpdaterSpy.updateItem).toHaveBeenLastCalledWith({
+      ...lasagneSheetItem,
+      quantity: { scalar: 10, units: 'ml' }
+    });
+  });
+});
+
+test('prepopulates the name field', async () => {
+  expect(await screen.getByLabelText(/name/i)).toHaveValue(lasagneSheetItem.name);
 });
