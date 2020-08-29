@@ -5,10 +5,15 @@ import ShoppingListItem from "../../domain/ShoppingListItem";
 import UnitsSelector from "../UnitsSelector";
 import { ShoppingListItemUpdater } from "..";
 
+export interface EditItemFormProps {
+  item: ShoppingListItem;
+  onSave: () => void;
+}
+
 function EditItemFormConstructor(
   shoppingListItemUpdater: ShoppingListItemUpdater,
 ) {
-  return function EditItemForm({ item, onSave } : { item: ShoppingListItem, onSave: () => void }) {
+  return function EditItemForm({ item, onSave } : EditItemFormProps) {
     const [itemName, setItemName] = useState(item.name);
     const [itemQuantityScalar, setQuantityScalar] = useState(item.quantity?.scalar);
     const [itemQuantityUnits, setQuantityUnits] = useState(item.quantity?.units);
