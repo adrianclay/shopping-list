@@ -228,22 +228,30 @@ describe('Creating a Shopping list item', () => {
     });
   });
 
-  describe('updating it with new name', () => {
+  describe('updating it with new name and quantity', () => {
     let updatedItem: Searchable<ShoppingListItem>;
 
     beforeEach(async () => {
       updatedItem = {
         ...createdItem,
         name: 'Brand new name',
-        search_queries: ['new']
+        search_queries: ['new'],
+        quantity: {
+          scalar: 100
+        }
       };
       await withAliceAuthenticated(firestoreService => firestoreService.updateItem(updatedItem));
     });
 
-    it('retrieves it back with the new name', () =>
+    it('retrieves it back with the new name and quantity', () =>
       expect(withAliceAuthenticated(
         firestoreService => fetchShoppingListItems(firestoreService, shoppingList))
-      ).resolves.toEqual([expect.objectContaining({name: 'Brand new name'})])
+      ).resolves.toEqual([
+        expect.objectContaining({
+          name: 'Brand new name',
+          quantity: { scalar: 100 }
+        })
+      ])
     );
 
     it('retrieves it back when searching with new search query', () =>

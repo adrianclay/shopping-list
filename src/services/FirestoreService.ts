@@ -79,13 +79,10 @@ export default class FirestoreService {
     await item.update({ deleted: true });
   }
 
-  async updateItem(shoppingListItem: Searchable<ShoppingListItem>) {
-    const itemsCollection = this.shoppingListItemCollection(shoppingListItem.list);
-    const item = itemsCollection.doc(shoppingListItem.id);
-    await item.update({
-      name: shoppingListItem.name,
-      search_queries: shoppingListItem.search_queries,
-    });
+  async updateItem({ id, list, ...attributes }: Searchable<ShoppingListItem>) {
+    const itemsCollection = this.shoppingListItemCollection(list);
+    const item = itemsCollection.doc(id);
+    await item.update(attributes);
   }
 
   private shoppingListItemCollection(shoppingList: ShoppingList) {
