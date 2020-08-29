@@ -92,6 +92,30 @@ describe('saving a quantity with units', () => {
   });
 });
 
+describe('saving a non-numeric quantity', () => {
+  beforeEach(async () => {
+    fireEvent.change(
+      await screen.findByLabelText(/quantity/i),
+      { target: { value: 'a few, but not too many' } }
+    );
+
+    await act(async () => {
+      fireEvent.click(await screen.findByText(/save/i));
+    });
+  });
+
+  test('displays the original value in the text box', async () => {
+    const quantityBox = await screen.findByLabelText(/quantity/i);
+    expect(quantityBox).toHaveValue('a few, but not too many');
+  });
+
+  test('calls the shoppingListItemUpdater', async () => {
+    expect(shoppingListItemUpdaterSpy.updateItem).toHaveBeenLastCalledWith({
+      ...lasagneSheetItem
+    });
+  });
+});
+
 test('prepopulates the name field', async () => {
   expect(await screen.getByLabelText(/name/i)).toHaveValue(lasagneSheetItem.name);
 });

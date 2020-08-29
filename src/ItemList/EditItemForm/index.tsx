@@ -15,7 +15,7 @@ function EditItemFormConstructor(
 ) {
   return function EditItemForm({ item, onSave } : EditItemFormProps) {
     const [itemName, setItemName] = useState(item.name);
-    const [itemQuantityScalar, setQuantityScalar] = useState(item.quantity?.scalar);
+    const [itemQuantityScalar, setQuantityScalar] = useState(item.quantity?.scalar.toString() || '');
     const [itemQuantityUnits, setQuantityUnits] = useState(item.quantity?.units);
 
     return <Form>
@@ -29,7 +29,7 @@ function EditItemFormConstructor(
         <Form.Field>
           <label>
             Quantity
-            <Input value={itemQuantityScalar} onChange={({ target }) => setQuantityScalar(Number.parseInt(target.value)) } style={{paddingLeft: '1em'}} />
+            <Input value={itemQuantityScalar} onChange={({ target }) => setQuantityScalar(target.value)} style={{paddingLeft: '1em'}} />
           </label>
         </Form.Field>
         <Form.Field>
@@ -41,10 +41,9 @@ function EditItemFormConstructor(
           ...item,
           name: itemName
         };
-        if(itemQuantityScalar) {
-          updatedItem.quantity = {
-            scalar: itemQuantityScalar
-          }
+        const scalar = Number.parseInt(itemQuantityScalar);
+        if(scalar) {
+          updatedItem.quantity = { scalar }
           if(itemQuantityUnits) {
             updatedItem.quantity.units = itemQuantityUnits
           }
