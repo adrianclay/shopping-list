@@ -3,7 +3,10 @@ import { Button, Form, Input } from "semantic-ui-react";
 
 import ShoppingListItem from "../../domain/ShoppingListItem";
 import UnitsSelector from "../UnitsSelector";
-import { ShoppingListItemUpdater } from "..";
+
+interface ShoppingListItemUpdater {
+  updateItem(shoppingListItem: ShoppingListItem): Promise<unknown>;
+}
 
 export interface EditItemFormProps {
   item: ShoppingListItem;

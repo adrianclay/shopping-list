@@ -12,10 +12,6 @@ interface ShoppingListItemDeleter {
   deleteItem(shoppingListItem: ShoppingListItem): void;
 }
 
-export interface ShoppingListItemUpdater {
-  updateItem(shoppingListItem: ShoppingListItem): Promise<unknown>;
-}
-
 export interface ItemListProps {
   shoppingList: ShoppingList;
 }
