@@ -12,7 +12,7 @@ const ShoppingListItemUpdaterSpy = {
 const EditItemForm = EditItemFormConstructor(ShoppingListItemUpdaterSpy);
 
 const item = {
-  list: { id: '200', name: 'Itemz', owner_uids: ['bob'] },
+  list: { id: '200' },
   id: '100',
   name: 'Grapes',
 };
