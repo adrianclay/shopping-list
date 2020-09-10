@@ -8,22 +8,14 @@ export interface ItemToAdd {
   list: ShoppingList;
 }
 
-interface ShoppingListItemAdder {
-  addShoppingListItem(item: ItemToAdd): void
-}
-
-interface ShoppingListItemSearcher {
-  searchForItems(shoppingList: ShoppingList, query: string): Promise<ShoppingListItem[]>
-}
-
 export interface AddItemFormProps {
   shoppingList: ShoppingList;
 }
 
 function AddItemFormConstructor(
   readdShoppingListItem: (item : ShoppingListItem) => void,
-  shoppingListItemAdder: ShoppingListItemAdder,
-  shoppingListItemSearcher: ShoppingListItemSearcher
+  addShoppingListItem: (item: ItemToAdd) => void,
+  searchForItems: (shoppingList: ShoppingList, query: string) => Promise<ShoppingListItem[]>
 ) {
   return function AddItemForm({ shoppingList } : AddItemFormProps) {
     const [itemName, setItemName] = useState('')
@@ -37,7 +29,7 @@ function AddItemFormConstructor(
       if (selectedItem) {
         readdShoppingListItem(selectedItem);
       } else {
-        shoppingListItemAdder.addShoppingListItem({
+        addShoppingListItem({
           name: itemName,
           list: shoppingList
         });
@@ -64,7 +56,7 @@ function AddItemFormConstructor(
 
     const updateOptions = async (searchQuery: string) => {
       setIsLoading(true);
-      setOptions(await shoppingListItemSearcher.searchForItems(shoppingList, searchQuery));
+      setOptions(await searchForItems(shoppingList, searchQuery));
       setIsLoading(false);
     };
 

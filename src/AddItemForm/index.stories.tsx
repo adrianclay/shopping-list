@@ -4,10 +4,10 @@ import {action} from '@storybook/addon-actions';
 
 const AddItemForm = AddItemFormConstructor(
   action('readdShoppingListItem'),
-  {
-    addShoppingListItem: action('addShoppingListItem')
-  }, {
-    searchForItems: (list, query) => { action('searchForItems')(list, query); return Promise.resolve([]); }
+  action('addShoppingListItem'),
+  (list, query) => {
+    action('searchForItems')(list, query);
+    return Promise.resolve([]);
   }
 );
 
