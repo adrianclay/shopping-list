@@ -4,21 +4,15 @@ import ShoppingList from "../domain/ShoppingList";
 import { Segment, Button, Icon, Header, Loader, Dimmer, Label } from "semantic-ui-react";
 import { EditItemFormProps } from "./EditItemForm";
 
-interface ShoppingListItemFetcher {
-  subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: (error: Error) => void): () => void;
-}
-
-interface ShoppingListItemDeleter {
-  deleteItem(shoppingListItem: ShoppingListItem): void;
-}
+type ShoppingListItemFetcher = (shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: (error: Error) => void) => () => void;
 
 export interface ItemListProps {
   shoppingList: ShoppingList;
 }
 
 function ItemListConstructor(
-  shoppingListItemFetcher: ShoppingListItemFetcher,
-  shoppingListItemDeleter: ShoppingListItemDeleter,
+  subscribeToItemChanges: ShoppingListItemFetcher,
+  deleteItem: (shoppingListItem: ShoppingListItem) => void,
   EditItemForm: React.FunctionComponent<EditItemFormProps>,
   ) {
   return function ItemList({ shoppingList } : ItemListProps) {
@@ -27,7 +21,7 @@ function ItemListConstructor(
     const [shoppingListItems, setShoppingListItems] = useState([] as ShoppingListItem[]);
 
     useEffect(() => {
-      return shoppingListItemFetcher.subscribeToItemChanges(shoppingList, stuff => {
+      return subscribeToItemChanges(shoppingList, stuff => {
         setIsLoading(false);
         setShoppingListItems(stuff);
       }, (error) => {
@@ -70,7 +64,7 @@ function ItemListConstructor(
 
     return <>
       {item.name} {quantity(item)}
-      <Button floated={"right"} size="mini" onClick={() => shoppingListItemDeleter.deleteItem(item)}>
+      <Button floated={"right"} size="mini" onClick={() => deleteItem(item)}>
         Delete
       </Button>
       <Button floated={"right"} size="mini" onClick={() => setIsEditing(true)}>

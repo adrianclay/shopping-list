@@ -24,19 +24,15 @@ function performItemsUpdateError() {
   });
 }
 
-const shoppingListItemFetcherStub = {
-  subscribeToItemChanges(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: (error: Error) => void): () => void {
-    expect(shoppingList).toEqual(shoppingList);
-    stubOnUpdate = onUpdate;
-    stubOnError = onError;
+const shoppingListItemFetcherStub = (shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: (error: Error) => void) => {
+  expect(shoppingList).toEqual(shoppingList);
+  stubOnUpdate = onUpdate;
+  stubOnError = onError;
 
-    return unsubscribeSpy;
-  }
+  return unsubscribeSpy;
 }
 
-const shoppingListItemDeleterSpy = {
-  deleteItem: jest.fn()
-};
+const shoppingListItemDeleterSpy = jest.fn<void, [ShoppingListItem]>();
 
 const editItemFormSpy = jest.fn<JSX.Element, [EditItemFormProps]>(() => <p>EditItemForm</p>);
 
@@ -119,7 +115,7 @@ describe('with one item on the shopping list', () => {
   test('calls the shoppingListItemDeleter when clicking the delete button', async () => {
     fireEvent.click(await screen.findByText(/delete/i));
 
-    expect(shoppingListItemDeleterSpy.deleteItem).toBeCalledWith(lasagneSheetItem);
+    expect(shoppingListItemDeleterSpy).toBeCalledWith(lasagneSheetItem);
   });
 
   test('hides the edit form', () => {

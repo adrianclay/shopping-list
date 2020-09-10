@@ -4,10 +4,6 @@ import { action } from '@storybook/addon-actions';
 import { Button, Segment } from 'semantic-ui-react';
 import { EditItemFormProps } from './EditItemForm';
 
-const ShoppingListItemDeleterSpy = {
-  deleteItem: action('deleteItem')
-};
-
 const EditItemForm = ({ onSave }: EditItemFormProps) => {
   return <>
     Edit Form
@@ -17,8 +13,8 @@ const EditItemForm = ({ onSave }: EditItemFormProps) => {
   </>;
 }
 
-const ItemList = ItemListConstructor({
-  subscribeToItemChanges(list, onUpdate, onError) {
+const ItemList = ItemListConstructor(
+  (list, onUpdate, onError) => {
     onUpdate([
       { name: 'Pickles', list, id: 'pickles' },
       { name: 'Cream soda', list, id: 'cream-soda', quantity: { scalar: 12 } },
@@ -26,7 +22,7 @@ const ItemList = ItemListConstructor({
     ]);
     return () => {};
   }
-}, ShoppingListItemDeleterSpy, EditItemForm);
+, action('deleteItem'), EditItemForm);
 
 const shoppingList= {
   id: 'adrians-list',
@@ -44,19 +40,19 @@ export const WithItems = () => <Segment.Group>
 </Segment.Group>
 
 
-const ItemListWithoutItems = ItemListConstructor({
-  subscribeToItemChanges(list, onUpdate, onError) {
+const ItemListWithoutItems = ItemListConstructor(
+  (list, onUpdate, onError) => {
     onUpdate([]);
     return () => {};
   }
-}, ShoppingListItemDeleterSpy, EditItemForm);
+, action('deleteItem'), EditItemForm);
 
 export const WithoutItems = () => <ItemListWithoutItems shoppingList={shoppingList}/>
 
-const ItemListLoading = ItemListConstructor({
-  subscribeToItemChanges(list, onUpdate, onError) {
+const ItemListLoading = ItemListConstructor(
+  (list, onUpdate, onError) => {
     return () => {};
   }
-}, ShoppingListItemDeleterSpy, EditItemForm);
+, action('deleteItem'), EditItemForm);
 
 export const Loading = () => <ItemListLoading shoppingList={shoppingList}/>
