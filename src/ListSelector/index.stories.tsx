@@ -7,7 +7,7 @@ const loggedInUser = {
   displayName: 'Rianne'
 };
 
-const ListSelectorWithItems = ListSelectorConstructor({ subscribeToListChanges: (loggedInUser, onUpdate, onError) => {
+const ListSelectorWithItems = ListSelectorConstructor((loggedInUser, onUpdate, onError) => {
   onUpdate([{
     id: '101',
     name: 'Christmas wish list',
@@ -18,18 +18,18 @@ const ListSelectorWithItems = ListSelectorConstructor({ subscribeToListChanges: 
     owner_uids: ['you'],
   }]);
   return () => {};
-} });
+});
 export const WithItems = () => <ListSelectorWithItems onSelect={action('onSelect')} loggedInUser={loggedInUser} />
 
-const ListSelectorWithError = ListSelectorConstructor({ subscribeToListChanges: (loggedInUser, onUpdate, onError) => {
+const ListSelectorWithError = ListSelectorConstructor((loggedInUser, onUpdate, onError) => {
   onError();
   return () => {};
-} });
+});
 export const WithError = () => <ListSelectorWithError onSelect={action('onSelect')} loggedInUser={loggedInUser} />
 
-const ListSelectorLoading = ListSelectorConstructor({ subscribeToListChanges: (loggedInUser, onUpdate, onError) => {
+const ListSelectorLoading = ListSelectorConstructor((loggedInUser, onUpdate, onError) => {
   return () => {};
-} });
+});
 export const Loading = () => <ListSelectorLoading onSelect={action('onSelect')} loggedInUser={loggedInUser} />
 
 

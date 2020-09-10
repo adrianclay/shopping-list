@@ -19,7 +19,7 @@ function AppConstructor(authenticator: Authenticator, firebase: firebase.app.App
   const Login = LoginConstructor(authenticator);
   const searchAdaptor = new ItemSearchingService(firestoreService);
   const ShoppingListViewer = ShoppingListViewerConstructor(
-    ListSelectorConstructor(firestoreService),
+    ListSelectorConstructor(firestoreService.subscribeToListChanges.bind(firestoreService)),
     AddItemFormConstructor(firestoreService.readdShoppingListItem.bind(firestoreService), searchAdaptor, searchAdaptor),
     ItemListConstructor(firestoreService, firestoreService, EditItemFormConstructor(searchAdaptor)),
     CreateShoppingListFormConstructor(firestoreService)

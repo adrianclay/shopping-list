@@ -3,9 +3,7 @@ import { Dropdown, DropdownProps } from "semantic-ui-react";
 import ShoppingList from "../domain/ShoppingList";
 import User from "../domain/User";
 
-interface ShoppingListFetcher {
-  subscribeToListChanges(loggedInUser: User, onUpdate: (lists: ShoppingList[]) => void, onError: () => void): () => void;
-}
+type ShoppingListFetcher = (loggedInUser: User, onUpdate: (lists: ShoppingList[]) => void, onError: () => void) => () => void;
 
 export interface ListSelectorProps {
   value?: ShoppingList | null;
@@ -13,7 +11,7 @@ export interface ListSelectorProps {
   loggedInUser: User;
 }
 
-function ListSelectorConstructor(shoppingListFetcher: ShoppingListFetcher) {
+function ListSelectorConstructor(subscribeToListChanges: ShoppingListFetcher) {
 
   return function ListSelector({ onSelect, loggedInUser, value }: ListSelectorProps) {
     const [isLoading, setIsLoading] = useState(true);
@@ -21,7 +19,7 @@ function ListSelectorConstructor(shoppingListFetcher: ShoppingListFetcher) {
     const [shoppingLists, setShoppingLists] = useState<ShoppingList[]>([]);
 
     useEffect(() => {
-      return shoppingListFetcher.subscribeToListChanges(loggedInUser, shoppingLists => {
+      return subscribeToListChanges(loggedInUser, shoppingLists => {
         setIsLoading(false);
         setShoppingLists(shoppingLists);
       }, () => {

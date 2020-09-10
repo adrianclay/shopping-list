@@ -9,15 +9,13 @@ let makeError: () => void;
 let unsubscribeSpy = jest.fn();
 let loggedInUserSpy: User | undefined;
 
-const shoppingListFetcherStub = {
-  subscribeToListChanges: (loggedInUser: User, onUpdate: (lists: ShoppingList[]) => void, onError: () => void) => {
-    loggedInUserSpy = loggedInUser;
-    makeUpdate = onUpdate;
-    makeError = onError;
-    return unsubscribeSpy;
-  }
+const subscribeToListChangesStub = (loggedInUser: User, onUpdate: (lists: ShoppingList[]) => void, onError: () => void) => {
+  loggedInUserSpy = loggedInUser;
+  makeUpdate = onUpdate;
+  makeError = onError;
+  return unsubscribeSpy;
 };
-const ListSelector = ListSelectorConstructor(shoppingListFetcherStub);
+const ListSelector = ListSelectorConstructor(subscribeToListChangesStub);
 
 const loggedInUser = {
   uid: 'rihanna',
