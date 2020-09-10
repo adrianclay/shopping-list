@@ -1,23 +1,15 @@
 import React, { useState } from "react";
 import { Button, Form, Input } from "semantic-ui-react";
-import ItemQuantity from "../../domain/ItemQuantity";
 
+import ShoppingListItem from "../../domain/ShoppingListItem";
 import UnitsSelector from "../UnitsSelector";
 
-interface Item {
-  name: string;
-  quantity?: ItemQuantity;
-  list: {
-    id: string;
-  }
-};
-
 interface ShoppingListItemUpdater {
-  updateItem(shoppingListItem: Item): Promise<unknown>;
+  updateItem(shoppingListItem: ShoppingListItem): Promise<unknown>;
 }
 
 export interface EditItemFormProps {
-  item: Item;
+  item: ShoppingListItem;
   onSave: () => void;
 }
 
