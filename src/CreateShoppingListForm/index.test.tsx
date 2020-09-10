@@ -18,7 +18,7 @@ beforeEach(() => {
   addShoppingListSpy = jest.fn<Promise<ShoppingList>, []>(() => new Promise(resolve => {
     finishAddingShoppingList = resolve;
   }));
-  const CreateShoppingListForm = CreateShoppingListFormConstructor({ addShoppingList: addShoppingListSpy });
+  const CreateShoppingListForm = CreateShoppingListFormConstructor(addShoppingListSpy);
   onCreateSpy = jest.fn();
   const { getByLabelText, getByText } = render(<CreateShoppingListForm loggedInUser={loggedInUser} onCreate={onCreateSpy} />);
 

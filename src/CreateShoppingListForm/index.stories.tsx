@@ -5,14 +5,12 @@ import ShoppingList from '../domain/ShoppingList';
 
 const simulatedSaveDelayInMs = 500;
 
-const CreateShoppingListForm = CreateShoppingListFormConstructor({
-  addShoppingList: (list) => {
-    action('addShoppingList')(list);
+const CreateShoppingListForm = CreateShoppingListFormConstructor(list => {
+  action('addShoppingList')(list);
 
-    return new Promise<ShoppingList>((resolve) => setTimeout(() => resolve({
-      ...list, id: 'random-' + Math.floor(Math.random() * 900 + 100)
-    }), simulatedSaveDelayInMs));
-  }
+  return new Promise<ShoppingList>((resolve) => setTimeout(() => resolve({
+    ...list, id: 'random-' + Math.floor(Math.random() * 900 + 100)
+  }), simulatedSaveDelayInMs));
 });
 
 export default {
