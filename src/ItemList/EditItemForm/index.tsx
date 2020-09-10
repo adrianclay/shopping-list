@@ -4,17 +4,13 @@ import { Button, Form, Input } from "semantic-ui-react";
 import ShoppingListItem from "../../domain/ShoppingListItem";
 import UnitsSelector from "../UnitsSelector";
 
-interface ShoppingListItemUpdater {
-  updateItem(shoppingListItem: ShoppingListItem): Promise<unknown>;
-}
-
 export interface EditItemFormProps {
   item: ShoppingListItem;
   onSave: () => void;
 }
 
 function EditItemFormConstructor(
-  shoppingListItemUpdater: ShoppingListItemUpdater,
+  updateItem: (shoppingListItem: ShoppingListItem) => Promise<unknown>,
 ) {
   return function EditItemForm({ item, onSave } : EditItemFormProps) {
     const [itemName, setItemName] = useState(item.name);
@@ -51,7 +47,7 @@ function EditItemFormConstructor(
             updatedItem.quantity.units = itemQuantityUnits
           }
         }
-        await shoppingListItemUpdater.updateItem(updatedItem);
+        await updateItem(updatedItem);
         onSave();
       }}>Save</Button>
     </Form>;

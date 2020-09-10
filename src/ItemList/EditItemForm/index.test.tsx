@@ -2,9 +2,7 @@ import { render, fireEvent, screen, act } from "@testing-library/react";
 import React from "react";
 import EditItemFormConstructor from ".";
 
-const shoppingListItemUpdaterSpy = {
-  updateItem: jest.fn()
-};
+const shoppingListItemUpdaterSpy = jest.fn();
 
 const shoppingList = {
   name: 'Art supplies',
@@ -38,7 +36,7 @@ describe('saving a new name', () => {
   });
 
   test('calls the shoppingListItemUpdater', async () => {
-    expect(shoppingListItemUpdaterSpy.updateItem).toHaveBeenLastCalledWith({
+    expect(shoppingListItemUpdaterSpy).toHaveBeenLastCalledWith({
       ...lasagneSheetItem,
       name: 'Chicken nuggets'
     });
@@ -62,7 +60,7 @@ describe('saving a quantity without units', () => {
   });
 
   test('calls the shoppingListItemUpdater', async () => {
-    expect(shoppingListItemUpdaterSpy.updateItem).toHaveBeenLastCalledWith({
+    expect(shoppingListItemUpdaterSpy).toHaveBeenLastCalledWith({
       ...lasagneSheetItem,
       quantity: { scalar: 900 }
     });
@@ -85,7 +83,7 @@ describe('saving a quantity with units', () => {
   });
 
   test('calls the shoppingListItemUpdater', async () => {
-    expect(shoppingListItemUpdaterSpy.updateItem).toHaveBeenLastCalledWith({
+    expect(shoppingListItemUpdaterSpy).toHaveBeenLastCalledWith({
       ...lasagneSheetItem,
       quantity: { scalar: 10, units: 'ml' }
     });
@@ -110,7 +108,7 @@ describe('saving a non-numeric quantity', () => {
   });
 
   test('calls the shoppingListItemUpdater', async () => {
-    expect(shoppingListItemUpdaterSpy.updateItem).toHaveBeenLastCalledWith({
+    expect(shoppingListItemUpdaterSpy).toHaveBeenLastCalledWith({
       ...lasagneSheetItem
     });
   });

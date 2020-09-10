@@ -2,14 +2,10 @@ import React from "react";
 import { action } from "@storybook/addon-actions";
 import EditItemFormConstructor from ".";
 
-const ShoppingListItemUpdaterSpy = {
-  updateItem: (item: any) => {
-    action('updateItem')(item);
-    return Promise.resolve(100);
-  }
-};
-
-const EditItemForm = EditItemFormConstructor(ShoppingListItemUpdaterSpy);
+const EditItemForm = EditItemFormConstructor(item => {
+  action('updateItem')(item);
+  return Promise.resolve(100);
+});
 
 const item = {
   list: { id: '200', name: 'Itemz', owner_uids: ['bob'] },
