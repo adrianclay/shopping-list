@@ -1,20 +1,13 @@
 import { render, fireEvent, screen, act } from "@testing-library/react";
 import React from "react";
 import EditItemFormConstructor from ".";
+import ShoppingListItemFactory from "../../factories/ShoppingListItem";
 
 const shoppingListItemUpdaterSpy = jest.fn();
 
-const shoppingList = {
-  name: 'Art supplies',
-  id: '1ARTYlist',
-  owner_uids: ['neil']
-};
-
-const lasagneSheetItem = {
+const lasagneSheetItem = ShoppingListItemFactory.build({
   name: 'Lasagne Sheets',
-  id: '190',
-  list: shoppingList
-};
+});
 
 const onSaveSpy = jest.fn();
 
