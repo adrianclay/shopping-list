@@ -1,16 +1,11 @@
 import React from "react";
 import EventLogViewer, { Event } from ".";
+import { days, hours, minutes } from "../RelativeTime/periods";
 
 export default {
   title: 'EventLogViewer',
   component: EventLogViewer,
 };
-
-const milliseconds = 1;
-const seconds = 1000 * milliseconds;
-const minutes = 60 * seconds;
-const hours = 60 * minutes;
-const days = 24 * hours;
 
 const events : Event[] = [
   {
