@@ -8,6 +8,7 @@ import { ListSelectorProps } from "../ListSelector";
 import { AddItemFormProps } from "../AddItemForm";
 import { CreateShoppingListFormProps } from "../CreateShoppingListForm";
 import { LoggedInUserContext } from "../Login";
+import ShoppingListFactory from "../factories/ShoppingList";
 
 const loggedInUser = {
   uid: '100',
@@ -79,11 +80,10 @@ describe('clicking create list', () => {
   });
 
   describe('and creating a list', () => {
-    const newlyCreatedShoppingList: ShoppingList = {
+    const newlyCreatedShoppingList = ShoppingListFactory.build({
       id: 'fresh-list',
       name: 'List of freshness',
-      owner_uids: [],
-    };
+    });
 
     beforeEach(() => {
       act(() => {
@@ -102,11 +102,10 @@ describe('clicking create list', () => {
 });
 
 describe('selecting a shopping list', () => {
-  const selectedShoppingList: ShoppingList = {
-    name: 'Adrians fantastic list',
+  const selectedShoppingList = ShoppingListFactory.build({
     id: '200',
-    owner_uids: []
-  };
+    name: 'Adrians fantastic list',
+  });
 
   beforeEach(() => {
     act(() => {
