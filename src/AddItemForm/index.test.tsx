@@ -86,10 +86,10 @@ describe('Searching for "Granulated"', () => {
       });
 
       test('calls the addShoppingListItem service', () => {
-        expect(addShoppingListItemMock).toBeCalledWith<[ShoppingListItem]>({
+        expect(addShoppingListItemMock).toBeCalledWith<[ItemToAdd]>({
           name: 'Granulated',
           list: shoppingList,
-        })
+        });
       });
 
       test('empties the search box', () => {
