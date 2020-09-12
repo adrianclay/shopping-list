@@ -1,5 +1,7 @@
 import React from "react";
-import EventLogViewer, { Event } from ".";
+
+import EventLogViewer from ".";
+import ShoppingListEvent from "../domain/ShoppingListEvent";
 import { days, hours, minutes } from "../RelativeTime/periods";
 
 export default {
@@ -7,7 +9,7 @@ export default {
   component: EventLogViewer,
 };
 
-const events : Event[] = [
+const events : ShoppingListEvent[] = [
   {
     type: 'added',
     item: {
