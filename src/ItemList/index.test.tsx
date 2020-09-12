@@ -4,6 +4,8 @@ import {render, act, fireEvent, screen} from '@testing-library/react';
 import ShoppingListItem from '../domain/ShoppingListItem';
 import ShoppingList from '../domain/ShoppingList';
 import { EditItemFormProps } from './EditItemForm';
+import ShoppingListFactory from '../factories/ShoppingList';
+import ShoppingListItemFactory from '../factories/ShoppingListItem';
 
 
 let stubOnUpdate: (value: ShoppingListItem[]) => void;
@@ -38,17 +40,14 @@ const editItemFormSpy = jest.fn<JSX.Element, [EditItemFormProps]>(() => <p>EditI
 
 const ItemList = ItemListConstructor(shoppingListItemFetcherStub, shoppingListItemDeleterSpy, editItemFormSpy);
 
-const shoppingList = {
+const shoppingList = ShoppingListFactory.build({
   name: 'Art supplies',
-  id: '1ARTYlist',
-  owner_uids: ['neil']
-};
+});
 
-const lasagneSheetItem = {
+const lasagneSheetItem = ShoppingListItemFactory.build({
   name: 'Lasagne Sheets',
-  id: '190',
   list: shoppingList
-};
+});
 
 test('displays "no items in list" with zero items', async () => {
   const { findByText } = render(<ItemList shoppingList={shoppingList} />);

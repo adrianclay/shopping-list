@@ -3,6 +3,7 @@ import ItemListConstructor from '.';
 import { action } from '@storybook/addon-actions';
 import { Button, Segment } from 'semantic-ui-react';
 import { EditItemFormProps } from './EditItemForm';
+import ShoppingListFactory from '../factories/ShoppingList';
 
 const EditItemForm = ({ onSave }: EditItemFormProps) => {
   return <>
@@ -24,11 +25,7 @@ const ItemList = ItemListConstructor(
   }
 , action('deleteItem'), EditItemForm);
 
-const shoppingList= {
-  id: 'adrians-list',
-  name: 'Bits and Bobs',
-  owner_uids: ['adrian']
-};
+const shoppingList = ShoppingListFactory.build();
 
 export default {
   title: 'ItemList',
