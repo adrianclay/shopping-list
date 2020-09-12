@@ -3,6 +3,7 @@ import React from "react";
 import ShoppingList from "../domain/ShoppingList";
 import User from "../domain/User";
 import ListSelectorConstructor from ".";
+import ShoppingListFactory from "../factories/ShoppingList";
 
 let makeUpdate: (lists: ShoppingList[]) => void;
 let makeError: () => void;
@@ -22,11 +23,10 @@ const loggedInUser = {
   displayName: 'Rihanna'
 };
 
-const shoppingList: ShoppingList = {
+const shoppingList = ShoppingListFactory.build({
   id: 'xmas',
   name: 'Adrians Christmas List',
-  owner_uids: []
-};
+});
 
 function renderListSelection() {
   return render(<ListSelector onSelect={onSelectSpy} loggedInUser={loggedInUser} />);

@@ -1,6 +1,7 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 import ListSelectorConstructor from './';
+import ShoppingListFactory from '../factories/ShoppingList';
 
 const loggedInUser = {
   uid: 'rianne',
@@ -8,15 +9,11 @@ const loggedInUser = {
 };
 
 const ListSelectorWithItems = ListSelectorConstructor((loggedInUser, onUpdate, onError) => {
-  onUpdate([{
-    id: '101',
+  onUpdate([ShoppingListFactory.build({
     name: 'Christmas wish list',
-    owner_uids: ['you'],
-  },{
-    id: '102',
+  }), ShoppingListFactory.build({
     name: 'Weekly shop',
-    owner_uids: ['you'],
-  }]);
+  })]);
   return () => {};
 });
 export const WithItems = () => <ListSelectorWithItems onSelect={action('onSelect')} loggedInUser={loggedInUser} />
