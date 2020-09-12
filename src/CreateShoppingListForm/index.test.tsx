@@ -2,6 +2,7 @@ import { render, fireEvent, screen, waitForElementToBeRemoved, act } from "@test
 import React from "react";
 import CreateShoppingListFormConstructor from ".";
 import ShoppingList from "../domain/ShoppingList";
+import ShoppingListFactory from "../factories/ShoppingList";
 
 let addShoppingListSpy: jest.Mock;
 let nameTextBox: HTMLElement;
@@ -50,11 +51,9 @@ describe('populating the name', () => {
     });
 
     describe('finish loading, hides the loading message', () => {
-      const shoppingList = {
+      const shoppingList = ShoppingListFactory.build({
         name: 'Underwear list',
-        id: 'underwear-list',
-        owner_uids: [],
-      };
+      });
 
       beforeEach(() =>
         act(async () => {
