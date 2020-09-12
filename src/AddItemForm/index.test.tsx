@@ -2,15 +2,15 @@ import AddItemFormConstructor, { ItemToAdd } from "./";
 import React from "react";
 import {fireEvent, render, screen} from "@testing-library/react";
 import ShoppingListItem from '../domain/ShoppingListItem';
+import ShoppingListFactory from "../factories/ShoppingList";
 
 let itemSearchBox: HTMLElement, addItemButton: HTMLElement
 let readdShoppingListItem: jest.Mock<void, [ShoppingListItem]>
 let addShoppingListItemMock: jest.Mock<void, [ItemToAdd]>
 
-const shoppingList = {
-  name: 'Cake ingredients',
-  id: '08CAKE90'
-};
+const shoppingList = ShoppingListFactory.build({
+  name: 'Cake ingredients'
+});
 
 const searchForItemSpy = jest.fn((list) => {return Promise.resolve([{list, id: 'x', name: 'Granulated Sugar' }])});
 
