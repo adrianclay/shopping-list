@@ -73,6 +73,7 @@ describe('Firestore security rules', () => {
       assertUnauthenticatedCant(firestoreService =>
         firestoreService.addShoppingList({
           name: 'This list should not be created',
+          // @ts-expect-error
           owner_uids: null,
         })
       )
