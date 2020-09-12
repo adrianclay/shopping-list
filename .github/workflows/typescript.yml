@@ -36,9 +36,20 @@ jobs:
       - name: Test
         run: CI=true $(yarn global bin)/firebase emulators:exec --only firestore "yarn test"
 
+  typescript:
+    name: TypeScript Compiler type check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Install node dependencies via yarn
+        run: yarn install
+      - name: TypeScript compiler
+        run: yarn run tsc
+
   deploy:
     name: Deploy
-    needs: [test, build]
+    needs: [build, test, typescript]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
