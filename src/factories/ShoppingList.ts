@@ -7,6 +7,7 @@ const ShoppingListFactory = Factory.Sync.makeFactory<ShoppingList>({
   owner_uids: [
     'bob'
   ],
+  recent_events: [],
 });
 
 export default ShoppingListFactory;

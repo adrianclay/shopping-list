@@ -6,7 +6,8 @@ import ShoppingListItem from "../domain/ShoppingListItem";
 const shoppingListDummy : ShoppingList = {
   id: '',
   name: '',
-  owner_uids: []
+  owner_uids: [],
+  recent_events: [],
 };
 
 const itemStoreSpy = {

@@ -97,7 +97,8 @@ describe('Firestore security rules', () => {
     const nonExistentList: ShoppingList = {
       id: 'fake-list',
       name: 'Big old fake list',
-      owner_uids: [alice.uid]
+      owner_uids: [alice.uid],
+      recent_events: [],
     };
 
     it('Does not read items a different users list', () =>
@@ -143,23 +144,27 @@ describe('Firestore security rules', () => {
 
 describe('When Alice creates a shopping list', () => {
   let addedShoppingList: ShoppingList;
-  const shoppingListRecord = {
+  const addShoppingListRequest = {
     name: 'Adrians fantastic shopping list',
     owner_uids: [alice.uid]
   };
 
   beforeEach(async () => {
     await withAliceAuthenticated(async firestoreService => {
-      addedShoppingList = await firestoreService.addShoppingList(shoppingListRecord);
+      addedShoppingList = await firestoreService.addShoppingList(addShoppingListRequest);
     });
   });
 
   it('created record contains same data passed in', () => {
-    expect(addedShoppingList).toEqual(expect.objectContaining(shoppingListRecord));
+    expect(addedShoppingList).toEqual(expect.objectContaining(addShoppingListRequest));
   });
 
-  it('created recor contains an id field', () => {
+  it('created record contains an id field', () => {
     expect(addedShoppingList.id).toBeTruthy();
+  });
+
+  it('created record contains an empty recent_events field', () => {
+    expect(addedShoppingList.recent_events).toEqual([]);
   });
 
   it('can retrieve it back, when querying alices lists', () =>

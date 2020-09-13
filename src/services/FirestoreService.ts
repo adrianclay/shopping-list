@@ -2,6 +2,7 @@ import * as firebase from "firebase/app";
 import ShoppingListItem from "../domain/ShoppingListItem";
 import ShoppingList from "../domain/ShoppingList";
 import User from "../domain/User";
+import ShoppingListEvent from "../domain/ShoppingListEvent";
 import { ItemToAdd } from "../AddItemForm";
 import { Searchable } from "./ItemSearchingService";
 import { AddShoppingListRequest } from "../CreateShoppingListForm";
@@ -9,6 +10,7 @@ import { AddShoppingListRequest } from "../CreateShoppingListForm";
 interface ShoppingListRecord {
   name: string;
   owner_uids: string[];
+  recent_events: ShoppingListEvent[];
 }
 export default class FirestoreService {
   private firebase: firebase.app.App;
@@ -67,10 +69,14 @@ export default class FirestoreService {
   }
 
   async addShoppingList(list: AddShoppingListRequest): Promise<ShoppingList> {
-    const docReference = await this.firebase.firestore().collection('shopping-list').add(list);
+    const record : ShoppingListRecord = {
+      ...list,
+      recent_events: [],
+    };
+    const docReference = await this.firebase.firestore().collection('shopping-list').add(record);
     return {
       id: docReference.id,
-      ...list,
+      ...record,
     };
   }
 
