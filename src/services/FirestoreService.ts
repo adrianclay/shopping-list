@@ -28,7 +28,7 @@ export default class FirestoreService {
   }
 
   subscribeToListChanges(loggedInUser: User, onUpdate: (items: ShoppingList[]) => void, onError: (error: Error) => void): () => void {
-    const shoppingListCollection = this.firebase.firestore().collection('shopping-list');
+    const shoppingListCollection = this.shoppingListCollection();
     const shoppingListsFilteredByLoggedInUser = shoppingListCollection.where('owner_uids', 'array-contains', loggedInUser.uid);
     return shoppingListsFilteredByLoggedInUser.onSnapshot(collection => {
       const items = collection.docs.map(item => {
@@ -73,7 +73,7 @@ export default class FirestoreService {
       ...list,
       recent_events: [],
     };
-    const docReference = await this.firebase.firestore().collection('shopping-list').add(record);
+    const docReference = await this.shoppingListCollection().add(record);
     return {
       id: docReference.id,
       ...record,
@@ -90,6 +90,10 @@ export default class FirestoreService {
     const itemsCollection = this.shoppingListItemCollection(list);
     const item = itemsCollection.doc(id);
     await item.update(attributes);
+  }
+
+  private shoppingListCollection() {
+    return this.firebase.firestore().collection('shopping-list');
   }
 
   private shoppingListItemCollection(shoppingList: ShoppingList) {
