@@ -8,7 +8,12 @@ export interface CreateShoppingListFormProps {
   onCreate?: (list: ShoppingList) => void;
 }
 
-function CreateShoppingListFormConstructor(addShoppingList: (shoppingList: { name: string, owner_uids: string[] }) => Promise<ShoppingList>) {
+export interface AddShoppingListRequest {
+  name: string;
+  owner_uids: string[];
+}
+
+function CreateShoppingListFormConstructor(addShoppingList: (shoppingList: AddShoppingListRequest) => Promise<ShoppingList>) {
   return function CreateShoppingListForm({ loggedInUser, onCreate }: CreateShoppingListFormProps) {
     const [name, setName] = useState('');
     const [isLoading, setIsLoading] = useState(false);

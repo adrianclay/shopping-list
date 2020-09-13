@@ -4,6 +4,7 @@ import ShoppingList from "../domain/ShoppingList";
 import User from "../domain/User";
 import { ItemToAdd } from "../AddItemForm";
 import { Searchable } from "./ItemSearchingService";
+import { AddShoppingListRequest } from "../CreateShoppingListForm";
 
 interface ShoppingListRecord {
   name: string;
@@ -65,11 +66,11 @@ export default class FirestoreService {
     })
   }
 
-  async addShoppingList(list: ShoppingListRecord): Promise<ShoppingList> {
+  async addShoppingList(list: AddShoppingListRequest): Promise<ShoppingList> {
     const docReference = await this.firebase.firestore().collection('shopping-list').add(list);
     return {
       id: docReference.id,
-      ...list
+      ...list,
     };
   }
 
