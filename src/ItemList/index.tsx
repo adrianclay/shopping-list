@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
+import { Segment, Button, Icon, Header, Loader, Dimmer, Label } from "semantic-ui-react";
+import _useService from "../useService";
 import ShoppingListItem from '../domain/ShoppingListItem';
 import ShoppingList from "../domain/ShoppingList";
-import { Segment, Button, Icon, Header, Loader, Dimmer, Label } from "semantic-ui-react";
 import { EditItemFormProps } from "./EditItemForm";
 
 type ShoppingListItemFetcher = (shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: (error: Error) => void) => () => void;
@@ -15,19 +16,10 @@ function ItemListConstructor(
   deleteItem: (shoppingListItem: ShoppingListItem) => void,
   EditItemForm: React.FunctionComponent<EditItemFormProps>,
   ) {
-  return function ItemList({ shoppingList } : ItemListProps) {
-    const [isLoading, setIsLoading] = useState(true);
-    const [fetchError, setFetchError] = useState<Error|undefined>(undefined);
-    const [shoppingListItems, setShoppingListItems] = useState([] as ShoppingListItem[]);
+  const useService = _useService(subscribeToItemChanges);
 
-    useEffect(() => {
-      return subscribeToItemChanges(shoppingList, stuff => {
-        setIsLoading(false);
-        setShoppingListItems(stuff);
-      }, (error) => {
-        setFetchError(error);
-      });
-    }, [shoppingList]);
+  return function ItemList({ shoppingList } : ItemListProps) {
+    const [isLoading, fetchError, shoppingListItems] = useService([], shoppingList);
 
     if (fetchError) {
       return <p>Error: {fetchError.message}</p>;
