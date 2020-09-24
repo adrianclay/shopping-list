@@ -19,7 +19,7 @@ const ListSelectorWithItems = ListSelectorConstructor((loggedInUser, onUpdate, o
 export const WithItems = () => <ListSelectorWithItems onSelect={action('onSelect')} loggedInUser={loggedInUser} />
 
 const ListSelectorWithError = ListSelectorConstructor((loggedInUser, onUpdate, onError) => {
-  onError();
+  onError(new Error('Lack of wiggle juice'));
   return () => {};
 });
 export const WithError = () => <ListSelectorWithError onSelect={action('onSelect')} loggedInUser={loggedInUser} />

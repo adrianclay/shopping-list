@@ -5,7 +5,7 @@ import _useService from "../useService";
 import ShoppingList from "../domain/ShoppingList";
 import User from "../domain/User";
 
-type ShoppingListFetcher = (loggedInUser: User, onUpdate: (lists: ShoppingList[]) => void, onError: () => void) => () => void;
+type ShoppingListFetcher = (loggedInUser: User, onUpdate: (lists: ShoppingList[]) => void, onError: (error: Error) => void) => () => void;
 
 export interface ListSelectorProps {
   value?: ShoppingList | null;

@@ -6,11 +6,11 @@ import ListSelectorConstructor from ".";
 import ShoppingListFactory from "../factories/ShoppingList";
 
 let makeUpdate: (lists: ShoppingList[]) => void;
-let makeError: () => void;
+let makeError: (error: Error) => void;
 let unsubscribeSpy = jest.fn();
 let loggedInUserSpy: User | undefined;
 
-const subscribeToListChangesStub = (loggedInUser: User, onUpdate: (lists: ShoppingList[]) => void, onError: () => void) => {
+const subscribeToListChangesStub = (loggedInUser: User, onUpdate: (lists: ShoppingList[]) => void, onError: (error: Error) => void) => {
   loggedInUserSpy = loggedInUser;
   makeUpdate = onUpdate;
   makeError = onError;
@@ -56,7 +56,7 @@ test('hides loading message after fetch is resolved', async () => {
 
 test('displays error message if fetch fails', async () => {
   act(() => {
-    makeError();
+    makeError(new Error('Fetch failure message'));
   });
 
   expect(await screen.findByText(/error/i)).toBeInTheDocument()
