@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Dropdown, DropdownProps } from "semantic-ui-react";
+import _useService from "../useService";
+
 import ShoppingList from "../domain/ShoppingList";
 import User from "../domain/User";
 
@@ -12,20 +14,10 @@ export interface ListSelectorProps {
 }
 
 function ListSelectorConstructor(subscribeToListChanges: ShoppingListFetcher) {
+  const useService = _useService(subscribeToListChanges);
 
   return function ListSelector({ onSelect, loggedInUser, value }: ListSelectorProps) {
-    const [isLoading, setIsLoading] = useState(true);
-    const [fetchErrored, setFetchError] = useState(false);
-    const [shoppingLists, setShoppingLists] = useState<ShoppingList[]>([]);
-
-    useEffect(() => {
-      return subscribeToListChanges(loggedInUser, shoppingLists => {
-        setIsLoading(false);
-        setShoppingLists(shoppingLists);
-      }, () => {
-        setFetchError(true);
-      });
-    }, [loggedInUser]);
+    const [isLoading, fetchErrored, shoppingLists] = useService([], loggedInUser);
 
     if(fetchErrored) {
       return <p>Error</p>;
