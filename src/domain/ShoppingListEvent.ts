@@ -1,5 +1,5 @@
 export default interface ShoppingListEvent {
-  type: 'added' | 'deleted';
+  type: 'item_added' | 'item_deleted';
   item: {
     name: string;
     id: string;

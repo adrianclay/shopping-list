@@ -1,17 +1,13 @@
 import React from "react";
 
-import EventLogViewer from ".";
+import _EventLogViewer from ".";
 import ShoppingListEvent from "../domain/ShoppingListEvent";
+import ShoppingListFactory from "../factories/ShoppingList";
 import { days, hours, minutes } from "../RelativeTime/periods";
-
-export default {
-  title: 'EventLogViewer',
-  component: EventLogViewer,
-};
 
 const events : ShoppingListEvent[] = [
   {
-    type: 'added',
+    type: 'item_added',
     item: {
       name: 'Peas',
       id: 'peaz'
@@ -19,7 +15,7 @@ const events : ShoppingListEvent[] = [
     created_on: new Date(Date.now() - 3 * days)
   },
   {
-    type: 'deleted',
+    type: 'item_deleted',
     item: {
       name: 'Pudding',
       id: 'puddin'
@@ -27,7 +23,7 @@ const events : ShoppingListEvent[] = [
     created_on: new Date(Date.now() - 2 * hours)
   },
   {
-    type: 'added',
+    type: 'item_added',
     item: {
       name: 'Pudding',
       id: 'puddin'
@@ -36,4 +32,14 @@ const events : ShoppingListEvent[] = [
   }
 ];
 
-export const Example = () => <EventLogViewer events={events} />
+const EventLogViewer = _EventLogViewer((_a, onUpdate, _b) => {
+  onUpdate(events);
+  return () => {}
+});
+
+export default {
+  title: 'EventLogViewer',
+  component: EventLogViewer,
+};
+
+export const Example = () => <EventLogViewer shoppingList={ShoppingListFactory.build()} />
