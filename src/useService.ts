@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 
-function _useService<T, Y>(service: (request: Y, onUpdate: (update: T) => void, onError: (error: Error) => void) => () => void) {
-  return function useService(initialState: T, request: Y) {
+export type RealtimeService<R, D> = (request: R, onUpdate: (update: D) => void, onError: (error: Error) => void) => () => void;
+
+function _useService<R, D>(service: RealtimeService<R, D>) {
+  return function useService(initialState: D, request: R) {
     const [isLoading, setIsLoading] = useState(true);
     const [fetchErrored, setFetchError] = useState<Error|null>(null);
-    const [fetchedData, setFetchedData] = useState<T>(initialState);
+    const [fetchedData, setFetchedData] = useState<D>(initialState);
 
     useEffect(() => {
       return service(request, fetchedData => {

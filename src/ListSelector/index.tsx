@@ -1,11 +1,11 @@
 import React from "react";
 import { Dropdown, DropdownProps } from "semantic-ui-react";
-import _useService from "../useService";
+import _useService, { RealtimeService } from "../useService";
 
 import ShoppingList from "../domain/ShoppingList";
 import User from "../domain/User";
 
-type ShoppingListFetcher = (loggedInUser: User, onUpdate: (lists: ShoppingList[]) => void, onError: (error: Error) => void) => () => void;
+type ShoppingListFetcher = RealtimeService<User, ShoppingList[]>;
 
 export interface ListSelectorProps {
   value?: ShoppingList | null;

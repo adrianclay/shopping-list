@@ -1,11 +1,11 @@
 import React, {useState} from "react";
 import { Segment, Button, Icon, Header, Loader, Dimmer, Label } from "semantic-ui-react";
-import _useService from "../useService";
+import _useService, { RealtimeService } from "../useService";
 import ShoppingListItem from '../domain/ShoppingListItem';
 import ShoppingList from "../domain/ShoppingList";
 import { EditItemFormProps } from "./EditItemForm";
 
-type ShoppingListItemFetcher = (shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: (error: Error) => void) => () => void;
+type ShoppingListItemFetcher = RealtimeService<ShoppingList, ShoppingListItem[]>;
 
 export interface ItemListProps {
   shoppingList: ShoppingList;
