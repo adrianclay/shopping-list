@@ -1,44 +1,22 @@
 import React from 'react';
 import ItemListConstructor from './';
-import {render, act, fireEvent, screen} from '@testing-library/react';
+import {render, fireEvent, screen} from '@testing-library/react';
 import ShoppingListItem from '../domain/ShoppingListItem';
 import ShoppingList from '../domain/ShoppingList';
 import { EditItemFormProps } from './EditItemForm';
 import ShoppingListFactory from '../factories/ShoppingList';
 import ShoppingListItemFactory from '../factories/ShoppingListItem';
-
-
-let stubOnUpdate: (value: ShoppingListItem[]) => void;
-let stubOnError: (error: Error) => void;
-let unsubscribeSpy = jest.fn();
-
-function performItemsUpdate(items: ShoppingListItem[]) {
-  act(() => {
-    stubOnUpdate(items);
-  });
-}
+import { realtimeServiceStub } from '../setupTests';
 
 const error = new Error("Unhealthy snake, please check snake health.");
 
-function performItemsUpdateError() {
-  act(() => {
-    stubOnError(error);
-  });
-}
-
-const shoppingListItemFetcherStub = (shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: (error: Error) => void) => {
-  expect(shoppingList).toEqual(shoppingList);
-  stubOnUpdate = onUpdate;
-  stubOnError = onError;
-
-  return unsubscribeSpy;
-}
+const shoppingListItemFetcherStub = realtimeServiceStub<ShoppingList, ShoppingListItem[]>();
 
 const shoppingListItemDeleterSpy = jest.fn<void, [ShoppingListItem]>();
 
 const editItemFormSpy = jest.fn<JSX.Element, [EditItemFormProps]>(() => <p>EditItemForm</p>);
 
-const ItemList = ItemListConstructor(shoppingListItemFetcherStub, shoppingListItemDeleterSpy, editItemFormSpy);
+const ItemList = ItemListConstructor(shoppingListItemFetcherStub.service, shoppingListItemDeleterSpy, editItemFormSpy);
 
 const shoppingList = ShoppingListFactory.build({
   name: 'Art supplies',
@@ -52,7 +30,7 @@ const lasagneSheetItem = ShoppingListItemFactory.build({
 test('displays "no items in list" with zero items', async () => {
   const { findByText } = render(<ItemList shoppingList={shoppingList} />);
 
-  performItemsUpdate([]);
+  shoppingListItemFetcherStub.performUpdate([])
 
   expect(await findByText(/no items in Art supplies./i)).toBeInTheDocument();
 });
@@ -66,7 +44,7 @@ test('displays loading message before fetch is resolved', async () => {
 test('hides loading message after fetch is resolved', async () => {
   const { queryByText, findByText } = render(<ItemList shoppingList={shoppingList} />)
 
-  performItemsUpdate([lasagneSheetItem])
+  shoppingListItemFetcherStub.performUpdate([lasagneSheetItem])
   await findByText(/lasagne/i);
 
   expect(await queryByText(/loading/i)).toBeNull()
@@ -75,7 +53,7 @@ test('hides loading message after fetch is resolved', async () => {
 test('displays error message if fetch fails', async () => {
   const { findByText, queryByText } = render(<ItemList shoppingList={shoppingList} />)
 
-  performItemsUpdateError();
+  shoppingListItemFetcherStub.performError(error);
 
   const errorMessage = await findByText(/error/i);
   expect(errorMessage).toBeInTheDocument();
@@ -86,8 +64,8 @@ test('displays error message if fetch fails', async () => {
 test('displays latest set of items when updating twice', async () => {
   const { findByText } = render(<ItemList shoppingList={shoppingList} />)
 
-  performItemsUpdate([]);
-  performItemsUpdate([lasagneSheetItem])
+  shoppingListItemFetcherStub.performUpdate([]);
+  shoppingListItemFetcherStub.performUpdate([lasagneSheetItem])
 
   expect(await findByText(/lasagne sheets/i)).toBeInTheDocument();
 })
@@ -97,14 +75,14 @@ test('calls the unsubscribe method when unmounting', async () => {
 
   unmount();
 
-  expect(unsubscribeSpy).toBeCalledWith();
+  expect(shoppingListItemFetcherStub.unsubscribeSpy).toBeCalledWith();
 })
 
 describe('with one item on the shopping list', () => {
   beforeEach(() => {
     render(<ItemList shoppingList={shoppingList} />);
 
-    performItemsUpdate([lasagneSheetItem]);
+    shoppingListItemFetcherStub.performUpdate([lasagneSheetItem]);
   });
 
   test('it displays the items name', async () => {
@@ -160,7 +138,7 @@ describe('with an item with a quantity', () => {
   beforeEach(() => {
     render(<ItemList shoppingList={shoppingList} />);
 
-    performItemsUpdate([manyLasagneSheetItem]);
+    shoppingListItemFetcherStub.performUpdate([manyLasagneSheetItem]);
   });
 
   test('it displays the items quantity', async () => {

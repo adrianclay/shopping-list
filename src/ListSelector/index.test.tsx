@@ -1,22 +1,14 @@
-import { render, act, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import React from "react";
 import ShoppingList from "../domain/ShoppingList";
 import User from "../domain/User";
 import ListSelectorConstructor from ".";
 import ShoppingListFactory from "../factories/ShoppingList";
+import { realtimeServiceStub } from "../setupTests";
 
-let makeUpdate: (lists: ShoppingList[]) => void;
-let makeError: (error: Error) => void;
-let unsubscribeSpy = jest.fn();
-let loggedInUserSpy: User | undefined;
+const shoppingListFetcherStub = realtimeServiceStub<User, ShoppingList[]>();
 
-const subscribeToListChangesStub = (loggedInUser: User, onUpdate: (lists: ShoppingList[]) => void, onError: (error: Error) => void) => {
-  loggedInUserSpy = loggedInUser;
-  makeUpdate = onUpdate;
-  makeError = onError;
-  return unsubscribeSpy;
-};
-const ListSelector = ListSelectorConstructor(subscribeToListChangesStub);
+const ListSelector = ListSelectorConstructor(shoppingListFetcherStub.service);
 
 const loggedInUser = {
   uid: 'rihanna',
@@ -43,31 +35,25 @@ test('displays loading message before fetch is resolved', async () => {
 });
 
 test('passes the loggedInUser to the fetcher', () => {
-  expect(loggedInUserSpy).toEqual(loggedInUser);
+  expect(shoppingListFetcherStub.service.mock.calls[1][0]).toEqual(loggedInUser);
 });
 
 test('hides loading message after fetch is resolved', async () => {
-  act(() => {
-    makeUpdate([]);
-  });
+  shoppingListFetcherStub.performUpdate([]);
 
   expect(await screen.queryByText(/loading/i)).toBeNull()
 });
 
 test('displays error message if fetch fails', async () => {
-  act(() => {
-    makeError(new Error('Fetch failure message'));
-  });
+  shoppingListFetcherStub.performError(new Error('Fetch failure message'));
 
   expect(await screen.findByText(/error/i)).toBeInTheDocument()
   expect(await screen.queryByText(/loading/i)).toBeNull()
 })
 
 test('displays latest set of lists when updating twice', async () => {
-  act(() => {
-    makeUpdate([]);
-    makeUpdate([shoppingList]);
-  });
+  shoppingListFetcherStub.performUpdate([]);
+  shoppingListFetcherStub.performUpdate([shoppingList]);
 
   expect(await screen.findByText(/Adrians Christmas List/i)).toBeInTheDocument();
 })
@@ -77,14 +63,12 @@ test('calls the unsubscribe method when unmounting', async () => {
 
   unmount();
 
-  expect(unsubscribeSpy).toBeCalledWith();
+  expect(shoppingListFetcherStub.unsubscribeSpy).toBeCalledWith();
 })
 
 describe('with one shopping list', () => {
   function withOneShoppingList() {
-    act(() => {
-      makeUpdate([shoppingList]);
-    });
+    shoppingListFetcherStub.performUpdate([shoppingList]);
   }
 
   test('raises onSelect event when interacting with dropdown', async () => {
