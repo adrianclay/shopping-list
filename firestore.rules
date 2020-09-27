@@ -11,6 +11,10 @@ service cloud.firestore {
       match /items/{itemId} {
         allow read, create, update, delete: if is_owner(get(/databases/$(database)/documents/shopping-list/$(shoppingListId)));
       }
+
+      match /events/{eventId} {
+        allow read, create: if is_owner(get(/databases/$(database)/documents/shopping-list/$(shoppingListId)));
+      }
     }
   }
 }
