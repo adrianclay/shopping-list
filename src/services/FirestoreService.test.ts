@@ -1,37 +1,10 @@
-import {initializeTestApp, clearFirestoreData, assertFails} from "@firebase/testing";
+import {clearFirestoreData} from "@firebase/testing";
 import FirestoreService from './FirestoreService'
 import ShoppingList from "../domain/ShoppingList";
 import ShoppingListItem from "../domain/ShoppingListItem";
 import { Searchable } from "./ItemSearchingService";
 import User from "../domain/User";
-
-const projectId = 'my-test-project';
-
-type FirestoreServiceAction<T> = (firestoreService: FirestoreService) => Promise<T>;
-
-const alice = { uid: 'alice', displayName: 'Alice' };
-function withAliceAuthenticated<T>(action: FirestoreServiceAction<T>) {
-  return withAuth(action, alice);
-}
-
-const jeff = { uid: 'jeff', displayName: 'Jeff' };
-function withJeffAuthenticated<T>(action: FirestoreServiceAction<T>) {
-  return withAuth(action, jeff);
-}
-
-function withUnauthenticated<T>(action: FirestoreServiceAction<T>) {
-  return withAuth(action, undefined);
-}
-
- async function withAuth<T>(action: FirestoreServiceAction<T>, auth?: { uid: string }) {
-  const firebase = initializeTestApp({ projectId, auth });
-  const firestoreService = new FirestoreService(firebase);
-  try {
-    return await action(firestoreService);
-  } finally {
-    firebase.delete();
-  }
-}
+import { alice, assertAliceCant, assertUnauthenticatedCant, jeff, withAliceAuthenticated, withJeffAuthenticated, projectId } from "./Firestore/setup";
 
 function fetchShoppingLists(firestoreService: FirestoreService, user: User) {
   return new Promise<ShoppingList[]>((resolve, reject) => {
@@ -50,9 +23,6 @@ function fetchShoppingListItems(firestoreService: FirestoreService, list: Shoppi
     }, reject);
   });
 }
-
-const assertAliceCant = <T>(action: FirestoreServiceAction<T>) => assertFails(withAliceAuthenticated(action));
-const assertUnauthenticatedCant = <T>(action: FirestoreServiceAction<T>) => assertFails(withUnauthenticated(action));
 
 afterEach(async () => {
   await clearFirestoreData({ projectId });
