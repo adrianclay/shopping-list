@@ -69,8 +69,8 @@ export default class FirestoreService {
   async addShoppingList(list: AddShoppingListRequest): Promise<ShoppingList> {
     const docReference = await this.shoppingListCollection().add(list);
     return {
-      id: docReference.id,
       ...list,
+      id: docReference.id,
     };
   }
 
