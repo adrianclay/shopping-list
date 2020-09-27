@@ -1,8 +1,8 @@
 import { assertFails, clearFirestoreData, initializeTestApp } from "@firebase/testing";
-import * as Factory from "factory.ts";
 import ShoppingList from "../../domain/ShoppingList";
 import ShoppingListEvent from "../../domain/ShoppingListEvent";
 import ShoppingListFactory from "../../factories/ShoppingList";
+import ShoppingListEventFactory from "../../factories/ShoppingListEvent";
 import FirestoreService from "../FirestoreService";
 import { _createEvent, _listEvents } from "./Events";
 
@@ -28,16 +28,6 @@ beforeEach(async () => {
       owner_uids: [jacob.uid]
     })
   );
-});
-
-const ShoppingListEventFactory = Factory.Sync.makeFactory<ShoppingListEvent>({
-  list: ShoppingListFactory.build(),
-  type: 'item_added',
-  item: {
-    name: 'Cake',
-    id: 'kipling-100'
-  },
-  created_on: new Date(),
 });
 
 test('Creating an event, is returned back', async () => {
