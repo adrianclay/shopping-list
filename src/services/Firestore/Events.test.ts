@@ -1,8 +1,8 @@
 import { assertFails, clearFirestoreData, initializeTestApp } from "@firebase/testing";
 import ShoppingList from "../../domain/ShoppingList";
-import ShoppingListEvent from "../../domain/ShoppingListEvent";
 import ShoppingListFactory from "../../factories/ShoppingList";
 import ShoppingListEventFactory from "../../factories/ShoppingListEvent";
+import { fetchFromRealtimeService } from "../../setupTests";
 import FirestoreService from "../FirestoreService";
 import { _createEvent, _listEvents } from "./Events";
 
@@ -37,7 +37,7 @@ test('Creating an event, is returned back', async () => {
 
   createEvent(event);
 
-  return expect(fetchShoppingListEvents(listEvents, jacobsShoppingList)).resolves.toEqual([event]);
+  return expect(fetchFromRealtimeService(listEvents, jacobsShoppingList)).resolves.toEqual([event]);
 });
 
 describe('firebase.rules', () => {
@@ -47,7 +47,7 @@ describe('firebase.rules', () => {
   const listEvents = _listEvents(firebase.firestore());
 
   test('Eve reading Jacobs shopping list events, fails', () =>
-    assertFails(fetchShoppingListEvents(
+    assertFails(fetchFromRealtimeService(
       listEvents,
       jacobsShoppingList
     ))
@@ -61,12 +61,3 @@ describe('firebase.rules', () => {
 
   afterAll(() => firebase.delete());
 });
-
-function fetchShoppingListEvents(localListEvents : typeof listEvents, list: ShoppingList) {
-  return new Promise<ShoppingListEvent[]>((resolve, reject) => {
-    const unsubscribe = localListEvents(list, events => {
-      unsubscribe();
-      resolve(events);
-    }, reject);
-  });
-}

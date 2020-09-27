@@ -35,3 +35,12 @@ export function realtimeServiceStub<R, D>() {
     }
   };
 }
+
+export function fetchFromRealtimeService<Request, Domain>(service: RealtimeService<Request, Domain>, request: Request) {
+  return new Promise<Domain>((resolve, reject) => {
+    const unsubscribe = service(request, domain => {
+      unsubscribe();
+      resolve(domain);
+    }, reject);
+  });
+}
