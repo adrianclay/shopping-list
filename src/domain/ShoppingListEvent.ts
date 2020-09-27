@@ -1,3 +1,5 @@
+import ShoppingList from "./ShoppingList";
+
 export default interface ShoppingListEvent {
   type: 'item_added' | 'item_deleted';
   item: {
@@ -5,4 +7,5 @@ export default interface ShoppingListEvent {
     id: string;
   },
   created_on: Date;
+  list: ShoppingList;
 };

@@ -35,8 +35,8 @@ describe('with two events', () => {
   beforeEach(() => {
     render(<EventLogViewer shoppingList={shoppingList} />);
     eventLogFetcherStub.performUpdate([
-      { type: 'item_added',   item: { id: 'xxx', name: 'yyy' }, created_on: new Date() },
-      { type: 'item_deleted', item: { id: 'xxx', name: 'yyy' }, created_on: new Date() },
+      { list: shoppingList, type: 'item_added',   item: { id: 'xxx', name: 'yyy' }, created_on: new Date() },
+      { list: shoppingList, type: 'item_deleted', item: { id: 'xxx', name: 'yyy' }, created_on: new Date() },
     ]);
   });
 

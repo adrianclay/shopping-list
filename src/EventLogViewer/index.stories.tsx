@@ -5,8 +5,10 @@ import ShoppingListEvent from "../domain/ShoppingListEvent";
 import ShoppingListFactory from "../factories/ShoppingList";
 import { days, hours, minutes } from "../RelativeTime/periods";
 
+const list = ShoppingListFactory.build();
 const events : ShoppingListEvent[] = [
   {
+    list,
     type: 'item_added',
     item: {
       name: 'Peas',
@@ -15,6 +17,7 @@ const events : ShoppingListEvent[] = [
     created_on: new Date(Date.now() - 3 * days)
   },
   {
+    list,
     type: 'item_deleted',
     item: {
       name: 'Pudding',
@@ -23,6 +26,7 @@ const events : ShoppingListEvent[] = [
     created_on: new Date(Date.now() - 2 * hours)
   },
   {
+    list,
     type: 'item_added',
     item: {
       name: 'Pudding',
@@ -42,4 +46,4 @@ export default {
   component: EventLogViewer,
 };
 
-export const Example = () => <EventLogViewer shoppingList={ShoppingListFactory.build()} />
+export const Example = () => <EventLogViewer shoppingList={list} />
