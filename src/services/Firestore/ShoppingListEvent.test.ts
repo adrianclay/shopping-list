@@ -4,7 +4,7 @@ import ShoppingListFactory from "../../factories/ShoppingList";
 import ShoppingListEventFactory from "../../factories/ShoppingListEvent";
 import { fetchFromRealtimeService } from "../../setupTests";
 import FirestoreService from "../FirestoreService";
-import { _createEvent, _listEvents } from "./Events";
+import { _createEvent, _listEvents } from "./ShoppingListEvent";
 
 const projectId = "cheezey";
 afterEach(async () => {
