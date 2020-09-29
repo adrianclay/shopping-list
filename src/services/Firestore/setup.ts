@@ -1,4 +1,4 @@
-import { assertFails, initializeTestApp } from "@firebase/testing";
+import { assertFails, initializeTestApp } from "@firebase/rules-unit-testing";
 import FirestoreService from "../FirestoreService";
 
 export const projectId = 'my-test-project';

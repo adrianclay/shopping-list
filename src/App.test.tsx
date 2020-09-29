@@ -1,7 +1,7 @@
 import React from 'react';
 import {render, fireEvent, waitForElementToBeRemoved, RenderResult} from '@testing-library/react';
 import AppConstructor from './App';
-import {initializeTestApp, clearFirestoreData} from "@firebase/testing";
+import {initializeTestApp, clearFirestoreData} from "@firebase/rules-unit-testing";
 import { act } from 'react-dom/test-utils';
 import User from './domain/User';
 

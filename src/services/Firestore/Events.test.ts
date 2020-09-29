@@ -1,4 +1,4 @@
-import { assertFails, clearFirestoreData, initializeTestApp } from "@firebase/testing";
+import { assertFails, clearFirestoreData, initializeTestApp } from "@firebase/rules-unit-testing";
 import ShoppingList from "../../domain/ShoppingList";
 import ShoppingListFactory from "../../factories/ShoppingList";
 import ShoppingListEventFactory from "../../factories/ShoppingListEvent";

@@ -1,4 +1,4 @@
-import {clearFirestoreData} from "@firebase/testing";
+import {clearFirestoreData} from "@firebase/rules-unit-testing";
 import FirestoreService from './FirestoreService'
 import ShoppingList from "../domain/ShoppingList";
 import ShoppingListItem from "../domain/ShoppingListItem";
