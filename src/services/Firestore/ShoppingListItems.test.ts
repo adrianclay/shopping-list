@@ -1,10 +1,9 @@
-import {clearFirestoreData} from "@firebase/rules-unit-testing";
-import FirestoreService from './FirestoreService'
-import ShoppingList from "../domain/ShoppingList";
-import ShoppingListItem from "../domain/ShoppingListItem";
-import { Searchable } from "./ItemSearchingService";
-import User from "../domain/User";
-import { alice, assertAliceCant, assertUnauthenticatedCant, jeff, withAliceAuthenticated, withJeffAuthenticated, projectId } from "./Firestore/setup";
+import { clearFirestoreData } from "@firebase/rules-unit-testing";
+import ShoppingList from "../../domain/ShoppingList";
+import ShoppingListItem from "../../domain/ShoppingListItem";
+import FirestoreService from "../FirestoreService";
+import { Searchable } from "../ItemSearchingService";
+import { withAliceAuthenticated, alice, assertAliceCant, jeff, withJeffAuthenticated, projectId } from "./setup";
 
 function fetchShoppingListItems(firestoreService: FirestoreService, list: ShoppingList) {
   return new Promise<ShoppingListItem[]>((resolve, reject) => {
@@ -17,64 +16,6 @@ function fetchShoppingListItems(firestoreService: FirestoreService, list: Shoppi
 
 afterEach(async () => {
   await clearFirestoreData({ projectId });
-});
-
-describe('Firestore security rules', () => {
-  describe('shopping-list/{shoppingList}/items', () => {
-    let jeffsShoppingList: ShoppingList;
-    let jeffsShoppingItem: ShoppingListItem;
-    beforeEach(async () => {
-      await withJeffAuthenticated(async firestoreService => {
-        jeffsShoppingList = await firestoreService.addShoppingList({ name: 'List of Jeff', owner_uids: [jeff.uid] });
-        jeffsShoppingItem = await firestoreService.addShoppingListItem({ name: 'Crab stick', list: jeffsShoppingList, search_queries: ['crab'] });
-      });
-    });
-
-    const nonExistentList: ShoppingList = {
-      id: 'fake-list',
-      name: 'Big old fake list',
-      owner_uids: [alice.uid]
-    };
-
-    it('Does not read items a different users list', () =>
-      assertAliceCant(firestoreService => fetchShoppingListItems(firestoreService, jeffsShoppingList))
-    );
-
-    it('Does not read items from a non-existent list', () =>
-      assertAliceCant(firestoreService => fetchShoppingListItems(firestoreService, nonExistentList))
-    );
-
-    it('Does not allow creating items for a different users list', () =>
-      assertAliceCant(firestoreService =>
-        firestoreService.addShoppingListItem({
-          name: 'Devils apple',
-          list: jeffsShoppingList,
-          search_queries: ['apple']
-        })
-      )
-    );
-
-    it('Does not allow creating items for a non-existent list', () =>
-      assertAliceCant(firestoreService =>
-        firestoreService.addShoppingListItem({
-          name: 'Devils apple',
-          list: nonExistentList,
-          search_queries: ['apple']
-        })
-      )
-    );
-
-    it('Does not allow deleting items for a different users list', () =>
-      assertAliceCant(firestoreService => firestoreService.deleteItem(jeffsShoppingItem))
-    );
-
-    it('Does not allow updating items for a different users list', () =>
-      assertAliceCant(firestoreService => firestoreService.updateItem({
-        ...jeffsShoppingItem,
-        search_queries: ['alices malicious update']
-      }))
-    );
-  });
 });
 
 describe('Creating a Shopping list item', () => {
@@ -213,4 +154,60 @@ describe('Creating 10 shopping list items', () => {
     const items = await withAliceAuthenticated(firestoreService => fetchShoppingListItems(firestoreService, list));
     expect(items.map(i => i.name)).toEqual(orderedListNames);
   });
+});
+
+describe('firebase.rules', () => {
+  let jeffsShoppingList: ShoppingList;
+  let jeffsShoppingItem: ShoppingListItem;
+  beforeEach(async () => {
+    await withJeffAuthenticated(async firestoreService => {
+      jeffsShoppingList = await firestoreService.addShoppingList({ name: 'List of Jeff', owner_uids: [jeff.uid] });
+      jeffsShoppingItem = await firestoreService.addShoppingListItem({ name: 'Crab stick', list: jeffsShoppingList, search_queries: ['crab'] });
+    });
+  });
+
+  const nonExistentList: ShoppingList = {
+    id: 'fake-list',
+    name: 'Big old fake list',
+    owner_uids: [alice.uid]
+  };
+
+  it('Does not read items a different users list', () =>
+    assertAliceCant(firestoreService => fetchShoppingListItems(firestoreService, jeffsShoppingList))
+  );
+
+  it('Does not read items from a non-existent list', () =>
+    assertAliceCant(firestoreService => fetchShoppingListItems(firestoreService, nonExistentList))
+  );
+
+  it('Does not allow creating items for a different users list', () =>
+    assertAliceCant(firestoreService =>
+      firestoreService.addShoppingListItem({
+        name: 'Devils apple',
+        list: jeffsShoppingList,
+        search_queries: ['apple']
+      })
+    )
+  );
+
+  it('Does not allow creating items for a non-existent list', () =>
+    assertAliceCant(firestoreService =>
+      firestoreService.addShoppingListItem({
+        name: 'Devils apple',
+        list: nonExistentList,
+        search_queries: ['apple']
+      })
+    )
+  );
+
+  it('Does not allow deleting items for a different users list', () =>
+    assertAliceCant(firestoreService => firestoreService.deleteItem(jeffsShoppingItem))
+  );
+
+  it('Does not allow updating items for a different users list', () =>
+    assertAliceCant(firestoreService => firestoreService.updateItem({
+      ...jeffsShoppingItem,
+      search_queries: ['alices malicious update']
+    }))
+  );
 });
