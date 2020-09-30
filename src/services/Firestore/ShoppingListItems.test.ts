@@ -3,7 +3,8 @@ import ShoppingList from "../../domain/ShoppingList";
 import ShoppingListItem from "../../domain/ShoppingListItem";
 import FirestoreService from "../FirestoreService";
 import { Searchable } from "../ItemSearchingService";
-import { withAliceAuthenticated, alice, assertAliceCant, jeff, withJeffAuthenticated, projectId } from "./setup";
+import { withAliceAuthenticated, alice, assertAliceCant, jeff, projectId, loginToFirestoreAs } from "./setup";
+import { _createShoppingList } from "./ShoppingLists";
 
 function fetchShoppingListItems(firestoreService: FirestoreService, list: ShoppingList) {
   return new Promise<ShoppingListItem[]>((resolve, reject) => {
@@ -23,14 +24,14 @@ describe('Creating a Shopping list item', () => {
   let createdItem: ShoppingListItem;
 
   beforeEach(async () => {
-    await withAliceAuthenticated(async (firestoreService) => {
-      shoppingList = await firestoreService.addShoppingList({ name: 'Party shopping list', owner_uids: [alice.uid] });
-      createdItem = await firestoreService.addShoppingListItem({
+    await loginToFirestoreAs(async firestore => {
+      shoppingList = await _createShoppingList(firestore)({ name: 'Party shopping list', owner_uids: [alice.uid] });
+      createdItem = await new FirestoreService(firestore.app).addShoppingListItem({
         name: 'Crisps',
         list: shoppingList,
         search_queries: ['c']
       });
-    })
+    }, alice)
   });
 
   it('returns the items id', () => {
@@ -123,14 +124,14 @@ describe('Creating a Shopping list item', () => {
   );
 
   it('does not retrieve it back, when querying with a different list', async () => {
-    await withAliceAuthenticated(async firestoreService => {
-      const notMatchingShoppingList = await firestoreService.addShoppingList({
+    await loginToFirestoreAs(async firestore => {
+      const notMatchingShoppingList = await _createShoppingList(firestore)({
         name: 'Not the party list',
         owner_uids: [alice.uid]
       });
 
-      await expect(fetchShoppingListItems(firestoreService, notMatchingShoppingList)).resolves.toEqual([]);
-    });
+      await expect(fetchShoppingListItems(new FirestoreService(firestore.app), notMatchingShoppingList)).resolves.toEqual([]);
+    }, alice);
   });
 });
 
@@ -139,16 +140,16 @@ describe('Creating 10 shopping list items', () => {
 
   let list: ShoppingList;
 
-  beforeEach(() => withAliceAuthenticated(async firestoreService => {
-    list = await firestoreService.addShoppingList({
+  beforeEach(() => loginToFirestoreAs(async firestore => {
+    list = await _createShoppingList(firestore)({
       name: 'Multi-item list',
       owner_uids: [alice.uid]
     });
 
     for(const name of orderedListNames) {
-      await firestoreService.addShoppingListItem({ name, list, search_queries: [] });
+      await new FirestoreService(firestore.app).addShoppingListItem({ name, list, search_queries: [] });
     }
-  }));
+  }, alice));
 
   it('retrieves them back in the same order', async () => {
     const items = await withAliceAuthenticated(firestoreService => fetchShoppingListItems(firestoreService, list));
@@ -160,10 +161,10 @@ describe('firebase.rules', () => {
   let jeffsShoppingList: ShoppingList;
   let jeffsShoppingItem: ShoppingListItem;
   beforeEach(async () => {
-    await withJeffAuthenticated(async firestoreService => {
-      jeffsShoppingList = await firestoreService.addShoppingList({ name: 'List of Jeff', owner_uids: [jeff.uid] });
-      jeffsShoppingItem = await firestoreService.addShoppingListItem({ name: 'Crab stick', list: jeffsShoppingList, search_queries: ['crab'] });
-    });
+    await loginToFirestoreAs(async firestore => {
+      jeffsShoppingList = await _createShoppingList(firestore)({ name: 'List of Jeff', owner_uids: [jeff.uid] });
+      jeffsShoppingItem = await new FirestoreService(firestore.app).addShoppingListItem({ name: 'Crab stick', list: jeffsShoppingList, search_queries: ['crab'] });
+    }, jeff);
   });
 
   const nonExistentList: ShoppingList = {

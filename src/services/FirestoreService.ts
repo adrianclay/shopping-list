@@ -1,15 +1,9 @@
 import * as firebase from "firebase/app";
 import ShoppingListItem from "../domain/ShoppingListItem";
 import ShoppingList from "../domain/ShoppingList";
-import User from "../domain/User";
 import { ItemToAdd } from "../AddItemForm";
 import { Searchable } from "./ItemSearchingService";
-import { AddShoppingListRequest } from "../CreateShoppingListForm";
 
-interface ShoppingListRecord {
-  name: string;
-  owner_uids: string[];
-}
 export default class FirestoreService {
   private firebase: firebase.app.App;
 
@@ -22,21 +16,6 @@ export default class FirestoreService {
     const undeletedItems = itemCollection.where('deleted', '==', false)
     return undeletedItems.orderBy('created_on').onSnapshot(snapshot => {
       onUpdate(this.snapshotToShoppingListItemArray(snapshot, shoppingList));
-    }, onError);
-  }
-
-  subscribeToListChanges(loggedInUser: User, onUpdate: (items: ShoppingList[]) => void, onError: (error: Error) => void): () => void {
-    const shoppingListCollection = this.shoppingListCollection();
-    const shoppingListsFilteredByLoggedInUser = shoppingListCollection.where('owner_uids', 'array-contains', loggedInUser.uid);
-    return shoppingListsFilteredByLoggedInUser.onSnapshot(collection => {
-      const items = collection.docs.map(item => {
-        const document = item.data() as ShoppingListRecord;
-        return {
-          id: item.id,
-          ...document
-        };
-      });
-      onUpdate(items);
     }, onError);
   }
 
@@ -66,14 +45,6 @@ export default class FirestoreService {
     })
   }
 
-  async addShoppingList(list: AddShoppingListRequest): Promise<ShoppingList> {
-    const docReference = await this.shoppingListCollection().add(list);
-    return {
-      ...list,
-      id: docReference.id,
-    };
-  }
-
   async deleteItem(shoppingListItem: ShoppingListItem) {
     const itemsCollection = this.shoppingListItemCollection(shoppingListItem.list);
     const item = itemsCollection.doc(shoppingListItem.id);
@@ -84,10 +55,6 @@ export default class FirestoreService {
     const itemsCollection = this.shoppingListItemCollection(list);
     const item = itemsCollection.doc(id);
     await item.update(attributes);
-  }
-
-  private shoppingListCollection() {
-    return this.firebase.firestore().collection('shopping-list');
   }
 
   private shoppingListItemCollection(shoppingList: ShoppingList) {

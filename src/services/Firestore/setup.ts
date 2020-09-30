@@ -31,3 +31,12 @@ async function withAuth<T>(action: FirestoreServiceAction<T>, auth?: { uid: stri
     firebase.delete();
   }
 }
+
+export async function loginToFirestoreAs<T>(callback: (firestore: firebase.firestore.Firestore) => Promise<T>, authenticatedAs?: { uid: string }) {
+  const firebase = initializeTestApp({ projectId, auth: authenticatedAs });
+  try {
+    return await callback(firebase.firestore());
+  } finally {
+    firebase.delete();
+  }
+}

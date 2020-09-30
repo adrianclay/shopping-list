@@ -3,8 +3,8 @@ import ShoppingList from "../../domain/ShoppingList";
 import ShoppingListFactory from "../../factories/ShoppingList";
 import ShoppingListEventFactory from "../../factories/ShoppingListEvent";
 import { fetchFromRealtimeService } from "../../setupTests";
-import FirestoreService from "../FirestoreService";
 import { _createEvent, _listEvents } from "./ShoppingListEvent";
+import { _createShoppingList } from "./ShoppingLists";
 
 const projectId = "cheezey";
 afterEach(async () => {
@@ -23,7 +23,7 @@ const listEvents = _listEvents(firebase.firestore());
 let jacobsShoppingList: ShoppingList;
 
 beforeEach(async () => {
-  jacobsShoppingList = await (new FirestoreService(firebase)).addShoppingList(
+  jacobsShoppingList = await _createShoppingList(firebase.firestore())(
     ShoppingListFactory.build({
       owner_uids: [jacob.uid]
     })
