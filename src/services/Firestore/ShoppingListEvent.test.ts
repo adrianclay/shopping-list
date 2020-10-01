@@ -1,63 +1,50 @@
-import { assertFails, clearFirestoreData, initializeTestApp } from "@firebase/rules-unit-testing";
+import { assertFails, clearFirestoreData } from "@firebase/rules-unit-testing";
 import ShoppingList from "../../domain/ShoppingList";
 import ShoppingListFactory from "../../factories/ShoppingList";
 import ShoppingListEventFactory from "../../factories/ShoppingListEvent";
 import { fetchFromRealtimeService } from "../../setupTests";
+import { jeff, withAliceAuthenticated, withJeffAuthenticated, projectId } from "./setup";
 import { _createEvent, _listEvents } from "./ShoppingListEvent";
 import { _createShoppingList } from "./ShoppingLists";
 
-const projectId = "cheezey";
 afterEach(async () => {
   await clearFirestoreData({ projectId });
 });
 
-afterAll(() => firebase.delete());
-
-const jacob = {
-  uid: 'jacob'
-};
-const firebase = initializeTestApp({ projectId, auth: jacob });
-const createEvent = _createEvent(firebase.firestore());
-const listEvents = _listEvents(firebase.firestore());
-
-let jacobsShoppingList: ShoppingList;
-
-beforeEach(async () => {
-  jacobsShoppingList = await _createShoppingList(firebase.firestore())(
-    ShoppingListFactory.build({
-      owner_uids: [jacob.uid]
-    })
-  );
-});
+let jeffsShoppingList: ShoppingList;
+beforeEach(() =>
+  withJeffAuthenticated(async firebase => {
+    jeffsShoppingList = await _createShoppingList(firebase)(
+      ShoppingListFactory.build({
+        owner_uids: [jeff.uid]
+      })
+    )
+  })
+);
 
 test('Creating an event, is returned back', async () => {
   const event = ShoppingListEventFactory.build({
-    list: jacobsShoppingList,
+    list: jeffsShoppingList,
   });
 
-  createEvent(event);
-
-  return expect(fetchFromRealtimeService(listEvents, jacobsShoppingList)).resolves.toEqual([event]);
+  return expect(withJeffAuthenticated(async firestore => {
+    await _createEvent(firestore)(event);
+    return fetchFromRealtimeService(_listEvents(firestore), jeffsShoppingList)
+  })).resolves.toEqual([event]);
 });
 
 describe('firebase.rules', () => {
-  const eve = { uid: 'eve' };
-  const firebase = initializeTestApp({ projectId, auth: eve });
-  const createEvent = _createEvent(firebase.firestore());
-  const listEvents = _listEvents(firebase.firestore());
-
-  test('Eve reading Jacobs shopping list events, fails', () =>
-    assertFails(fetchFromRealtimeService(
-      listEvents,
-      jacobsShoppingList
+  test('Alice reading Jeffs shopping list events, fails', () =>
+    assertFails(withAliceAuthenticated(
+      firebase => fetchFromRealtimeService(_listEvents(firebase), jeffsShoppingList)
     ))
   );
 
-  test('Eve creating an event in Jacobs shopping list, fails', () =>
-    assertFails(createEvent(ShoppingListEventFactory.build({
-      list: jacobsShoppingList,
-    })))
+  test('Alice creating an event in Jeffs shopping list, fails', () =>
+    assertFails(withAliceAuthenticated(
+      firebase => _createEvent(firebase)(ShoppingListEventFactory.build({
+        list: jeffsShoppingList,
+      }))
+    ))
   );
-
-  afterAll(() => firebase.delete());
 });
