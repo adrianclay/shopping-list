@@ -12,17 +12,16 @@ import CreateShoppingListFormConstructor from './CreateShoppingListForm';
 import { Container } from 'semantic-ui-react'
 import AlphaBanner from './AlphaBanner';
 import LoginConstructor, { Authenticator } from './Login';
-import ItemSearchingService from './services/ItemSearchingService';
 import { _createShoppingList, _listShoppingLists } from './services/Firestore/ShoppingLists';
+import { searchForItems, searchingAddShoppingListItem, searchingUpdateItem } from './services/ItemSearchingService';
 
 function AppConstructor(authenticator: Authenticator, firebase: firebase.app.App) {
   const firestoreService = new FirestoreService(firebase);
   const Login = LoginConstructor(authenticator);
-  const searchAdaptor = new ItemSearchingService(firestoreService);
   const ShoppingListViewer = ShoppingListViewerConstructor(
     ListSelectorConstructor(_listShoppingLists(firebase.firestore())),
-    AddItemFormConstructor(firestoreService.readdShoppingListItem.bind(firestoreService), searchAdaptor.addShoppingListItem.bind(searchAdaptor), searchAdaptor.searchForItems.bind(searchAdaptor)),
-    ItemListConstructor(firestoreService.subscribeToItemChanges.bind(firestoreService), firestoreService.deleteItem.bind(firestoreService), EditItemFormConstructor(searchAdaptor.updateItem.bind(searchAdaptor))),
+    AddItemFormConstructor(firestoreService.readdShoppingListItem.bind(firestoreService), searchingAddShoppingListItem(firestoreService.addShoppingListItem.bind(firestoreService)), searchForItems(firestoreService.searchForItems.bind(firestoreService))),
+    ItemListConstructor(firestoreService.subscribeToItemChanges.bind(firestoreService), firestoreService.deleteItem.bind(firestoreService), EditItemFormConstructor(searchingUpdateItem(firestoreService.updateItem.bind(firestoreService)))),
     CreateShoppingListFormConstructor(_createShoppingList(firebase.firestore()))
   );
 

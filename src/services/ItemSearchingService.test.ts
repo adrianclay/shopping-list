@@ -1,4 +1,4 @@
-import ItemSearchingService, { Searchable } from "./ItemSearchingService";
+import { Searchable, searchForItems, searchingAddShoppingListItem, searchingUpdateItem } from "./ItemSearchingService";
 import ShoppingList from "../domain/ShoppingList";
 import { ItemToAdd } from "../AddItemForm";
 import ShoppingListItem from "../domain/ShoppingListItem";
@@ -14,7 +14,6 @@ const itemStoreSpy = {
   updateItem: jest.fn(),
   searchForItems: jest.fn(),
 };
-const itemSearchingService = new ItemSearchingService(itemStoreSpy);
 
 beforeEach(() => {
   itemStoreSpy.addShoppingListItem.mockClear();
@@ -23,7 +22,7 @@ beforeEach(() => {
 });
 
 describe('adding an item', () => {
-  const addShoppingListItem = (name: string) => itemSearchingService.addShoppingListItem({ name, list: shoppingListDummy });
+  const addShoppingListItem = (name: string) => searchingAddShoppingListItem(itemStoreSpy.addShoppingListItem)({ name, list: shoppingListDummy });
 
   test('with one single letter word name', () => {
     addShoppingListItem('C');
@@ -58,29 +57,29 @@ describe('adding an item', () => {
 
 describe('updating an item', () => {
   test('with one five letter word', () => {
-    itemSearchingService.updateItem({ name: 'Cream', list: shoppingListDummy, id: '100' });
+    searchingUpdateItem(itemStoreSpy.updateItem)({ name: 'Cream', list: shoppingListDummy, id: '100' });
     expect(itemStoreSpy.updateItem).toHaveBeenLastCalledWith(expect.objectContaining({ search_queries: ['c', 'cr', 'cre', 'crea', 'cream'] }));
   });
 });
 
 describe('searching for items', () => {
   test('passes short search terms through to itemStore', () => {
-    itemSearchingService.searchForItems(shoppingListDummy, 'a');
+    searchForItems(itemStoreSpy.searchForItems)(shoppingListDummy, 'a');
     expect(itemStoreSpy.searchForItems).toHaveBeenLastCalledWith(shoppingListDummy, 'a');
   });
 
   test('trims long searches down to 5 letters', () => {
-    itemSearchingService.searchForItems(shoppingListDummy, 'fantastic');
+    searchForItems(itemStoreSpy.searchForItems)(shoppingListDummy, 'fantastic');
     expect(itemStoreSpy.searchForItems).toHaveBeenLastCalledWith(shoppingListDummy, 'fanta');
   });
 
   test('lowercases search term', () => {
-    itemSearchingService.searchForItems(shoppingListDummy, 'A');
+    searchForItems(itemStoreSpy.searchForItems)(shoppingListDummy, 'A');
     expect(itemStoreSpy.searchForItems).toHaveBeenLastCalledWith(shoppingListDummy, 'a');
   });
 
   test('searches using only the first word', () => {
-    itemSearchingService.searchForItems(shoppingListDummy, 'a b');
+    searchForItems(itemStoreSpy.searchForItems)(shoppingListDummy, 'a b');
     expect(itemStoreSpy.searchForItems).toHaveBeenLastCalledWith(shoppingListDummy, 'a');
   });
 });
@@ -92,24 +91,23 @@ describe('adding an item and searching for it back', () => {
     addShoppingListItem: function(item: Searchable<ItemToAdd>) {
       const x: Searchable<ShoppingListItem> = {
         ...item,
-        id: (this.next_id++).toString()
+        id: (inMemoryItemStore.next_id++).toString()
       };
-      this.items.push(x);
+      inMemoryItemStore.items.push(x);
       return Promise.resolve(x);
     },
     updateItem: function(item: Searchable<ShoppingListItem>) {
       throw new Error();
     },
     searchForItems: function(list: ShoppingList, name: string) {
-      const filteredResults = this.items.filter(i => i.list == list && i.search_queries.includes(name));
+      const filteredResults = inMemoryItemStore.items.filter(i => i.list == list && i.search_queries.includes(name));
       return Promise.resolve(filteredResults);
     }
   };
-  const itemSearchingService = new ItemSearchingService(inMemoryItemStore);
   let addedItem: ShoppingListItem;
 
   beforeAll(async () => {
-    addedItem = await itemSearchingService.addShoppingListItem({
+    addedItem = await searchingAddShoppingListItem(inMemoryItemStore.addShoppingListItem)({
       name: 'Soup in a can',
       list: shoppingListDummy,
     });
@@ -124,6 +122,6 @@ describe('adding an item and searching for it back', () => {
   };
 
   test.each(prefixesOf('Soup in a can'))('Searching with prefix "%s" returns the item', async (prefix) => {
-    expect(await itemSearchingService.searchForItems(shoppingListDummy, prefix)).toEqual([addedItem]);
+    expect(await searchForItems(inMemoryItemStore.searchForItems)(shoppingListDummy, prefix)).toEqual([addedItem]);
   });
 });
