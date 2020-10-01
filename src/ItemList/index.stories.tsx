@@ -4,6 +4,7 @@ import { action } from '@storybook/addon-actions';
 import { Button, Segment } from 'semantic-ui-react';
 import { EditItemFormProps } from './EditItemForm';
 import ShoppingListFactory from '../factories/ShoppingList';
+import ShoppingListItemFactory from '../factories/ShoppingListItem';
 
 const EditItemForm = ({ onSave }: EditItemFormProps) => {
   return <>
@@ -17,9 +18,9 @@ const EditItemForm = ({ onSave }: EditItemFormProps) => {
 const ItemList = ItemListConstructor(
   (list, onUpdate, onError) => {
     onUpdate([
-      { name: 'Pickles', list, id: 'pickles' },
-      { name: 'Cream soda', list, id: 'cream-soda', quantity: { scalar: 12 } },
-      { name: 'Cream', list, id: 'cream', quantity: { scalar: 150, units: 'ml' } }
+      ShoppingListItemFactory.build({ name: 'Pickles', list }),
+      ShoppingListItemFactory.build({ name: 'Cream soda', list, quantity: { scalar: 12 } }),
+      ShoppingListItemFactory.build({ name: 'Cream', list, id: 'cream', quantity: { scalar: 150, units: 'ml' } }),
     ]);
     return () => {};
   }
