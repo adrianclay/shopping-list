@@ -1,7 +1,7 @@
-import { assertFails, clearFirestoreData, initializeTestApp } from "@firebase/rules-unit-testing";
+import { assertFails, clearFirestoreData } from "@firebase/rules-unit-testing";
 import ShoppingList from "../../domain/ShoppingList";
 import { fetchFromRealtimeService } from "../../setupTests";
-import { alice, jeff, loginToFirestoreAs, projectId } from "./setup";
+import { alice, jeff, projectId, withAliceAuthenticated, withJeffAuthenticated, withUnauthenticated } from "./setup";
 import { _createShoppingList, _listShoppingLists } from "./ShoppingLists";
 
 describe('When Alice creates a shopping list', () => {
@@ -12,9 +12,9 @@ describe('When Alice creates a shopping list', () => {
   };
 
   beforeEach(() =>
-    loginToFirestoreAs(async firestore => {
+    withAliceAuthenticated(async firestore => {
       addedShoppingList = await _createShoppingList(firestore)(shoppingListRecord);
-    }, alice)
+    })
   );
 
   it('created record contains same data passed in', () => {
@@ -26,46 +26,41 @@ describe('When Alice creates a shopping list', () => {
   });
 
   it('can retrieve it back, when querying alices lists', () =>
-    expect(loginToFirestoreAs(
-      firestore => fetchFromRealtimeService(_listShoppingLists(firestore), alice),
-      alice
+    expect(withAliceAuthenticated(
+      firestore => fetchFromRealtimeService(_listShoppingLists(firestore), alice)
     )).resolves.toEqual([addedShoppingList])
   );
 
   it('does not retrieve it back, when querying jeffs list', () =>
-    expect(loginToFirestoreAs(
-      firestore => fetchFromRealtimeService(_listShoppingLists(firestore), jeff),
-      jeff
+    expect(withJeffAuthenticated(
+      firestore => fetchFromRealtimeService(_listShoppingLists(firestore), jeff)
     )).resolves.toEqual([])
   );
 });
 
 describe('firebase.rules', () => {
   it('Does not create, where the owner_uid does not match who is logged in', () =>
-    assertFails(loginToFirestoreAs(firestore =>
+    assertFails(withAliceAuthenticated(firestore =>
       _createShoppingList(firestore)({
         name: "This list should not be created",
         owner_uids: ['not_alice'],
-      }),
-      alice
+      })
     ))
   );
 
   it('Does not create, where the user is unauthenticated', () =>
-    assertFails(loginToFirestoreAs(firestore =>
+    assertFails(withUnauthenticated(firestore =>
       _createShoppingList(firestore)({
         name: 'This list should not be created',
         // @ts-expect-error
         owner_uids: null,
-      }),
-      undefined
+      })
     ))
   );
 
   it('Does not read a different users lists', () =>
-    assertFails(loginToFirestoreAs(
-      firestore => fetchFromRealtimeService(_listShoppingLists(firestore), jeff),
-      alice
+    assertFails(withAliceAuthenticated(
+      firestore => fetchFromRealtimeService(_listShoppingLists(firestore), jeff)
     ))
   );
 });
