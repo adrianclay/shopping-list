@@ -1,38 +1,17 @@
-import { assertFails, initializeTestApp } from "@firebase/rules-unit-testing";
-import FirestoreService from "../FirestoreService";
+import { initializeTestApp } from "@firebase/rules-unit-testing";
 
 export const projectId = 'my-test-project';
 
-type FirestoreServiceAction<T> = (firestoreService: FirestoreService) => Promise<T>;
-
-export const assertAliceCant = <T>(action: FirestoreServiceAction<T>) => assertFails(withAliceAuthenticated(action));
-export const assertUnauthenticatedCant = <T>(action: FirestoreServiceAction<T>) => assertFails(withUnauthenticated(action));
+type FirestoreAction<T> = (firestore: firebase.firestore.Firestore) => Promise<T>;
 
 export const alice = { uid: 'alice', displayName: 'Alice' };
-export function withAliceAuthenticated<T>(action: FirestoreServiceAction<T>) {
-  return withAuth(action, alice);
-}
+export const withAliceAuthenticated = <T>(callback: FirestoreAction<T>) => loginToFirestoreAs(callback, alice);
+
 
 export const jeff = { uid: 'jeff', displayName: 'Jeff' };
-export function withJeffAuthenticated<T>(action: FirestoreServiceAction<T>) {
-  return withAuth(action, jeff);
-}
+export const withJeffAuthenticated = <T>(action: FirestoreAction<T>) => loginToFirestoreAs(action, jeff);
 
-function withUnauthenticated<T>(action: FirestoreServiceAction<T>) {
-  return withAuth(action, undefined);
-}
-
-async function withAuth<T>(action: FirestoreServiceAction<T>, auth?: { uid: string }) {
-  const firebase = initializeTestApp({ projectId, auth });
-  const firestoreService = new FirestoreService(firebase);
-  try {
-    return await action(firestoreService);
-  } finally {
-    firebase.delete();
-  }
-}
-
-export async function loginToFirestoreAs<T>(callback: (firestore: firebase.firestore.Firestore) => Promise<T>, authenticatedAs?: { uid: string }) {
+export async function loginToFirestoreAs<T>(callback: FirestoreAction<T>, authenticatedAs?: { uid: string }) {
   const firebase = initializeTestApp({ projectId, auth: authenticatedAs });
   try {
     return await callback(firebase.firestore());

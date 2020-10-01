@@ -1,19 +1,11 @@
-import { clearFirestoreData } from "@firebase/rules-unit-testing";
+import { assertFails, clearFirestoreData } from "@firebase/rules-unit-testing";
 import ShoppingList from "../../domain/ShoppingList";
 import ShoppingListItem from "../../domain/ShoppingListItem";
-import FirestoreService from "../FirestoreService";
+import { fetchFromRealtimeService } from "../../setupTests";
 import { Searchable } from "../ItemSearchingService";
-import { withAliceAuthenticated, alice, assertAliceCant, jeff, projectId, loginToFirestoreAs } from "./setup";
+import { alice, jeff, projectId, withAliceAuthenticated, withJeffAuthenticated } from "./setup";
+import { _addShoppingListItem, _deleteShoppingListItem, _listShoppingListItems, _readdShoppingListItem, _searchForItems, _updateShoppingListItem } from "./ShoppingListItems";
 import { _createShoppingList } from "./ShoppingLists";
-
-function fetchShoppingListItems(firestoreService: FirestoreService, list: ShoppingList) {
-  return new Promise<ShoppingListItem[]>((resolve, reject) => {
-    const unsubscribe = firestoreService.subscribeToItemChanges(list, items => {
-      unsubscribe();
-      resolve(items);
-    }, reject);
-  });
-}
 
 afterEach(async () => {
   await clearFirestoreData({ projectId });
@@ -24,14 +16,14 @@ describe('Creating a Shopping list item', () => {
   let createdItem: ShoppingListItem;
 
   beforeEach(async () => {
-    await loginToFirestoreAs(async firestore => {
+    await withAliceAuthenticated(async firestore => {
       shoppingList = await _createShoppingList(firestore)({ name: 'Party shopping list', owner_uids: [alice.uid] });
-      createdItem = await new FirestoreService(firestore.app).addShoppingListItem({
+      createdItem = await _addShoppingListItem(firestore)({
         name: 'Crisps',
         list: shoppingList,
         search_queries: ['c']
       });
-    }, alice)
+    })
   });
 
   it('returns the items id', () => {
@@ -40,34 +32,34 @@ describe('Creating a Shopping list item', () => {
 
   describe('deleting it', () => {
     beforeEach(async () => {
-      await withAliceAuthenticated(async firestoreService => {
-        await firestoreService.deleteItem(createdItem);
+      await withAliceAuthenticated(async firestore => {
+        await _deleteShoppingListItem(firestore)(createdItem);
       });
     });
 
     it('does not retreive it back', () =>
       expect(withAliceAuthenticated(
-        firestoreService => fetchShoppingListItems(firestoreService, shoppingList)
+        firestore => fetchFromRealtimeService(_listShoppingListItems(firestore), shoppingList)
       )).resolves.toEqual([])
     );
 
     it('can still be searched for', () =>
-      expect(withAliceAuthenticated(firestoreService =>
-        firestoreService.searchForItems(shoppingList, 'c')
+      expect(withAliceAuthenticated(firestore =>
+        _searchForItems(firestore)(shoppingList, 'c')
       )).resolves.toEqual([expect.objectContaining(createdItem)])
     );
 
     describe('readding the item', () => {
       beforeEach(() =>
-        withAliceAuthenticated(firestoreService =>
-          firestoreService.readdShoppingListItem(createdItem)
+        withAliceAuthenticated(firestore =>
+          _readdShoppingListItem(firestore)(createdItem)
         )
       );
 
       it('retrieves it back', () =>
         expect(withAliceAuthenticated(
-          firestoreService => fetchShoppingListItems(firestoreService, shoppingList))
-        ).resolves.toEqual([expect.objectContaining(createdItem)])
+          firestore => fetchFromRealtimeService(_listShoppingListItems(firestore), shoppingList)
+        )).resolves.toEqual([expect.objectContaining(createdItem)])
       );
     });
   });
@@ -84,13 +76,13 @@ describe('Creating a Shopping list item', () => {
           scalar: 100
         }
       };
-      await withAliceAuthenticated(firestoreService => firestoreService.updateItem(updatedItem));
+      await withAliceAuthenticated(firestore => _updateShoppingListItem(firestore)(updatedItem));
     });
 
     it('retrieves it back with the new name and quantity', () =>
       expect(withAliceAuthenticated(
-        firestoreService => fetchShoppingListItems(firestoreService, shoppingList))
-      ).resolves.toEqual([
+        firestore => fetchFromRealtimeService(_listShoppingListItems(firestore), shoppingList)
+      )).resolves.toEqual([
         expect.objectContaining({
           name: 'Brand new name',
           quantity: { scalar: 100 }
@@ -99,39 +91,39 @@ describe('Creating a Shopping list item', () => {
     );
 
     it('retrieves it back when searching with new search query', () =>
-      expect(withAliceAuthenticated(firestoreService =>
-        firestoreService.searchForItems(shoppingList, 'new')
+      expect(withAliceAuthenticated(firestore =>
+        _searchForItems(firestore)(shoppingList, 'new')
       )).resolves.toEqual([expect.objectContaining({name: 'Brand new name'})])
     );
   });
 
   it('retrieves it back, when searching', () =>
-    expect(withAliceAuthenticated(firestoreService =>
-      firestoreService.searchForItems(shoppingList, 'c')
+    expect(withAliceAuthenticated(firestore =>
+      _searchForItems(firestore)(shoppingList, 'c')
     )).resolves.toEqual([expect.objectContaining(createdItem)])
   );
 
   it('does not retrieve it back, when searching with non-matching search', () =>
-    expect(withAliceAuthenticated(firestoreService =>
-      firestoreService.searchForItems(shoppingList, 'z')
+    expect(withAliceAuthenticated(firestore =>
+      _searchForItems(firestore)(shoppingList, 'z')
     )).resolves.toEqual([])
   );
 
   it('retrieves it back, when querying by the matching list', () =>
     expect(withAliceAuthenticated(
-      firestoreService => fetchShoppingListItems(firestoreService, shoppingList))
-    ).resolves.toEqual([expect.objectContaining(createdItem)])
+      firestore => fetchFromRealtimeService(_listShoppingListItems(firestore), shoppingList)
+    )).resolves.toEqual([expect.objectContaining(createdItem)])
   );
 
   it('does not retrieve it back, when querying with a different list', async () => {
-    await loginToFirestoreAs(async firestore => {
+    await withAliceAuthenticated(async firestore => {
       const notMatchingShoppingList = await _createShoppingList(firestore)({
         name: 'Not the party list',
         owner_uids: [alice.uid]
       });
 
-      await expect(fetchShoppingListItems(new FirestoreService(firestore.app), notMatchingShoppingList)).resolves.toEqual([]);
-    }, alice);
+      await expect(fetchFromRealtimeService(_listShoppingListItems(firestore), notMatchingShoppingList)).resolves.toEqual([]);
+    });
   });
 });
 
@@ -140,19 +132,19 @@ describe('Creating 10 shopping list items', () => {
 
   let list: ShoppingList;
 
-  beforeEach(() => loginToFirestoreAs(async firestore => {
+  beforeEach(() => withAliceAuthenticated(async firestore => {
     list = await _createShoppingList(firestore)({
       name: 'Multi-item list',
       owner_uids: [alice.uid]
     });
 
     for(const name of orderedListNames) {
-      await new FirestoreService(firestore.app).addShoppingListItem({ name, list, search_queries: [] });
+      await _addShoppingListItem(firestore)({ name, list, search_queries: [] });
     }
-  }, alice));
+  }));
 
   it('retrieves them back in the same order', async () => {
-    const items = await withAliceAuthenticated(firestoreService => fetchShoppingListItems(firestoreService, list));
+    const items = await withAliceAuthenticated(firestore => fetchFromRealtimeService(_listShoppingListItems(firestore), list));
     expect(items.map(i => i.name)).toEqual(orderedListNames);
   });
 });
@@ -161,10 +153,10 @@ describe('firebase.rules', () => {
   let jeffsShoppingList: ShoppingList;
   let jeffsShoppingItem: ShoppingListItem;
   beforeEach(async () => {
-    await loginToFirestoreAs(async firestore => {
+    await withJeffAuthenticated(async firestore => {
       jeffsShoppingList = await _createShoppingList(firestore)({ name: 'List of Jeff', owner_uids: [jeff.uid] });
-      jeffsShoppingItem = await new FirestoreService(firestore.app).addShoppingListItem({ name: 'Crab stick', list: jeffsShoppingList, search_queries: ['crab'] });
-    }, jeff);
+      jeffsShoppingItem = await _addShoppingListItem(firestore)({ name: 'Crab stick', list: jeffsShoppingList, search_queries: ['crab'] });
+    });
   });
 
   const nonExistentList: ShoppingList = {
@@ -174,41 +166,41 @@ describe('firebase.rules', () => {
   };
 
   it('Does not read items a different users list', () =>
-    assertAliceCant(firestoreService => fetchShoppingListItems(firestoreService, jeffsShoppingList))
+    assertFails(withAliceAuthenticated(firestore => fetchFromRealtimeService(_listShoppingListItems(firestore), jeffsShoppingList)))
   );
 
   it('Does not read items from a non-existent list', () =>
-    assertAliceCant(firestoreService => fetchShoppingListItems(firestoreService, nonExistentList))
+    assertFails(withAliceAuthenticated(firestore => fetchFromRealtimeService(_listShoppingListItems(firestore), nonExistentList)))
   );
 
   it('Does not allow creating items for a different users list', () =>
-    assertAliceCant(firestoreService =>
-      firestoreService.addShoppingListItem({
+    assertFails(withAliceAuthenticated(firestore =>
+      _addShoppingListItem(firestore)({
         name: 'Devils apple',
         list: jeffsShoppingList,
         search_queries: ['apple']
       })
-    )
+    ))
   );
 
   it('Does not allow creating items for a non-existent list', () =>
-    assertAliceCant(firestoreService =>
-      firestoreService.addShoppingListItem({
+    assertFails(withAliceAuthenticated(firestore =>
+      _addShoppingListItem(firestore)({
         name: 'Devils apple',
         list: nonExistentList,
         search_queries: ['apple']
       })
-    )
+    ))
   );
 
   it('Does not allow deleting items for a different users list', () =>
-    assertAliceCant(firestoreService => firestoreService.deleteItem(jeffsShoppingItem))
+    assertFails(withAliceAuthenticated(firebase => _deleteShoppingListItem(firebase)(jeffsShoppingItem)))
   );
 
   it('Does not allow updating items for a different users list', () =>
-    assertAliceCant(firestoreService => firestoreService.updateItem({
+    assertFails(withAliceAuthenticated(firestore => _updateShoppingListItem(firestore)({
       ...jeffsShoppingItem,
       search_queries: ['alices malicious update']
-    }))
+    })))
   );
 });

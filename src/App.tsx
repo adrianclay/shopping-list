@@ -1,7 +1,5 @@
 import React from 'react';
 
-import FirestoreService from "./services/FirestoreService";
-
 import ItemListConstructor from "./ItemList";
 import EditItemFormConstructor from './ItemList/EditItemForm';
 import AddItemFormConstructor from './AddItemForm';
@@ -14,15 +12,17 @@ import AlphaBanner from './AlphaBanner';
 import LoginConstructor, { Authenticator } from './Login';
 import { _createShoppingList, _listShoppingLists } from './services/Firestore/ShoppingLists';
 import { searchForItems, searchingAddShoppingListItem, searchingUpdateItem } from './services/ItemSearchingService';
+import { _addShoppingListItem, _deleteShoppingListItem, _listShoppingListItems, _readdShoppingListItem, _searchForItems, _updateShoppingListItem } from './services/Firestore/ShoppingListItems';
 
 function AppConstructor(authenticator: Authenticator, firebase: firebase.app.App) {
-  const firestoreService = new FirestoreService(firebase);
+  const firestore = firebase.firestore();
   const Login = LoginConstructor(authenticator);
+  const EditItemForm = EditItemFormConstructor(searchingUpdateItem(_updateShoppingListItem(firebase.firestore())));
   const ShoppingListViewer = ShoppingListViewerConstructor(
-    ListSelectorConstructor(_listShoppingLists(firebase.firestore())),
-    AddItemFormConstructor(firestoreService.readdShoppingListItem.bind(firestoreService), searchingAddShoppingListItem(firestoreService.addShoppingListItem.bind(firestoreService)), searchForItems(firestoreService.searchForItems.bind(firestoreService))),
-    ItemListConstructor(firestoreService.subscribeToItemChanges.bind(firestoreService), firestoreService.deleteItem.bind(firestoreService), EditItemFormConstructor(searchingUpdateItem(firestoreService.updateItem.bind(firestoreService)))),
-    CreateShoppingListFormConstructor(_createShoppingList(firebase.firestore()))
+    ListSelectorConstructor(_listShoppingLists(firestore)),
+    AddItemFormConstructor(_readdShoppingListItem(firestore), searchingAddShoppingListItem(_addShoppingListItem(firestore)), searchForItems(_searchForItems(firestore))),
+    ItemListConstructor(_listShoppingListItems(firestore), _deleteShoppingListItem(firestore), EditItemForm),
+    CreateShoppingListFormConstructor(_createShoppingList(firestore))
   );
 
   return function App() {
