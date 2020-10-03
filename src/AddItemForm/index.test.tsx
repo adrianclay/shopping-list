@@ -3,6 +3,7 @@ import React from "react";
 import {fireEvent, render, screen} from "@testing-library/react";
 import ShoppingListItem from '../domain/ShoppingListItem';
 import ShoppingListFactory from "../factories/ShoppingList";
+import ShoppingListItemFactory from "../factories/ShoppingListItem";
 
 let itemSearchBox: HTMLElement, addItemButton: HTMLElement
 let readdShoppingListItem: jest.Mock<void, [ShoppingListItem]>
@@ -12,7 +13,7 @@ const shoppingList = ShoppingListFactory.build({
   name: 'Cake ingredients'
 });
 
-const searchForItemSpy = jest.fn((list) => {return Promise.resolve([{list, id: 'x', name: 'Granulated Sugar' }])});
+const searchForItemSpy = jest.fn((list) => {return Promise.resolve([ShoppingListItemFactory.build({list, id: 'x', name: 'Granulated Sugar' })])});
 
 beforeEach(() => {
   readdShoppingListItem = jest.fn<void, [ShoppingListItem]>();

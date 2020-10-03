@@ -46,7 +46,7 @@ describe('Creating a Shopping list item', () => {
     it('can still be searched for', () =>
       expect(withAliceAuthenticated(firestore =>
         _searchForItems(firestore)(shoppingList, 'c')
-      )).resolves.toEqual([expect.objectContaining(createdItem)])
+      )).resolves.toEqual([expect.objectContaining({ ...createdItem, has_been_bought: true })])
     );
 
     describe('readding the item', () => {

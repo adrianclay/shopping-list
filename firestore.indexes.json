@@ -4,7 +4,7 @@
       "collectionGroup": "items",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "deleted", "order": "ASCENDING" },
+        { "fieldPath": "has_been_bought", "order": "ASCENDING" },
         { "fieldPath": "created_on", "order": "ASCENDING" }
       ]
     }

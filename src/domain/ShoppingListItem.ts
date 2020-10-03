@@ -6,4 +6,5 @@ export default interface ShoppingListItem {
   id: string;
   name: string;
   quantity?: ItemQuantity;
+  has_been_bought: boolean;
 }

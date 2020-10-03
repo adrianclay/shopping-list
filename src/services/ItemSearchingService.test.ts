@@ -2,6 +2,7 @@ import { Searchable, searchForItems, searchingAddShoppingListItem, searchingUpda
 import ShoppingList from "../domain/ShoppingList";
 import { ItemToAdd } from "../AddItemForm";
 import ShoppingListItem from "../domain/ShoppingListItem";
+import ShoppingListItemFactory from "../factories/ShoppingListItem";
 
 const shoppingListDummy : ShoppingList = {
   id: '',
@@ -57,7 +58,7 @@ describe('adding an item', () => {
 
 describe('updating an item', () => {
   test('with one five letter word', () => {
-    searchingUpdateItem(itemStoreSpy.updateItem)({ name: 'Cream', list: shoppingListDummy, id: '100' });
+    searchingUpdateItem(itemStoreSpy.updateItem)(ShoppingListItemFactory.build({ name: 'Cream' }));
     expect(itemStoreSpy.updateItem).toHaveBeenLastCalledWith(expect.objectContaining({ search_queries: ['c', 'cr', 'cre', 'crea', 'cream'] }));
   });
 });
@@ -91,6 +92,7 @@ describe('adding an item and searching for it back', () => {
     addShoppingListItem: function(item: Searchable<ItemToAdd>) {
       const x: Searchable<ShoppingListItem> = {
         ...item,
+        has_been_bought: false,
         id: (inMemoryItemStore.next_id++).toString()
       };
       inMemoryItemStore.items.push(x);

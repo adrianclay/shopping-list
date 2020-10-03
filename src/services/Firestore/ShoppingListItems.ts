@@ -8,8 +8,8 @@ import { ItemToAdd } from "../../AddItemForm";
 export function _listShoppingListItems(firestore: firebase.firestore.Firestore) : RealtimeService<ShoppingList, ShoppingListItem[]> {
   return function(shoppingList: ShoppingList, onUpdate: (items: ShoppingListItem[]) => void, onError: (error: Error) => void): () => void {
     const itemCollection = collection(firestore, shoppingList);
-    const undeletedItems = itemCollection.where('deleted', '==', false)
-    return undeletedItems.orderBy('created_on').onSnapshot(snapshot => {
+    const items_yet_to_be_bought = itemCollection.where('has_been_bought', '==', false);
+    return items_yet_to_be_bought.orderBy('created_on').onSnapshot(snapshot => {
       onUpdate(snapshotToShoppingListItemArray(snapshot, shoppingList));
     }, onError);
   };
@@ -17,15 +17,15 @@ export function _listShoppingListItems(firestore: firebase.firestore.Firestore) 
 
 export function _addShoppingListItem(firestore: firebase.firestore.Firestore) {
   return async function({ name, list, search_queries }: Searchable<ItemToAdd>): Promise<ShoppingListItem> {
+    const record = { name, has_been_bought: false };
     const { id } = await collection(firestore, list).add({
-      name,
+      ...record,
       search_queries,
       created_on: firebase.firestore.FieldValue.serverTimestamp(),
-      deleted: false,
     });
 
     return {
-      list, name, id
+      list, id, ...record
     };
   };
 }
@@ -49,7 +49,7 @@ export function _searchForItems(firestore: firebase.firestore.Firestore) {
 export function _readdShoppingListItem(firestore: firebase.firestore.Firestore) {
   return async function({ list, id }: ShoppingListItem) {
     await collection(firestore, list).doc(id).update({
-      deleted: false
+      has_been_bought: false,
     });
   };
 }
@@ -57,7 +57,7 @@ export function _readdShoppingListItem(firestore: firebase.firestore.Firestore) 
 export function _deleteShoppingListItem(firestore: firebase.firestore.Firestore) {
   return async function(shoppingListItem: ShoppingListItem) {
     const item = collection(firestore, shoppingListItem.list).doc(shoppingListItem.id);
-    await item.update({ deleted: true });
+    await item.update({ has_been_bought: true });
   };
 }
 
@@ -68,7 +68,7 @@ function collection(firestore: firebase.firestore.Firestore, shoppingList: Shopp
 function snapshotToShoppingListItemArray(snapshot: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>, shoppingList: ShoppingList) {
   return snapshot.docs.map(document => {
     return {
-      ...document.data() as { name: string; },
+      ...document.data() as { name: string; has_been_bought: boolean },
       id: document.id,
       list: shoppingList
     };
