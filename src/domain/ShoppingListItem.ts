@@ -7,4 +7,5 @@ export default interface ShoppingListItem {
   name: string;
   quantity?: ItemQuantity;
   has_been_bought: boolean;
+  added_to_list_on: Date;
 }

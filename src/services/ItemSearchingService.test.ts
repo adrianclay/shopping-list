@@ -93,6 +93,7 @@ describe('adding an item and searching for it back', () => {
       const x: Searchable<ShoppingListItem> = {
         ...item,
         has_been_bought: false,
+        added_to_list_on: new Date(),
         id: (inMemoryItemStore.next_id++).toString()
       };
       inMemoryItemStore.items.push(x);

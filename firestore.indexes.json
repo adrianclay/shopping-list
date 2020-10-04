@@ -5,7 +5,7 @@
       "queryScope": "COLLECTION",
       "fields": [
         { "fieldPath": "has_been_bought", "order": "ASCENDING" },
-        { "fieldPath": "created_on", "order": "ASCENDING" }
+        { "fieldPath": "added_to_list_on", "order": "ASCENDING" }
       ]
     }
   ],

@@ -7,6 +7,7 @@ const ShoppingListItemFactory = Factory.Sync.makeFactory<ShoppingListItem>({
   name: 'Bacon',
   list: ShoppingListFactory.build(),
   has_been_bought: false,
+  added_to_list_on: new Date(),
 });
 
 export default ShoppingListItemFactory;
