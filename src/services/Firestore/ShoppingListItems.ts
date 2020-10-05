@@ -34,11 +34,11 @@ export function _addShoppingListItem(firestore: firebase.firestore.Firestore) {
   };
 }
 
-export function _updateShoppingListItem(firestore: firebase.firestore.Firestore) {
+export function _saveShoppingListItem(firestore: firebase.firestore.Firestore) {
   return async function({ id, list, ...attributes }: Searchable<ShoppingListItem>) {
     const itemsCollection = collection(firestore, list);
     const item = itemsCollection.doc(id);
-    await item.update(attributes);
+    await item.set(attributes);
   };
 }
 

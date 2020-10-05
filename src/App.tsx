@@ -12,12 +12,12 @@ import AlphaBanner from './AlphaBanner';
 import LoginConstructor, { Authenticator } from './Login';
 import { _createShoppingList, _listShoppingLists } from './services/Firestore/ShoppingLists';
 import { searchForItems, searchingAddShoppingListItem, searchingUpdateItem } from './services/ItemSearchingService';
-import { _addShoppingListItem, _deleteShoppingListItem, _listShoppingListItems, _readdShoppingListItem, _searchForItems, _updateShoppingListItem } from './services/Firestore/ShoppingListItems';
+import { _addShoppingListItem, _deleteShoppingListItem, _listShoppingListItems, _readdShoppingListItem, _searchForItems, _saveShoppingListItem } from './services/Firestore/ShoppingListItems';
 
 function AppConstructor(authenticator: Authenticator, firebase: firebase.app.App) {
   const firestore = firebase.firestore();
   const Login = LoginConstructor(authenticator);
-  const EditItemForm = EditItemFormConstructor(searchingUpdateItem(_updateShoppingListItem(firebase.firestore())));
+  const EditItemForm = EditItemFormConstructor(searchingUpdateItem(_saveShoppingListItem(firebase.firestore())));
   const ShoppingListViewer = ShoppingListViewerConstructor(
     ListSelectorConstructor(_listShoppingLists(firestore)),
     AddItemFormConstructor(_readdShoppingListItem(firestore), searchingAddShoppingListItem(_addShoppingListItem(firestore)), searchForItems(_searchForItems(firestore))),

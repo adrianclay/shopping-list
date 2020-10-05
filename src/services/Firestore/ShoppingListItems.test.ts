@@ -4,7 +4,7 @@ import ShoppingListItem from "../../domain/ShoppingListItem";
 import { fetchFromRealtimeService } from "../../setupTests";
 import { Searchable } from "../ItemSearchingService";
 import { alice, jeff, projectId, withAliceAuthenticated, withJeffAuthenticated } from "./setup";
-import { _addShoppingListItem, _deleteShoppingListItem, _listShoppingListItems, _readdShoppingListItem, _searchForItems, _updateShoppingListItem } from "./ShoppingListItems";
+import { _addShoppingListItem, _deleteShoppingListItem, _listShoppingListItems, _readdShoppingListItem, _searchForItems, _saveShoppingListItem } from "./ShoppingListItems";
 import { _createShoppingList } from "./ShoppingLists";
 
 afterEach(async () => {
@@ -64,7 +64,7 @@ describe('Creating a Shopping list item', () => {
     });
   });
 
-  describe('updating it with new name and quantity', () => {
+  describe('Saving it with new name and quantity', () => {
     let updatedItem: Searchable<ShoppingListItem>;
 
     beforeEach(async () => {
@@ -76,7 +76,7 @@ describe('Creating a Shopping list item', () => {
           scalar: 100
         }
       };
-      await withAliceAuthenticated(firestore => _updateShoppingListItem(firestore)(updatedItem));
+      await withAliceAuthenticated(firestore => _saveShoppingListItem(firestore)(updatedItem));
     });
 
     it('retrieves it back with the new name and quantity', () =>
@@ -197,8 +197,8 @@ describe('firebase.rules', () => {
     assertFails(withAliceAuthenticated(firebase => _deleteShoppingListItem(firebase)(jeffsShoppingItem)))
   );
 
-  it('Does not allow updating items for a different users list', () =>
-    assertFails(withAliceAuthenticated(firestore => _updateShoppingListItem(firestore)({
+  it('Does not allow saving items for a different users list', () =>
+    assertFails(withAliceAuthenticated(firestore => _saveShoppingListItem(firestore)({
       ...jeffsShoppingItem,
       search_queries: ['alices malicious update']
     })))
