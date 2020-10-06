@@ -1,6 +1,6 @@
 import ShoppingListItem from "../domain/ShoppingListItem";
 import ShoppingListFactory from "../factories/ShoppingList";
-import { _AddToShoppingList } from "./AddToShoppingList";
+import _AddToShoppingList from "./AddToShoppingList";
 
 const list = ShoppingListFactory.build();
 const saveShoppingListItemSpy = jest.fn<Promise<unknown>, [ShoppingListItem]>();
