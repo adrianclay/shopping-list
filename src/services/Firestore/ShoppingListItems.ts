@@ -3,7 +3,6 @@ import ShoppingList from "../../domain/ShoppingList";
 import ShoppingListItem from "../../domain/ShoppingListItem";
 import { RealtimeService } from "../../useService";
 import { Searchable } from "../ItemSearchingService";
-import { ItemToAdd } from "../../AddItemForm";
 import ItemQuantity from "../../domain/ItemQuantity";
 
 export function _listShoppingListItems(firestore: firebase.firestore.Firestore) : RealtimeService<ShoppingList, ShoppingListItem[]> {
@@ -13,25 +12,6 @@ export function _listShoppingListItems(firestore: firebase.firestore.Firestore) 
     return items_yet_to_be_bought.orderBy('added_to_list_on').onSnapshot(snapshot => {
       onUpdate(snapshotToShoppingListItemArray(snapshot, shoppingList));
     }, onError);
-  };
-}
-
-export function _addShoppingListItem(firestore: firebase.firestore.Firestore) {
-  return async function({ name, list, search_queries }: Searchable<ItemToAdd>): Promise<ShoppingListItem> {
-    const record = {
-      name,
-      has_been_bought: false,
-      added_to_list_on: new Date(),
-      quantity: null,
-    };
-    const { id } = await collection(firestore, list).add({
-      ...record,
-      search_queries,
-    });
-
-    return {
-      list, id, ...record
-    };
   };
 }
 

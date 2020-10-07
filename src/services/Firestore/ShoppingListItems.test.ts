@@ -1,15 +1,21 @@
 import { assertFails, clearFirestoreData } from "@firebase/rules-unit-testing";
+import * as Factory from "factory.ts";
 import ShoppingList from "../../domain/ShoppingList";
 import ShoppingListItem from "../../domain/ShoppingListItem";
+import ShoppingListItemFactory from "../../factories/ShoppingListItem";
 import { fetchFromRealtimeService } from "../../setupTests";
 import { Searchable } from "../ItemSearchingService";
 import { alice, jeff, projectId, withAliceAuthenticated, withJeffAuthenticated } from "./setup";
-import { _addShoppingListItem, _deleteShoppingListItem, _listShoppingListItems, _readdShoppingListItem, _searchForItems, _saveShoppingListItem } from "./ShoppingListItems";
+import { _deleteShoppingListItem, _listShoppingListItems, _readdShoppingListItem, _searchForItems, _saveShoppingListItem } from "./ShoppingListItems";
 import { _createShoppingList } from "./ShoppingLists";
 
 afterEach(async () => {
   await clearFirestoreData({ projectId });
 });
+
+const searchableItemFactory = Factory.Sync.makeFactory({
+  search_queries: [],
+}).combine(ShoppingListItemFactory);
 
 describe('Creating a Shopping list item', () => {
   let shoppingList: ShoppingList;
@@ -18,9 +24,12 @@ describe('Creating a Shopping list item', () => {
   beforeEach(async () => {
     await withAliceAuthenticated(async firestore => {
       shoppingList = await _createShoppingList(firestore)({ name: 'Party shopping list', owner_uids: [alice.uid] });
-      createdItem = await _addShoppingListItem(firestore)({
+      createdItem = ShoppingListItemFactory.build({
         name: 'Crisps',
-        list: shoppingList,
+        list: shoppingList
+      });
+      await _saveShoppingListItem(firestore)({
+        ...createdItem,
         search_queries: ['c']
       });
     })
@@ -140,7 +149,7 @@ describe('Creating 10 shopping list items', () => {
     });
 
     for(const name of orderedListNames) {
-      await _addShoppingListItem(firestore)({ name, list, search_queries: [] });
+      await _saveShoppingListItem(firestore)(searchableItemFactory.build({ name, list }));
     }
   }));
 
@@ -156,7 +165,8 @@ describe('firebase.rules', () => {
   beforeEach(async () => {
     await withJeffAuthenticated(async firestore => {
       jeffsShoppingList = await _createShoppingList(firestore)({ name: 'List of Jeff', owner_uids: [jeff.uid] });
-      jeffsShoppingItem = await _addShoppingListItem(firestore)({ name: 'Crab stick', list: jeffsShoppingList, search_queries: ['crab'] });
+      const item = jeffsShoppingItem = searchableItemFactory.build({ name: 'Crab stick', list: jeffsShoppingList });
+      await _saveShoppingListItem(firestore)(item);
     });
   });
 
@@ -176,21 +186,17 @@ describe('firebase.rules', () => {
 
   it('Does not allow creating items for a different users list', () =>
     assertFails(withAliceAuthenticated(firestore =>
-      _addShoppingListItem(firestore)({
-        name: 'Devils apple',
+      _saveShoppingListItem(firestore)(searchableItemFactory.build({
         list: jeffsShoppingList,
-        search_queries: ['apple']
-      })
+      }))
     ))
   );
 
   it('Does not allow creating items for a non-existent list', () =>
     assertFails(withAliceAuthenticated(firestore =>
-      _addShoppingListItem(firestore)({
-        name: 'Devils apple',
+      _saveShoppingListItem(firestore)(searchableItemFactory.build({
         list: nonExistentList,
-        search_queries: ['apple']
-      })
+      }))
     ))
   );
 
