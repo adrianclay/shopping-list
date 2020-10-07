@@ -12,6 +12,7 @@ import AlphaBanner from './AlphaBanner';
 import LoginConstructor, { Authenticator } from './Login';
 import { _createShoppingList, _listShoppingLists } from './services/Firestore/ShoppingLists';
 import { searchForItems, searchingSaveItem } from './services/ItemSearchingService';
+import { _createEvent } from './services/Firestore/ShoppingListEvent';
 import { _deleteShoppingListItem, _listShoppingListItems, _readdShoppingListItem, _searchForItems, _saveShoppingListItem } from './services/Firestore/ShoppingListItems';
 import _AddToShoppingList from './use_cases/AddToShoppingList';
 
@@ -21,7 +22,7 @@ function AppConstructor(authenticator: Authenticator, firebase: firebase.app.App
   const EditItemForm = EditItemFormConstructor(searchingSaveItem(_saveShoppingListItem(firebase.firestore())));
   const ShoppingListViewer = ShoppingListViewerConstructor(
     ListSelectorConstructor(_listShoppingLists(firestore)),
-    AddItemFormConstructor(_readdShoppingListItem(firestore), _AddToShoppingList(searchingSaveItem(_saveShoppingListItem(firestore))), searchForItems(_searchForItems(firestore))),
+    AddItemFormConstructor(_readdShoppingListItem(firestore), _AddToShoppingList(searchingSaveItem(_saveShoppingListItem(firestore)), _createEvent(firestore)), searchForItems(_searchForItems(firestore))),
     ItemListConstructor(_listShoppingListItems(firestore), _deleteShoppingListItem(firestore), EditItemForm),
     CreateShoppingListFormConstructor(_createShoppingList(firestore))
   );
