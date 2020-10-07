@@ -1,16 +1,9 @@
 import ShoppingListItem from "../domain/ShoppingListItem";
 import ShoppingList from "../domain/ShoppingList";
-import { ItemToAdd } from "../AddItemForm";
 
 export type Searchable<T> = T & { search_queries: string[] };
 
-export function searchingAddShoppingListItem(_addShoppingListItem: (item: Searchable<ItemToAdd>) => Promise<ShoppingListItem>) {
-  return function addShoppingListItem(item: ItemToAdd): Promise<ShoppingListItem> {
-    return _addShoppingListItem({ ...item, search_queries: searchQueries(item.name) });
-  }
-}
-
-export function searchingUpdateItem(_updateItem: (shoppingListItem: Searchable<ShoppingListItem>) => Promise<unknown>) {
+export function searchingSaveItem(_updateItem: (shoppingListItem: Searchable<ShoppingListItem>) => Promise<unknown>) {
   return function updateItem(item: ShoppingListItem) {
     return _updateItem({ ...item, search_queries: searchQueries(item.name) });
   }
