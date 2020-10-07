@@ -22,6 +22,7 @@ export function _addShoppingListItem(firestore: firebase.firestore.Firestore) {
       name,
       has_been_bought: false,
       added_to_list_on: new Date(),
+      quantity: null,
     };
     const { id } = await collection(firestore, list).add({
       ...record,
@@ -73,7 +74,7 @@ interface ShoppingListItemRecord {
   name: string;
   has_been_bought: boolean;
   added_to_list_on: firebase.firestore.Timestamp;
-  quantity?: ItemQuantity
+  quantity: ItemQuantity | null;
 };
 
 function snapshotToShoppingListItemArray(snapshot: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>, shoppingList: ShoppingList) {

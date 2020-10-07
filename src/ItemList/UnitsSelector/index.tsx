@@ -12,7 +12,7 @@ const options = [
 ];
 
 interface UnitsSelectorProps {
-  value?: UnitsOfMeasurement;
+  value?: UnitsOfMeasurement | null;
   onChange?: (value?: UnitsOfMeasurement) => void;
 };
 

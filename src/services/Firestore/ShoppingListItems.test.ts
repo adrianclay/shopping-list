@@ -73,7 +73,8 @@ describe('Creating a Shopping list item', () => {
         name: 'Brand new name',
         search_queries: ['new'],
         quantity: {
-          scalar: 100
+          scalar: 100,
+          units: null,
         }
       };
       await withAliceAuthenticated(firestore => _saveShoppingListItem(firestore)(updatedItem));
@@ -85,7 +86,7 @@ describe('Creating a Shopping list item', () => {
       )).resolves.toEqual([
         expect.objectContaining({
           name: 'Brand new name',
-          quantity: { scalar: 100 }
+          quantity: { scalar: 100, units: null }
         })
       ])
     );

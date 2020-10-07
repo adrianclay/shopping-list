@@ -94,6 +94,7 @@ describe('adding an item and searching for it back', () => {
         ...item,
         has_been_bought: false,
         added_to_list_on: new Date(),
+        quantity: null,
         id: (inMemoryItemStore.next_id++).toString()
       };
       inMemoryItemStore.items.push(x);

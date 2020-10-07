@@ -1,9 +1,10 @@
 import { render, fireEvent, screen, act } from "@testing-library/react";
 import React from "react";
 import EditItemFormConstructor from ".";
+import ShoppingListItem from "../../domain/ShoppingListItem";
 import ShoppingListItemFactory from "../../factories/ShoppingListItem";
 
-const shoppingListItemUpdaterSpy = jest.fn();
+const shoppingListItemUpdaterSpy = jest.fn<Promise<unknown>, [ShoppingListItem]>();
 
 const lasagneSheetItem = ShoppingListItemFactory.build({
   name: 'Lasagne Sheets',
@@ -53,9 +54,9 @@ describe('saving a quantity without units', () => {
   });
 
   test('calls the shoppingListItemUpdater', async () => {
-    expect(shoppingListItemUpdaterSpy).toHaveBeenLastCalledWith({
+    expect(shoppingListItemUpdaterSpy).toHaveBeenLastCalledWith<[ShoppingListItem]>({
       ...lasagneSheetItem,
-      quantity: { scalar: 900 }
+      quantity: { scalar: 900, units: null }
     });
   });
 });

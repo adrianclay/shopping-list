@@ -31,6 +31,6 @@ it('marks the item as to be bought', () => {
   expect(createdItem).toHaveProperty('has_been_bought', false);
 });
 
-it('defaults to an undefined quantity', () => {
-  expect(createdItem).toHaveProperty('quantity', undefined);
+it('defaults to a null quantity', () => {
+  expect(createdItem).toHaveProperty('quantity', null);
 });

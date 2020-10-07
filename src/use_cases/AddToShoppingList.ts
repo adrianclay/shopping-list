@@ -13,7 +13,7 @@ function _AddToShoppingList(saveShoppingListItem: SaveShoppingListItem) {
       list,
       has_been_bought: false,
       added_to_list_on: new Date(),
-      quantity: undefined,
+      quantity: null,
     });
   };
 }

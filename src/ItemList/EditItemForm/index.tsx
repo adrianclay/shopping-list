@@ -42,10 +42,10 @@ function EditItemFormConstructor(
         };
         const scalar = Number.parseInt(itemQuantityScalar);
         if(scalar) {
-          updatedItem.quantity = { scalar }
-          if(itemQuantityUnits) {
-            updatedItem.quantity.units = itemQuantityUnits
-          }
+          updatedItem.quantity = {
+            scalar,
+            units: itemQuantityUnits || null
+          };
         }
         await updateItem(updatedItem);
         onSave();
