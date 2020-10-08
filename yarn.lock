@@ -2271,19 +2271,19 @@
     "@babel/runtime" "^7.10.4"
     react-is "^16.6.3"
 
-"@formatjs/ecma402-abstract@^1.2.3":
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@formatjs/ecma402-abstract/-/ecma402-abstract-1.2.3.tgz#ca94911dd8e9c89eeaabba0f00e2f692979fc27b"
-  integrity sha512-sEkxTZj7qa+Pi/c4ppE5mxZYJkqQO3GNZzJZjAxgsXip2ixO/TZn58qrxdQ0V8mXmf+5xf+AfveyPvv4yHaRtw==
+"@formatjs/ecma402-abstract@^1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@formatjs/ecma402-abstract/-/ecma402-abstract-1.2.4.tgz#0f11e0309bc885d53ddc823e36d04d520fda7674"
+  integrity sha512-5XEuvm+bImBmSFlhbE9FeRQKXWtpt+WIYRsma96bneoNMnUMeCADHJxNNSA5JSY4TlrjVZFHW3jE4HYm10bLbA==
   dependencies:
     tslib "^2.0.1"
 
-"@formatjs/intl-relativetimeformat@^7.2.8":
-  version "7.2.8"
-  resolved "https://registry.yarnpkg.com/@formatjs/intl-relativetimeformat/-/intl-relativetimeformat-7.2.8.tgz#a423ef9acd379980f58730b4757713156076de14"
-  integrity sha512-h6H5lcPn1LbVlAk62m7DYtY68aE6AiZVK1bLEo3HeWrMBFCskWAe9I/5kI+RjStdGZzo+CqBl+rSTcrSXjVj+g==
+"@formatjs/intl-relativetimeformat@^7.2.9":
+  version "7.2.9"
+  resolved "https://registry.yarnpkg.com/@formatjs/intl-relativetimeformat/-/intl-relativetimeformat-7.2.9.tgz#054c1c49cbd1c4f437763583c916579b1822c03e"
+  integrity sha512-hFVhXeo+/zg2z0t7xcSZRAOQ5oO5NKoDjUNG/pQpJH+yUfqfFxkU1W1KFEV+bnwJaoUf6OQjEeoR6bgN/N1y1w==
   dependencies:
-    "@formatjs/ecma402-abstract" "^1.2.3"
+    "@formatjs/ecma402-abstract" "^1.2.4"
     tslib "^2.0.1"
 
 "@grpc/grpc-js@^1.0.0":
