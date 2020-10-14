@@ -45,10 +45,6 @@ async function createShoppingList(shoppingListName: string) {
   });
 }
 
-async function selectShoppingList(listName: string) {
-  (await screen.findByText(listName)).click();
-}
-
 test('As a user I can add items to the shopping list', async () => {
   const authenticatorStub = {
     onAuthStateChanged: (onUpdate: (currentUser: User | null) => void) => {
