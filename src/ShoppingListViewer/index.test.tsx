@@ -9,6 +9,7 @@ import { AddItemFormProps } from "../AddItemForm";
 import { CreateShoppingListFormProps } from "../CreateShoppingListForm";
 import { LoggedInUserContext } from "../Login";
 import ShoppingListFactory from "../factories/ShoppingList";
+import { EventLogViewerProps } from "../EventLogViewer";
 
 const loggedInUser = {
   uid: '100',
@@ -18,15 +19,17 @@ const loggedInUser = {
 let addItemFormSpy: jest.Mock<JSX.Element, [AddItemFormProps]>;
 let itemListSpy: jest.Mock<JSX.Element, [ItemListProps]>;
 let listSelectorSpy: jest.Mock<JSX.Element, [ListSelectorProps]>;
+let eventLogViewerSpy: jest.Mock<JSX.Element, [EventLogViewerProps]>;
 let createShoppingListFormSpy: jest.Mock<JSX.Element, [CreateShoppingListFormProps]>;
 
 beforeEach(() => {
   addItemFormSpy = jest.fn<JSX.Element, [AddItemFormProps]>(() => <p>AddItemForm</p>);
   itemListSpy = jest.fn<JSX.Element, [ItemListProps]>(() => <p>ItemList</p>);
   listSelectorSpy = jest.fn<JSX.Element, [ListSelectorProps]>(() => <p>ListSelector</p>);
+  eventLogViewerSpy = jest.fn<JSX.Element, [EventLogViewerProps]>(() => <p>EventLogViewer</p>);
   createShoppingListFormSpy = jest.fn<JSX.Element, [CreateShoppingListFormProps]>(() => <p>CreateShoppingListForm</p>)
 
-  const ShoppingListViewer = ShoppingListViewerConstructor(listSelectorSpy, addItemFormSpy, itemListSpy, createShoppingListFormSpy);
+  const ShoppingListViewer = ShoppingListViewerConstructor(listSelectorSpy, addItemFormSpy, itemListSpy, eventLogViewerSpy, createShoppingListFormSpy);
 
   render(<LoggedInUserContext.Provider value={loggedInUser}>
     <ShoppingListViewer />
@@ -47,6 +50,10 @@ test('passes the loggedInUser to the ListSelector', async () => {
 describe('without selecting a shopping list', () => {
   test('ItemList is not displayed', () => {
     expect(itemListSpy).not.toBeCalled();
+  });
+
+  test('EventLogViewer is not displayed', () => {
+    expect(eventLogViewerSpy).not.toBeCalled();
   });
 
   test('AddItemForm is not displayed', () => {
@@ -127,6 +134,14 @@ describe('selecting a shopping list', () => {
 
   test('passes the shoppingList prop to the ItemList', () => {
     expect(itemListSpy).toHaveBeenLastCalledWith({ shoppingList: selectedShoppingList }, {});
+  })
+
+  test('renders the EventLogViewer', async () => {
+    expect(await screen.findByText('EventLogViewer')).toBeInTheDocument();
+  });
+
+  test('passes the shoppingList prop to the EventLogViewer', () => {
+    expect(eventLogViewerSpy).toHaveBeenLastCalledWith({ shoppingList: selectedShoppingList }, {});
   })
 
   test('renders the AddItemForm', async () => {

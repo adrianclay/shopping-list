@@ -22,10 +22,14 @@ const typeDescription = (event: ShoppingListEvent) : string => {
   }
 }
 
+export interface EventLogViewerProps {
+  shoppingList: ShoppingList;
+}
+
 const _EventLogViewer = (eventLogFetcher: RealtimeService<ShoppingList, ShoppingListEvent[]>) => {
   const useService = _useService(eventLogFetcher);
 
-  return function EventViewer({ shoppingList }: { shoppingList: ShoppingList }) {
+  return function EventViewer({ shoppingList }: EventLogViewerProps) {
     const [isLoading, fetchError, events] = useService([], shoppingList);
 
     if(fetchError) {

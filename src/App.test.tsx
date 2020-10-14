@@ -71,4 +71,6 @@ test('As a user I can add items to the shopping list', async () => {
 
   expect(await screen.findByText('Ketchup')).toBeInTheDocument();
   expect(await screen.findByText('Cake')).toBeInTheDocument();
+
+  expect(await screen.findByText('Ketchup was added')).toBeInTheDocument();
 });
