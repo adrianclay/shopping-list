@@ -17,8 +17,8 @@ const typeDescription = (event: ShoppingListEvent) : string => {
   switch(event.type) {
     case "item_added":
       return "added";
-    case "item_deleted":
-      return "deleted";
+    case "item_bought":
+      return "bought";
   }
 }
 

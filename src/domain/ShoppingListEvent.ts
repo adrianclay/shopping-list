@@ -1,7 +1,7 @@
 import ShoppingList from "./ShoppingList";
 
 export default interface ShoppingListEvent {
-  type: 'item_added' | 'item_deleted';
+  type: 'item_added' | 'item_bought';
   item: {
     name: string;
     id: string;

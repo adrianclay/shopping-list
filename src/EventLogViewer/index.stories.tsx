@@ -18,7 +18,7 @@ const events : ShoppingListEvent[] = [
   },
   {
     list,
-    type: 'item_deleted',
+    type: 'item_bought',
     item: {
       name: 'Pudding',
       id: 'puddin'

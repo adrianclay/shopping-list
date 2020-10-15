@@ -36,7 +36,7 @@ describe('with two events', () => {
     render(<EventLogViewer shoppingList={shoppingList} />);
     eventLogFetcherStub.performUpdate([
       { list: shoppingList, type: 'item_added',   item: { id: 'xxx', name: 'yyy' }, created_on: new Date() },
-      { list: shoppingList, type: 'item_deleted', item: { id: 'xxx', name: 'yyy' }, created_on: new Date() },
+      { list: shoppingList, type: 'item_bought', item: { id: 'xxx', name: 'yyy' }, created_on: new Date() },
     ]);
   });
 
@@ -45,6 +45,6 @@ describe('with two events', () => {
   });
 
   test('displays second event', () => {
-    expect(screen.queryByText(/yyy was deleted/)).toBeInTheDocument();
+    expect(screen.queryByText(/yyy was bought/)).toBeInTheDocument();
   });
 });
