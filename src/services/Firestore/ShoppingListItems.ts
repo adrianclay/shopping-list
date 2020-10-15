@@ -39,13 +39,6 @@ export function _readdShoppingListItem(firestore: firebase.firestore.Firestore) 
   };
 }
 
-export function _deleteShoppingListItem(firestore: firebase.firestore.Firestore) {
-  return async function(shoppingListItem: ShoppingListItem) {
-    const item = collection(firestore, shoppingListItem.list).doc(shoppingListItem.id);
-    await item.update({ has_been_bought: true });
-  };
-}
-
 function collection(firestore: firebase.firestore.Firestore, shoppingList: ShoppingList) {
   return firestore.collection(`shopping-list/${shoppingList.id}/items`);
 }

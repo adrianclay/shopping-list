@@ -6,7 +6,7 @@ import ShoppingListItemFactory from "../../factories/ShoppingListItem";
 import { fetchFromRealtimeService } from "../../setupTests";
 import { Searchable } from "../ItemSearchingService";
 import { alice, jeff, projectId, withAliceAuthenticated, withJeffAuthenticated } from "./setup";
-import { _deleteShoppingListItem, _listShoppingListItems, _readdShoppingListItem, _searchForItems, _saveShoppingListItem } from "./ShoppingListItems";
+import { _listShoppingListItems, _readdShoppingListItem, _searchForItems, _saveShoppingListItem } from "./ShoppingListItems";
 import { _createShoppingList } from "./ShoppingLists";
 
 afterEach(async () => {
@@ -39,10 +39,11 @@ describe('Creating a Shopping list item', () => {
     expect(createdItem).toHaveProperty('id');
   });
 
-  describe('deleting it', () => {
+  describe('marking it as bought', () => {
     beforeEach(async () => {
       await withAliceAuthenticated(async firestore => {
-        await _deleteShoppingListItem(firestore)(createdItem);
+        createdItem.has_been_bought = true;
+        await _saveShoppingListItem(firestore)(({search_queries: ['c'], ...createdItem}));
       });
     });
 
@@ -60,9 +61,10 @@ describe('Creating a Shopping list item', () => {
 
     describe('readding the item', () => {
       beforeEach(() =>
-        withAliceAuthenticated(firestore =>
-          _readdShoppingListItem(firestore)(createdItem)
-        )
+        withAliceAuthenticated(async firestore => {
+          await _readdShoppingListItem(firestore)(createdItem);
+          createdItem.has_been_bought = false;
+        })
       );
 
       it('retrieves it back', () =>
@@ -198,10 +200,6 @@ describe('firebase.rules', () => {
         list: nonExistentList,
       }))
     ))
-  );
-
-  it('Does not allow deleting items for a different users list', () =>
-    assertFails(withAliceAuthenticated(firebase => _deleteShoppingListItem(firebase)(jeffsShoppingItem)))
   );
 
   it('Does not allow saving items for a different users list', () =>
