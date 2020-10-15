@@ -13,18 +13,22 @@ import LoginConstructor, { Authenticator } from './Login';
 import { _createShoppingList, _listShoppingLists } from './services/Firestore/ShoppingLists';
 import { searchForItems, searchingSaveItem } from './services/ItemSearchingService';
 import { _createEvent, _listEvents } from './services/Firestore/ShoppingListEvent';
-import { _deleteShoppingListItem, _listShoppingListItems, _readdShoppingListItem, _searchForItems, _saveShoppingListItem } from './services/Firestore/ShoppingListItems';
+import { _listShoppingListItems, _searchForItems, _saveShoppingListItem, _readdShoppingListItem } from './services/Firestore/ShoppingListItems';
 import _AddToShoppingList from './use_cases/AddToShoppingList';
+import _BuyItemOnShoppingList from './use_cases/BuyItemOnShoppingList';
 import _EventLogViewer from './EventLogViewer';
+
 
 function AppConstructor(authenticator: Authenticator, firebase: firebase.app.App) {
   const firestore = firebase.firestore();
+  const saveShoppingListItem = searchingSaveItem(_saveShoppingListItem(firebase.firestore()));
+  const createEvent = _createEvent(firestore);
   const Login = LoginConstructor(authenticator);
-  const EditItemForm = EditItemFormConstructor(searchingSaveItem(_saveShoppingListItem(firebase.firestore())));
+  const EditItemForm = EditItemFormConstructor(saveShoppingListItem);
   const ShoppingListViewer = ShoppingListViewerConstructor(
     ListSelectorConstructor(_listShoppingLists(firestore)),
-    AddItemFormConstructor(_readdShoppingListItem(firestore), _AddToShoppingList(searchingSaveItem(_saveShoppingListItem(firestore)), _createEvent(firestore)), searchForItems(_searchForItems(firestore))),
-    ItemListConstructor(_listShoppingListItems(firestore), _deleteShoppingListItem(firestore), EditItemForm),
+    AddItemFormConstructor(_readdShoppingListItem(firestore), _AddToShoppingList(saveShoppingListItem, createEvent), searchForItems(_searchForItems(firestore))),
+    ItemListConstructor(_listShoppingListItems(firestore), _BuyItemOnShoppingList(saveShoppingListItem, createEvent), EditItemForm),
     _EventLogViewer(_listEvents(firestore)),
     CreateShoppingListFormConstructor(_createShoppingList(firestore))
   );
