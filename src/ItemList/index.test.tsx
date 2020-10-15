@@ -42,23 +42,23 @@ test('displays loading message before fetch is resolved', async () => {
 });
 
 test('hides loading message after fetch is resolved', async () => {
-  const { queryByText, findByText } = render(<ItemList shoppingList={shoppingList} />)
+  render(<ItemList shoppingList={shoppingList} />)
 
   shoppingListItemFetcherStub.performUpdate([lasagneSheetItem])
-  await findByText(/lasagne/i);
+  await screen.findByText(/lasagne/i);
 
-  expect(await queryByText(/loading/i)).toBeNull()
+  expect(screen.queryByText(/loading/i)).toBeNull()
 });
 
 test('displays error message if fetch fails', async () => {
-  const { findByText, queryByText } = render(<ItemList shoppingList={shoppingList} />)
+  render(<ItemList shoppingList={shoppingList} />)
 
   shoppingListItemFetcherStub.performError(error);
 
-  const errorMessage = await findByText(/error/i);
+  const errorMessage = await screen.findByText(/error/i);
   expect(errorMessage).toBeInTheDocument();
   expect(errorMessage).toHaveTextContent(error.message);
-  expect(await queryByText(/loading/i)).toBeNull();
+  expect(screen.queryByText(/loading/i)).toBeNull();
 })
 
 test('displays latest set of items when updating twice', async () => {
@@ -112,7 +112,7 @@ describe('with one item on the shopping list', () => {
     });
 
     test('displays the EditItemForm', () => {
-      expect(screen.queryByText('EditItemForm')).toBeInTheDocument();
+      expect(screen.getByText('EditItemForm')).toBeInTheDocument();
     });
 
     test('hides the delete button', () => {

@@ -5,8 +5,8 @@ import RelativeTime from ".";
 import { days, hours, minutes, seconds, weeks } from "./periods";
 
 test('populates datetime attribute', () => {
-  const { container } = render(<RelativeTime time={new Date(1577840461000)}/>);
-  expect(screen.queryByText(/.+/)).toHaveAttribute('datetime', '2020-01-01T01:01:01.000Z');
+  render(<RelativeTime time={new Date(1577840461000)}/>);
+  expect(screen.getByText(/.+/)).toHaveAttribute('datetime', '2020-01-01T01:01:01.000Z');
 });
 
 test.each([

@@ -15,20 +15,20 @@ test('displays "No activity yet" when given no events', () => {
 
   eventLogFetcherStub.performUpdate([]);
 
-  expect(screen.queryByText(/no activity yet/i)).toBeInTheDocument();
+  expect(screen.getByText(/no activity yet/i)).toBeInTheDocument();
 });
 
 test('displays "loading" when still loading evengs', () => {
   render(<EventLogViewer shoppingList={shoppingList} />);
 
-  expect(screen.queryByText(/loading/i)).toBeInTheDocument();
+  expect(screen.getByText(/loading/i)).toBeInTheDocument();
 });
 
 test('displays "Errored" when errored', () => {
   render(<EventLogViewer shoppingList={shoppingList} />);
 
   eventLogFetcherStub.performError(new Error('fun'));
-  expect(screen.queryByText(/Errored/i)).toBeInTheDocument();
+  expect(screen.getByText(/Errored/i)).toBeInTheDocument();
 });
 
 describe('with two events', () => {
@@ -41,10 +41,10 @@ describe('with two events', () => {
   });
 
   test('displays first event', () => {
-    expect(screen.queryByText(/yyy was added/)).toBeInTheDocument();
+    expect(screen.getByText(/yyy was added/)).toBeInTheDocument();
   });
 
   test('displays second event', () => {
-    expect(screen.queryByText(/yyy was bought/)).toBeInTheDocument();
+    expect(screen.getByText(/yyy was bought/)).toBeInTheDocument();
   });
 });
