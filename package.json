@@ -13,7 +13,7 @@
     "@types/react-dom": "^16.9.8",
     "@types/uuid": "^8.3.0",
     "factory.ts": "^0.5.1",
-    "firebase": "^7.19.1",
+    "firebase": "^7.24.0",
     "react": "^16.14.0",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.3",
