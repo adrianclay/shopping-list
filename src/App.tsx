@@ -25,9 +25,10 @@ function AppConstructor(authenticator: Authenticator, firebase: firebase.app.App
   const createEvent = _createEvent(firestore);
   const Login = LoginConstructor(authenticator);
   const EditItemForm = EditItemFormConstructor(saveShoppingListItem);
+  const itemsSearch = searchForItems(_searchForItems(firestore));
   const ShoppingListViewer = ShoppingListViewerConstructor(
     ListSelectorConstructor(_listShoppingLists(firestore)),
-    AddItemFormConstructor(_readdShoppingListItem(firestore), _AddToShoppingList(saveShoppingListItem, createEvent), searchForItems(_searchForItems(firestore))),
+    AddItemFormConstructor(_readdShoppingListItem(firestore), _AddToShoppingList(itemsSearch, saveShoppingListItem, createEvent), itemsSearch),
     ItemListConstructor(_listShoppingListItems(firestore), _BuyItemOnShoppingList(saveShoppingListItem, createEvent), EditItemForm),
     _EventLogViewer(_listEvents(firestore)),
     CreateShoppingListFormConstructor(_createShoppingList(firestore))
