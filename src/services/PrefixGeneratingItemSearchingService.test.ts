@@ -1,4 +1,4 @@
-import { Searchable, searchForItems, searchingSaveItem } from "./ItemSearchingService";
+import { Searchable, prefixGeneratedSearchForItems, prefixGeneratedSaveItem } from "./PrefixGeneratingItemSearchingService";
 import ShoppingList from "../domain/ShoppingList";
 import ShoppingListItem from "../domain/ShoppingListItem";
 import ShoppingListItemFactory from "../factories/ShoppingListItem";
@@ -20,7 +20,7 @@ beforeEach(() => {
 });
 
 describe('saving an item', () => {
-  const saveShoppingListItem = (name: string) => searchingSaveItem(itemStoreSpy.saveShoppingListItem)(ShoppingListItemFactory.build({ name }));
+  const saveShoppingListItem = (name: string) => prefixGeneratedSaveItem(itemStoreSpy.saveShoppingListItem)(ShoppingListItemFactory.build({ name }));
 
   test('with one single letter word name', () => {
     saveShoppingListItem('C');
@@ -55,22 +55,22 @@ describe('saving an item', () => {
 
 describe('searching for items', () => {
   test('passes short search terms through to itemStore', () => {
-    searchForItems(itemStoreSpy.searchForItems)(shoppingListDummy, 'a');
+    prefixGeneratedSearchForItems(itemStoreSpy.searchForItems)(shoppingListDummy, 'a');
     expect(itemStoreSpy.searchForItems).toHaveBeenLastCalledWith(shoppingListDummy, 'a');
   });
 
   test('trims long searches down to 5 letters', () => {
-    searchForItems(itemStoreSpy.searchForItems)(shoppingListDummy, 'fantastic');
+    prefixGeneratedSearchForItems(itemStoreSpy.searchForItems)(shoppingListDummy, 'fantastic');
     expect(itemStoreSpy.searchForItems).toHaveBeenLastCalledWith(shoppingListDummy, 'fanta');
   });
 
   test('lowercases search term', () => {
-    searchForItems(itemStoreSpy.searchForItems)(shoppingListDummy, 'A');
+    prefixGeneratedSearchForItems(itemStoreSpy.searchForItems)(shoppingListDummy, 'A');
     expect(itemStoreSpy.searchForItems).toHaveBeenLastCalledWith(shoppingListDummy, 'a');
   });
 
   test('searches using only the first word', () => {
-    searchForItems(itemStoreSpy.searchForItems)(shoppingListDummy, 'a b');
+    prefixGeneratedSearchForItems(itemStoreSpy.searchForItems)(shoppingListDummy, 'a b');
     expect(itemStoreSpy.searchForItems).toHaveBeenLastCalledWith(shoppingListDummy, 'a');
   });
 });
@@ -95,7 +95,7 @@ describe('saving an item and searching for it back', () => {
       name: 'Soup in a can',
       list: shoppingListDummy,
     });
-    await searchingSaveItem(inMemoryItemStore.saveShoppingListItem)(addedItem);
+    await prefixGeneratedSaveItem(inMemoryItemStore.saveShoppingListItem)(addedItem);
   });
 
   const prefixesOf = function(s: string) {
@@ -107,6 +107,6 @@ describe('saving an item and searching for it back', () => {
   };
 
   test.each(prefixesOf('Soup in a can'))('Searching with prefix "%s" returns the item', async (prefix) => {
-    expect(await searchForItems(inMemoryItemStore.searchForItems)(shoppingListDummy, prefix)).toEqual([expect.objectContaining(addedItem)]);
+    expect(await prefixGeneratedSearchForItems(inMemoryItemStore.searchForItems)(shoppingListDummy, prefix)).toEqual([expect.objectContaining(addedItem)]);
   });
 });

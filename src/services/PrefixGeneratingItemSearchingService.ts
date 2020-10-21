@@ -3,14 +3,14 @@ import ShoppingList from "../domain/ShoppingList";
 
 export type Searchable<T> = T & { search_queries: string[] };
 
-export function searchingSaveItem(_updateItem: (shoppingListItem: Searchable<ShoppingListItem>) => Promise<unknown>) {
-  return function updateItem(item: ShoppingListItem) {
+export function prefixGeneratedSaveItem(_updateItem: (shoppingListItem: Searchable<ShoppingListItem>) => Promise<unknown>) {
+  return function(item: ShoppingListItem) {
     return _updateItem({ ...item, search_queries: searchQueries(item.name) });
   }
 }
 
-export function searchForItems(_searchForItems: (shoppingList: ShoppingList, search: string) => Promise<ShoppingListItem[]>) {
-  return function searchForItems(shoppingList: ShoppingList, query: string) {
+export function prefixGeneratedSearchForItems(_searchForItems: (shoppingList: ShoppingList, search: string) => Promise<ShoppingListItem[]>) {
+  return function(shoppingList: ShoppingList, query: string) {
     return _searchForItems(shoppingList, query.toLowerCase().split(' ')[0].substr(0, 5));
   }
 }

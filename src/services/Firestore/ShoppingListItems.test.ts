@@ -4,7 +4,7 @@ import ShoppingList from "../../domain/ShoppingList";
 import ShoppingListItem from "../../domain/ShoppingListItem";
 import ShoppingListItemFactory from "../../factories/ShoppingListItem";
 import { fetchFromRealtimeService } from "../../setupTests";
-import { Searchable } from "../ItemSearchingService";
+import { Searchable } from "../PrefixGeneratingItemSearchingService";
 import { alice, jeff, projectId, withAliceAuthenticated, withJeffAuthenticated } from "./setup";
 import { _listShoppingListItems, _readdShoppingListItem, _searchForItems, _saveShoppingListItem } from "./ShoppingListItems";
 import { _createShoppingList } from "./ShoppingLists";

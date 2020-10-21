@@ -2,7 +2,7 @@ import * as firebase from "firebase/app";
 import ShoppingList from "../../domain/ShoppingList";
 import ShoppingListItem from "../../domain/ShoppingListItem";
 import { RealtimeService } from "../../useService";
-import { Searchable } from "../ItemSearchingService";
+import { Searchable } from "../PrefixGeneratingItemSearchingService";
 import ItemQuantity from "../../domain/ItemQuantity";
 
 export function _listShoppingListItems(firestore: firebase.firestore.Firestore) : RealtimeService<ShoppingList, ShoppingListItem[]> {
