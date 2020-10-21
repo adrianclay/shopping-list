@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid';
-import { ItemToAdd } from '../AddItemForm';
 import ShoppingList from '../domain/ShoppingList';
 import ShoppingListEvent from '../domain/ShoppingListEvent';
 import ShoppingListItem from "../domain/ShoppingListItem";
@@ -8,8 +7,13 @@ type SaveShoppingListItem = (item: ShoppingListItem) => Promise<unknown>;
 type CreateShoppingListEvent = (event: ShoppingListEvent) => Promise<unknown>;
 type SearchShoppingListItems = (shoppingList: ShoppingList, name: string) => Promise<ShoppingListItem[]>;
 
+export interface AddToShoppingListRequest {
+  name: string;
+  list: ShoppingList;
+}
+
 function _AddToShoppingList(searchShoppingList: SearchShoppingListItems, saveShoppingListItem: SaveShoppingListItem, createShoppingListEvent: CreateShoppingListEvent) {
-  return async function({ name, list } : ItemToAdd) {
+  return async function({ name, list } : AddToShoppingListRequest) {
 
     const searchResults = (await searchShoppingList(list, name)).filter(item => item.name === name);
 

@@ -2,11 +2,7 @@ import React, {useState} from "react";
 import { Button, Form, Segment, Dropdown } from 'semantic-ui-react'
 import ShoppingList from "../domain/ShoppingList";
 import ShoppingListItem from "../domain/ShoppingListItem";
-
-export interface ItemToAdd {
-  name: string;
-  list: ShoppingList;
-}
+import { AddToShoppingListRequest } from "../use_cases/AddToShoppingList";
 
 export interface AddItemFormProps {
   shoppingList: ShoppingList;
@@ -14,7 +10,7 @@ export interface AddItemFormProps {
 
 function AddItemFormConstructor(
   readdShoppingListItem: (item : ShoppingListItem) => void,
-  addShoppingListItem: (item: ItemToAdd) => void,
+  addShoppingListItem: (item: AddToShoppingListRequest) => void,
   searchForItems: (shoppingList: ShoppingList, query: string) => Promise<ShoppingListItem[]>
 ) {
   return function AddItemForm({ shoppingList } : AddItemFormProps) {

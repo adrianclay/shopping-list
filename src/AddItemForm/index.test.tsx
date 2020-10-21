@@ -1,13 +1,14 @@
-import AddItemFormConstructor, { ItemToAdd } from "./";
+import AddItemFormConstructor from "./";
 import React from "react";
 import {fireEvent, render, screen} from "@testing-library/react";
 import ShoppingListItem from '../domain/ShoppingListItem';
 import ShoppingListFactory from "../factories/ShoppingList";
 import ShoppingListItemFactory from "../factories/ShoppingListItem";
+import { AddToShoppingListRequest } from "../use_cases/AddToShoppingList";
 
 let itemSearchBox: HTMLElement, addItemButton: HTMLElement
 let readdShoppingListItem: jest.Mock<void, [ShoppingListItem]>
-let addShoppingListItemMock: jest.Mock<void, [ItemToAdd]>
+let addShoppingListItemMock: jest.Mock<void, [AddToShoppingListRequest]>
 
 const shoppingList = ShoppingListFactory.build({
   name: 'Cake ingredients'
@@ -17,7 +18,7 @@ const searchForItemSpy = jest.fn((list) => {return Promise.resolve([ShoppingList
 
 beforeEach(() => {
   readdShoppingListItem = jest.fn<void, [ShoppingListItem]>();
-  addShoppingListItemMock = jest.fn<void, [ItemToAdd]>();
+  addShoppingListItemMock = jest.fn<void, [AddToShoppingListRequest]>();
   const AddItemForm = AddItemFormConstructor(readdShoppingListItem, addShoppingListItemMock, searchForItemSpy);
 
   render(<AddItemForm shoppingList={shoppingList} />);
@@ -87,7 +88,7 @@ describe('Searching for "Granulated"', () => {
       });
 
       test('calls the addShoppingListItem service', () => {
-        expect(addShoppingListItemMock).toBeCalledWith<[ItemToAdd]>({
+        expect(addShoppingListItemMock).toBeCalledWith<[AddToShoppingListRequest]>({
           name: 'Granulated',
           list: shoppingList,
         });
