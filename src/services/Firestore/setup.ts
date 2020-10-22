@@ -14,8 +14,7 @@ export const withJeffAuthenticated = <T>(action: FirestoreAction<T>) => loginToF
 export const withUnauthenticated = <T>(action: FirestoreAction<T>) => loginToFirestoreAs(action, undefined);
 
 export async function loginToFirestoreAs<T>(callback: FirestoreAction<T>, authenticatedAs?: { uid: string }) {
-  const auth = authenticatedAs ? {...authenticatedAs} : undefined;
-  const firebase = initializeTestApp({ projectId, auth });
+  const firebase = initializeTestApp({ projectId, auth: authenticatedAs });
   try {
     return await callback(firebase.firestore());
   } finally {
