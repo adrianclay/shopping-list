@@ -9,8 +9,7 @@ export interface AddItemFormProps {
 }
 
 function AddItemFormConstructor(
-  readdShoppingListItem: (item : ShoppingListItem) => void,
-  addShoppingListItem: (item: AddToShoppingListRequest) => void,
+  addToShoppingList: (item: AddToShoppingListRequest) => void,
   searchForItems: (shoppingList: ShoppingList, query: string) => Promise<ShoppingListItem[]>
 ) {
   return function AddItemForm({ shoppingList } : AddItemFormProps) {
@@ -21,15 +20,10 @@ function AddItemFormConstructor(
     const addItem = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       event.preventDefault();
 
-      const selectedItem = options.find(o => o.name === itemName);
-      if (selectedItem) {
-        readdShoppingListItem(selectedItem);
-      } else {
-        addShoppingListItem({
-          name: itemName,
-          list: shoppingList
-        });
-      }
+      addToShoppingList({
+        name: itemName,
+        list: shoppingList
+      });
 
       setItemName('');
     };

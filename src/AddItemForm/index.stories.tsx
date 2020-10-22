@@ -4,7 +4,6 @@ import {action} from '@storybook/addon-actions';
 import ShoppingListFactory from '../factories/ShoppingList';
 
 const AddItemForm = AddItemFormConstructor(
-  action('readdShoppingListItem'),
   action('addShoppingListItem'),
   (list, query) => {
     action('searchForItems')(list, query);

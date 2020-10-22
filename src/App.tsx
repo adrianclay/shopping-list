@@ -13,7 +13,7 @@ import LoginConstructor, { Authenticator } from './Login';
 import { _createShoppingList, _listShoppingLists } from './services/Firestore/ShoppingLists';
 import { prefixGeneratedSearchForItems, prefixGeneratedSaveItem } from './services/PrefixGeneratingItemSearchingService';
 import { _createEvent, _listEvents } from './services/Firestore/ShoppingListEvent';
-import { _listShoppingListItems, _searchForItems, _saveShoppingListItem, _readdShoppingListItem } from './services/Firestore/ShoppingListItems';
+import { _listShoppingListItems, _searchForItems, _saveShoppingListItem } from './services/Firestore/ShoppingListItems';
 import _AddToShoppingList from './use_cases/AddToShoppingList';
 import _BuyItemOnShoppingList from './use_cases/BuyItemOnShoppingList';
 import _EventLogViewer from './EventLogViewer';
@@ -32,7 +32,7 @@ function AppConstructor(authenticator: Authenticator, firebase: firebase.app.App
 
   const ShoppingListViewer = ShoppingListViewerConstructor(
     ListSelectorConstructor(_listShoppingLists(firestore)),
-    AddItemFormConstructor(_readdShoppingListItem(firestore), _AddToShoppingList(searchForItems, saveShoppingListItem, createEvent), searchForItems),
+    AddItemFormConstructor(_AddToShoppingList(searchForItems, saveShoppingListItem, createEvent), searchForItems),
     ItemListConstructor(_listShoppingListItems(firestore), _BuyItemOnShoppingList(saveShoppingListItem, createEvent), EditItemForm),
     _EventLogViewer(_listEvents(firestore)),
     CreateShoppingListFormConstructor(_createShoppingList(firestore))
