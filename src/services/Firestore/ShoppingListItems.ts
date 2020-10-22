@@ -31,14 +31,6 @@ export function _searchForItems(firestore: firebase.firestore.Firestore) {
   };
 }
 
-export function _readdShoppingListItem(firestore: firebase.firestore.Firestore) {
-  return async function({ list, id }: ShoppingListItem) {
-    await collection(firestore, list).doc(id).update({
-      has_been_bought: false,
-    });
-  };
-}
-
 function collection(firestore: firebase.firestore.Firestore, shoppingList: ShoppingList) {
   return firestore.collection(`shopping-list/${shoppingList.id}/items`);
 }

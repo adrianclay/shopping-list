@@ -6,7 +6,7 @@ import ShoppingListItemFactory from "../../factories/ShoppingListItem";
 import { fetchFromRealtimeService } from "../../setupTests";
 import { Searchable } from "../PrefixGeneratingItemSearchingService";
 import { alice, jeff, projectId, withAliceAuthenticated, withJeffAuthenticated } from "./setup";
-import { _listShoppingListItems, _readdShoppingListItem, _searchForItems, _saveShoppingListItem } from "./ShoppingListItems";
+import { _listShoppingListItems, _searchForItems, _saveShoppingListItem } from "./ShoppingListItems";
 import { _createShoppingList } from "./ShoppingLists";
 
 afterEach(async () => {
@@ -58,21 +58,6 @@ describe('Creating a Shopping list item', () => {
         _searchForItems(firestore)(shoppingList, 'c')
       )).resolves.toEqual([expect.objectContaining({ ...createdItem, has_been_bought: true })])
     );
-
-    describe('readding the item', () => {
-      beforeEach(() =>
-        withAliceAuthenticated(async firestore => {
-          await _readdShoppingListItem(firestore)(createdItem);
-          createdItem.has_been_bought = false;
-        })
-      );
-
-      it('retrieves it back', () =>
-        expect(withAliceAuthenticated(
-          firestore => fetchFromRealtimeService(_listShoppingListItems(firestore), shoppingList)
-        )).resolves.toEqual([expect.objectContaining(createdItem)])
-      );
-    });
   });
 
   describe('Saving it with new name and quantity', () => {
