@@ -4,7 +4,7 @@ import ShoppingListEvent from "../../domain/ShoppingListEvent";
 
 export function _listEvents(firestore: firebase.firestore.Firestore) : RealtimeService<ShoppingList, ShoppingListEvent[]> {
   return function(shoppingList, onUpdate, onError) {
-    const query = collection(firestore, shoppingList).orderBy('created_on', 'desc');
+    const query = collection(firestore, shoppingList).orderBy('created_on', 'desc').limit(10);
     return query.onSnapshot(snapshot => {
       onUpdate(snapshot.docs.map(d => {
         const { created_on, item, type } = d.data();
