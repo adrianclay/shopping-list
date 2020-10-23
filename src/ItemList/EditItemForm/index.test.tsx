@@ -116,3 +116,7 @@ describe('saving a non-numeric quantity', () => {
 test('prepopulates the name field', async () => {
   expect(await screen.getByLabelText(/name/i)).toHaveValue(lasagneSheetItem.name);
 });
+
+test('prepopulates the quantity field', async () => {
+  expect(await screen.getByLabelText(/quantity/i)).toHaveValue('314')
+});
