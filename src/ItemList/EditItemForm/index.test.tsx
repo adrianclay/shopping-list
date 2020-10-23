@@ -4,7 +4,7 @@ import EditItemFormConstructor from ".";
 import ShoppingListItem from "../../domain/ShoppingListItem";
 import ShoppingListItemFactory from "../../factories/ShoppingListItem";
 
-const shoppingListItemUpdaterSpy = jest.fn<Promise<unknown>, [ShoppingListItem]>();
+const saveShoppingListItemSpy = jest.fn<Promise<unknown>, [ShoppingListItem]>();
 
 const lasagneSheetItem = ShoppingListItemFactory.build({
   name: 'Lasagne Sheets',
@@ -13,7 +13,7 @@ const lasagneSheetItem = ShoppingListItemFactory.build({
 const onSaveSpy = jest.fn();
 
 beforeEach(async () => {
-  const EditItemForm = EditItemFormConstructor(shoppingListItemUpdaterSpy);
+  const EditItemForm = EditItemFormConstructor(saveShoppingListItemSpy);
   render(<EditItemForm item={lasagneSheetItem} onSave={onSaveSpy} />);
 });
 
@@ -29,8 +29,8 @@ describe('saving a new name', () => {
     });
   });
 
-  test('calls the shoppingListItemUpdater', async () => {
-    expect(shoppingListItemUpdaterSpy).toHaveBeenLastCalledWith({
+  test('calls saveShoppingListItem with the new name ', async () => {
+    expect(saveShoppingListItemSpy).toHaveBeenLastCalledWith({
       ...lasagneSheetItem,
       name: 'Chicken nuggets'
     });
@@ -53,8 +53,8 @@ describe('saving a quantity without units', () => {
     });
   });
 
-  test('calls the shoppingListItemUpdater', async () => {
-    expect(shoppingListItemUpdaterSpy).toHaveBeenLastCalledWith<[ShoppingListItem]>({
+  test('calls saveShoppingListItem with the new quantity', async () => {
+    expect(saveShoppingListItemSpy).toHaveBeenLastCalledWith<[ShoppingListItem]>({
       ...lasagneSheetItem,
       quantity: { scalar: 900, units: null }
     });
@@ -76,8 +76,8 @@ describe('saving a quantity with units', () => {
     });
   });
 
-  test('calls the shoppingListItemUpdater', async () => {
-    expect(shoppingListItemUpdaterSpy).toHaveBeenLastCalledWith({
+  test('calls saveShoppingListItem with the new quantity', async () => {
+    expect(saveShoppingListItemSpy).toHaveBeenLastCalledWith({
       ...lasagneSheetItem,
       quantity: { scalar: 10, units: 'ml' }
     });
@@ -101,9 +101,10 @@ describe('saving a non-numeric quantity', () => {
     expect(quantityBox).toHaveValue('a few, but not too many');
   });
 
-  test('calls the shoppingListItemUpdater', async () => {
-    expect(shoppingListItemUpdaterSpy).toHaveBeenLastCalledWith({
-      ...lasagneSheetItem
+  test('calls saveShoppingListItem without a quantity', async () => {
+    expect(saveShoppingListItemSpy).toHaveBeenLastCalledWith<[ShoppingListItem]>({
+      ...lasagneSheetItem,
+      quantity: null
     });
   });
 });

@@ -10,7 +10,7 @@ export interface EditItemFormProps {
 }
 
 function EditItemFormConstructor(
-  updateItem: (shoppingListItem: ShoppingListItem) => Promise<unknown>,
+  saveShoppingListItem: (shoppingListItem: ShoppingListItem) => Promise<unknown>,
 ) {
   return function EditItemForm({ item, onSave } : EditItemFormProps) {
     const [itemName, setItemName] = useState(item.name);
@@ -47,7 +47,7 @@ function EditItemFormConstructor(
             units: itemQuantityUnits || null
           };
         }
-        await updateItem(updatedItem);
+        await saveShoppingListItem(updatedItem);
         onSave();
       }}>Save</Button>
     </Form>;
