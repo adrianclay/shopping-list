@@ -22,12 +22,12 @@ function ShoppingListViewerConstructor(
     const itemList = (loggedInUser: User) => {
       if(shoppingList) {
         return (<>
-          <h1>Items</h1>
+          <h2>Items</h2>
           <Segment.Group>
             <AddItemForm shoppingList={shoppingList} />
             <ItemList shoppingList={shoppingList} />
           </Segment.Group>
-          <h1>History</h1>
+          <h2>History</h2>
           <Segment.Group>
             <EventLogViewer shoppingList={shoppingList} />
           </Segment.Group>
