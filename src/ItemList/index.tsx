@@ -12,11 +12,11 @@ export interface ItemListProps {
 }
 
 function ItemListConstructor(
-  subscribeToItemChanges: ShoppingListItemFetcher,
-  deleteItem: (shoppingListItem: ShoppingListItem) => void,
+  listShoppingListItems: ShoppingListItemFetcher,
+  buyItemOnShoppingList: (shoppingListItem: ShoppingListItem) => void,
   EditItemForm: React.FunctionComponent<EditItemFormProps>,
   ) {
-  const useService = _useService(subscribeToItemChanges);
+  const useService = _useService(listShoppingListItems);
 
   return function ItemList({ shoppingList } : ItemListProps) {
     const [isLoading, fetchError, shoppingListItems] = useService([], shoppingList);
@@ -56,8 +56,8 @@ function ItemListConstructor(
 
     return <>
       {item.name} {quantity(item)}
-      <Button floated={"right"} size="mini" onClick={() => deleteItem(item)}>
-        Delete
+      <Button floated={"right"} size="mini" onClick={() => buyItemOnShoppingList(item)}>
+        Buy
       </Button>
       <Button floated={"right"} size="mini" onClick={() => setIsEditing(true)}>
         Edit

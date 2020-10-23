@@ -12,11 +12,11 @@ const error = new Error("Unhealthy snake, please check snake health.");
 
 const shoppingListItemFetcherStub = realtimeServiceStub<ShoppingList, ShoppingListItem[]>();
 
-const shoppingListItemDeleterSpy = jest.fn<void, [ShoppingListItem]>();
+const buyItemOnShoppingListSpy = jest.fn<void, [ShoppingListItem]>();
 
 const editItemFormSpy = jest.fn<JSX.Element, [EditItemFormProps]>(() => <p>EditItemForm</p>);
 
-const ItemList = ItemListConstructor(shoppingListItemFetcherStub.service, shoppingListItemDeleterSpy, editItemFormSpy);
+const ItemList = ItemListConstructor(shoppingListItemFetcherStub.service, buyItemOnShoppingListSpy, editItemFormSpy);
 
 const shoppingList = ShoppingListFactory.build({
   name: 'Art supplies',
@@ -89,10 +89,10 @@ describe('with one item on the shopping list', () => {
     expect(await screen.findByText(/lasagne/i)).toBeInTheDocument();
   });
 
-  test('calls the shoppingListItemDeleter when clicking the delete button', async () => {
-    fireEvent.click(await screen.findByText(/delete/i));
+  test('calls the buyItemOnShoppingList when clicking the buy button', async () => {
+    fireEvent.click(await screen.findByText(/buy/i));
 
-    expect(shoppingListItemDeleterSpy).toBeCalledWith(lasagneSheetItem);
+    expect(buyItemOnShoppingListSpy).toBeCalledWith(lasagneSheetItem);
   });
 
   test('hides the edit form', () => {
@@ -115,8 +115,8 @@ describe('with one item on the shopping list', () => {
       expect(screen.getByText('EditItemForm')).toBeInTheDocument();
     });
 
-    test('hides the delete button', () => {
-      expect(screen.queryByText(/delete/i)).not.toBeInTheDocument();
+    test('hides the buy button', () => {
+      expect(screen.queryByText(/buy/i)).not.toBeInTheDocument();
     });
 
     test('hides the edit button', () => {
