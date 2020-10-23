@@ -1,7 +1,6 @@
 import React from "react";
 import { render, act, screen } from "@testing-library/react";
 
-import ShoppingList from "../domain/ShoppingList";
 import ShoppingListViewerConstructor from ".";
 import { ItemListProps } from "../ItemList";
 import { ListSelectorProps } from "../ListSelector";
