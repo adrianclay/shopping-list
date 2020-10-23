@@ -16,7 +16,6 @@ export function realtimeServiceStub<R, D>() {
     const calls = service_mock.mock.calls;
     return calls[calls.length - 1];
   };
-  const service: RealtimeService<R, D> = service_mock;
 
   return {
     unsubscribeSpy,
