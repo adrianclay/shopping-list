@@ -84,7 +84,7 @@ describe('saving an item and searching for it back', () => {
       return Promise.resolve();
     },
     searchForItems: function(list: ShoppingList, name: string) {
-      const filteredResults = Object.values(inMemoryItemStore.items).filter(i => i.list.id == list.id && i.search_queries.includes(name));
+      const filteredResults = Object.values(inMemoryItemStore.items).filter(i => i.list.id === list.id && i.search_queries.includes(name));
       return Promise.resolve(filteredResults);
     }
   };

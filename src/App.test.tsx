@@ -28,7 +28,7 @@ async function addShoppingListItem(itemName: string) {
     { target: { value: itemName } }
   );
 
-  fireEvent.click(await screen.findByRole((role, element) => role == 'option' && element.textContent == 'Add ' + itemName))
+  fireEvent.click(await screen.findByRole((role, element) => role === 'option' && element.textContent === 'Add ' + itemName))
   fireEvent.click(await screen.findByText(/add/i));
 }
 
