@@ -33,6 +33,18 @@ test('Creating an event, is returned back', async () => {
   })).resolves.toEqual([event]);
 });
 
+test('listEvents are returned in reverse chronological order', () => withJeffAuthenticated(async firestore => {
+  await Promise.all([
+    _createEvent(firestore)(ShoppingListEventFactory.build({ list: jeffsShoppingList, created_on: new Date(100) })),
+    _createEvent(firestore)(ShoppingListEventFactory.build({ list: jeffsShoppingList, created_on: new Date(300) })),
+    _createEvent(firestore)(ShoppingListEventFactory.build({ list: jeffsShoppingList, created_on: new Date(200) })),
+  ]);
+
+  const events = await fetchFromRealtimeService(_listEvents(firestore), jeffsShoppingList);
+
+  expect(events.map(e => e.created_on.getMilliseconds())).toEqual([300, 200, 100]);
+}));
+
 describe('firebase.rules', () => {
   test('Alice reading Jeffs shopping list events, fails', () =>
     assertFails(withAliceAuthenticated(

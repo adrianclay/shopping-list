@@ -4,8 +4,8 @@ import ShoppingListEvent from "../../domain/ShoppingListEvent";
 
 export function _listEvents(firestore: firebase.firestore.Firestore) : RealtimeService<ShoppingList, ShoppingListEvent[]> {
   return function(shoppingList, onUpdate, onError) {
-    const eventCollection = firestore.collection(`shopping-list/${shoppingList.id}/events`);
-    return eventCollection.onSnapshot(snapshot => {
+    const query = collection(firestore, shoppingList).orderBy('created_on', 'desc');
+    return query.onSnapshot(snapshot => {
       onUpdate(snapshot.docs.map(d => {
         const { created_on, item, type } = d.data();
         return {
@@ -21,8 +21,12 @@ export function _listEvents(firestore: firebase.firestore.Firestore) : RealtimeS
 
 export function _createEvent(firestore: firebase.firestore.Firestore) {
   return function createEvent({list, ...event}: ShoppingListEvent) {
-    return firestore.collection(`shopping-list/${list.id}/events`).add({
+    return collection(firestore, list).add({
       ...event,
     });
   };
 };
+
+function collection(firestore: firebase.firestore.Firestore, list: ShoppingList) {
+  return firestore.collection(`shopping-list/${list.id}/events`);
+}
