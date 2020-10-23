@@ -41,12 +41,10 @@ function EditItemFormConstructor(
           name: itemName
         };
         const scalar = Number.parseInt(itemQuantityScalar);
-        if(scalar) {
-          updatedItem.quantity = {
-            scalar,
-            units: itemQuantityUnits || null
-          };
-        }
+        updatedItem.quantity = scalar ? {
+          scalar,
+          units: itemQuantityUnits || null
+        } : null;
         await saveShoppingListItem(updatedItem);
         onSave();
       }}>Save</Button>

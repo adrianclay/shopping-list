@@ -8,6 +8,10 @@ const saveShoppingListItemSpy = jest.fn<Promise<unknown>, [ShoppingListItem]>();
 
 const lasagneSheetItem = ShoppingListItemFactory.build({
   name: 'Lasagne Sheets',
+  quantity: {
+    scalar: 314,
+    units: null,
+  }
 });
 
 const onSaveSpy = jest.fn();
