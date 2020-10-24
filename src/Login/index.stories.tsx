@@ -14,9 +14,10 @@ function createLoginStory(onAuthStateChanged: (onUpdate: (user: User|null) => vo
   </Login>);
 }
 
-export default {
+const LoginStories = {
   title: 'Login',
 };
+export default LoginStories;
 
 export const NotLoggedIn = () => createLoginStory((onUpdate) => {
   onUpdate(null);

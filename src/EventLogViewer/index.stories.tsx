@@ -41,9 +41,10 @@ const EventLogViewer = _EventLogViewer((_a, onUpdate, _b) => {
   return () => {}
 });
 
-export default {
+const EventLogViewerStories = {
   title: 'EventLogViewer',
   component: EventLogViewer,
 };
+export default EventLogViewerStories;
 
 export const Example = () => <EventLogViewer shoppingList={list} />

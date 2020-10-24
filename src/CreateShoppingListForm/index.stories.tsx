@@ -14,10 +14,11 @@ const CreateShoppingListForm = CreateShoppingListFormConstructor(list => {
   ), simulatedSaveDelayInMs));
 });
 
-export default {
+const CreateShoppingListFormStories = {
   title: 'CreateShoppingListForm',
   component: CreateShoppingListForm,
 };
+export default CreateShoppingListFormStories;
 
 export const Example = () => <CreateShoppingListForm loggedInUser={{
   displayName: 'Dmitri',

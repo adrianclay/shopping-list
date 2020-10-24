@@ -28,10 +28,11 @@ const ItemList = ItemListConstructor(
 
 const shoppingList = ShoppingListFactory.build();
 
-export default {
+const ItemListStories = {
   title: 'ItemList',
   component: ItemList,
 };
+export default ItemListStories;
 
 export const WithItems = () => <Segment.Group>
   <ItemList shoppingList={shoppingList}/>

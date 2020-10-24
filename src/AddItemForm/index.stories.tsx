@@ -11,10 +11,11 @@ const AddItemForm = AddItemFormConstructor(
   }
 );
 
-export default {
+const AddItemFormStories = {
   title: 'AddItemForm',
   component: AddItemForm,
 };
+export default AddItemFormStories;
 
 const shoppingList = ShoppingListFactory.build({
   name: 'Butchers list'

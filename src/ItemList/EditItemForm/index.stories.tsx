@@ -12,9 +12,10 @@ const item = ShoppingListItemFactory.build({
   name: 'Grapes'
 });
 
-export default {
+const EditItemFormStories = {
   title: 'ItemList/EditItemForm',
   component: EditItemForm,
 };
+export default EditItemFormStories;
 
 export const Example = () => <EditItemForm item={item} onSave={action('onSave')} />

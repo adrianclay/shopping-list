@@ -1,9 +1,10 @@
 import React from "react";
 import AlphaBanner from ".";
 
-export default {
+const AlphaBannerStories = {
   title: 'AlphaBanner',
   component: AlphaBanner,
 };
+export default AlphaBannerStories;
 
 export const Example = () => <AlphaBanner />;

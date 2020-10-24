@@ -30,7 +30,8 @@ const ListSelectorLoading = ListSelectorConstructor((loggedInUser, onUpdate, onE
 export const Loading = () => <ListSelectorLoading onSelect={action('onSelect')} loggedInUser={loggedInUser} />
 
 
-export default {
+const ListSelectorStories = {
   title: 'ListSelector',
   component: ListSelectorWithItems,
 };
+export default ListSelectorStories;
