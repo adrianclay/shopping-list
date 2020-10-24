@@ -45,7 +45,7 @@ const _EventLogViewer = (eventLogFetcher: RealtimeService<ShoppingList, Shopping
     }
 
     return <List>
-      { events.map(event => <LogEntry event={event} />)}
+      { events.map((event, index) => <LogEntry event={event} key={index} />)}
     </List>;
   };
 };
