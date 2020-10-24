@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^1.0.8",
-    "@storybook/addon-actions": "^6.0.26",
+    "@storybook/addon-actions": "^6.0.27",
     "@storybook/addons": "^6.0.27",
     "@storybook/preset-create-react-app": "^3.1.4",
     "@storybook/react": "^6.0.27"
