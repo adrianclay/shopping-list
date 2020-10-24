@@ -5,9 +5,13 @@ import ShoppingListItem from "../../domain/ShoppingListItem";
 import ShoppingListItemFactory from "../../factories/ShoppingListItem";
 import { fetchFromRealtimeService } from "../../setupTests";
 import { Searchable } from "../PrefixGeneratingItemSearchingService";
-import { alice, jeff, projectId, withAliceAuthenticated, withJeffAuthenticated } from "./setup";
+import { alice, FirestoreAction, jeff, loginToFirestoreAs } from "./setup";
 import { _listShoppingListItems, _searchForItems, _saveShoppingListItem } from "./ShoppingListItems";
 import { _createShoppingList } from "./ShoppingLists";
+
+const projectId = 'shopping-list-items';
+const withJeffAuthenticated = <T>(action: FirestoreAction<T>) => loginToFirestoreAs(action, projectId, jeff);
+const withAliceAuthenticated = <T>(callback: FirestoreAction<T>) => loginToFirestoreAs(callback, projectId, alice);
 
 afterEach(async () => {
   await clearFirestoreData({ projectId });

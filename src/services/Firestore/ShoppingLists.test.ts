@@ -1,8 +1,13 @@
 import { assertFails, clearFirestoreData } from "@firebase/rules-unit-testing";
 import ShoppingList from "../../domain/ShoppingList";
 import { fetchFromRealtimeService } from "../../setupTests";
-import { alice, jeff, projectId, withAliceAuthenticated, withJeffAuthenticated, withUnauthenticated } from "./setup";
+import { alice, FirestoreAction, jeff, loginToFirestoreAs } from "./setup";
 import { _createShoppingList, _listShoppingLists } from "./ShoppingLists";
+
+const projectId = 'shopping-lists';
+const withJeffAuthenticated = <T>(action: FirestoreAction<T>) => loginToFirestoreAs(action, projectId, jeff);
+const withAliceAuthenticated = <T>(callback: FirestoreAction<T>) => loginToFirestoreAs(callback, projectId, alice);
+const withUnauthenticated = <T>(action: FirestoreAction<T>) => loginToFirestoreAs(action, projectId, undefined);
 
 describe('When Alice creates a shopping list', () => {
   let addedShoppingList: ShoppingList;

@@ -3,9 +3,13 @@ import ShoppingList from "../../domain/ShoppingList";
 import ShoppingListFactory from "../../factories/ShoppingList";
 import ShoppingListEventFactory from "../../factories/ShoppingListEvent";
 import { fetchFromRealtimeService } from "../../setupTests";
-import { jeff, withAliceAuthenticated, withJeffAuthenticated, projectId } from "./setup";
+import { alice, FirestoreAction, jeff, loginToFirestoreAs } from "./setup";
 import { _createEvent, _listEvents } from "./ShoppingListEvent";
 import { _createShoppingList } from "./ShoppingLists";
+
+const projectId = 'shopping-list-event';
+const withJeffAuthenticated = <T>(action: FirestoreAction<T>) => loginToFirestoreAs(action, projectId, jeff);
+const withAliceAuthenticated = <T>(callback: FirestoreAction<T>) => loginToFirestoreAs(callback, projectId, alice);
 
 afterEach(async () => {
   await clearFirestoreData({ projectId });
