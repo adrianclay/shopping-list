@@ -5,10 +5,13 @@ import { Select, SelectProps } from "semantic-ui-react";
 
 const EMPTY_DROPDOWN_VALUE = 'units';
 
-const options = [
+type DropdownValue = UnitsOfMeasurement | typeof EMPTY_DROPDOWN_VALUE;
+const options : { text: string, value: DropdownValue }[] = [
   {text: 'Units', value: EMPTY_DROPDOWN_VALUE},
   {text: 'ml', value: 'ml'},
+  {text: 'l', value: 'l'},
   {text: 'g', value: 'g'},
+  {text: 'kg', value: 'kg'},
 ];
 
 interface UnitsSelectorProps {
@@ -29,10 +32,8 @@ function UnitsSelector({ value, onChange }: UnitsSelectorProps) {
 
   if (onChange) {
     selectProps.onChange = (_, { value }) => {
-      if (value === EMPTY_DROPDOWN_VALUE) {
-        value = undefined;
-      }
-      onChange(value as UnitsOfMeasurement | undefined);
+      const unit = value as DropdownValue;
+      onChange(unit === EMPTY_DROPDOWN_VALUE ? undefined : unit);
     }
   }
 

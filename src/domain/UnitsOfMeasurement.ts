@@ -1,3 +1,3 @@
-type UnitsOfMeasurement = 'g' | 'ml';
+type UnitsOfMeasurement = 'g' | 'kg' | 'ml' | 'l';
 
 export default UnitsOfMeasurement;
