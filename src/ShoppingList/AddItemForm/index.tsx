@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 import { Button, Form, Segment, Dropdown } from 'semantic-ui-react'
-import ShoppingList from "../domain/ShoppingList";
-import ShoppingListItem from "../domain/ShoppingListItem";
-import { AddToShoppingListRequest } from "../use_cases/AddToShoppingList";
+import ShoppingList from "../../domain/ShoppingList";
+import ShoppingListItem from "../../domain/ShoppingListItem";
+import { AddToShoppingListRequest } from "../../use_cases/AddToShoppingList";
 
 export interface AddItemFormProps {
   shoppingList: ShoppingList;

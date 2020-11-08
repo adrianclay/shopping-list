@@ -1,9 +1,9 @@
-import AddItemFormConstructor from "./";
+import AddItemFormConstructor from ".";
 import React from "react";
 import {fireEvent, render, screen} from "@testing-library/react";
-import ShoppingListFactory from "../factories/ShoppingList";
-import ShoppingListItemFactory from "../factories/ShoppingListItem";
-import { AddToShoppingListRequest } from "../use_cases/AddToShoppingList";
+import ShoppingListFactory from "../../factories/ShoppingList";
+import ShoppingListItemFactory from "../../factories/ShoppingListItem";
+import { AddToShoppingListRequest } from "../../use_cases/AddToShoppingList";
 
 let itemSearchBox: HTMLElement, addItemButton: HTMLElement
 let addToShoppingListMock: jest.Mock<void, [AddToShoppingListRequest]>

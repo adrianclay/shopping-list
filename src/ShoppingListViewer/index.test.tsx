@@ -4,7 +4,7 @@ import { render, act, screen } from "@testing-library/react";
 import ShoppingListViewerConstructor from ".";
 import { ItemListProps } from "../ItemList";
 import { ListSelectorProps } from "../ListSelector";
-import { AddItemFormProps } from "../AddItemForm";
+import { AddItemFormProps } from "../ShoppingList/AddItemForm";
 import { CreateShoppingListFormProps } from "../CreateShoppingListForm";
 import { LoggedInUserContext } from "../Login";
 import ShoppingListFactory from "../factories/ShoppingList";

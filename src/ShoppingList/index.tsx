@@ -3,7 +3,7 @@ import { Segment } from "semantic-ui-react";
 
 import ShoppingList from "../domain/ShoppingList";
 
-import { AddItemFormProps } from "../AddItemForm";
+import { AddItemFormProps } from "./AddItemForm";
 import { EventLogViewerProps } from "../EventLogViewer";
 import { ItemListProps } from "../ItemList";
 
