@@ -5,7 +5,7 @@ import ShoppingList from "../domain/ShoppingList";
 
 import { AddItemFormProps } from "./AddItemForm";
 import { EventLogViewerProps } from "./EventLogViewer";
-import { ItemListProps } from "../ItemList";
+import { ItemListProps } from "./ItemList";
 
 export interface ShoppingListProps {
   shoppingList: ShoppingList;

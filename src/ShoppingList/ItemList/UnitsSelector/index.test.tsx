@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 
 import UnitsSelector from ".";
-import UnitsOfMeasurement from "../../domain/UnitsOfMeasurement";
+import UnitsOfMeasurement from "../../../domain/UnitsOfMeasurement";
 
 describe('selecting grammes', () => {
   const onChangeSpy = jest.fn<void, [UnitsOfMeasurement?]>();

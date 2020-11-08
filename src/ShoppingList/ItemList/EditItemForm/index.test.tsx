@@ -1,8 +1,8 @@
 import { render, fireEvent, screen, act } from "@testing-library/react";
 import React from "react";
 import EditItemFormConstructor from ".";
-import ShoppingListItem from "../../domain/ShoppingListItem";
-import ShoppingListItemFactory from "../../factories/ShoppingListItem";
+import ShoppingListItem from "../../../domain/ShoppingListItem";
+import ShoppingListItemFactory from "../../../factories/ShoppingListItem";
 
 const saveShoppingListItemSpy = jest.fn<Promise<unknown>, [ShoppingListItem]>();
 

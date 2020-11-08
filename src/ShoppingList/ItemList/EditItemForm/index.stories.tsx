@@ -1,7 +1,7 @@
 import React from "react";
 import { action } from "@storybook/addon-actions";
 import EditItemFormConstructor from ".";
-import ShoppingListItemFactory from "../../factories/ShoppingListItem";
+import ShoppingListItemFactory from "../../../factories/ShoppingListItem";
 
 const EditItemForm = EditItemFormConstructor(item => {
   action('updateItem')(item);

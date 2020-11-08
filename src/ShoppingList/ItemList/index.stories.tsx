@@ -3,8 +3,8 @@ import ItemListConstructor from '.';
 import { action } from '@storybook/addon-actions';
 import { Button, Segment } from 'semantic-ui-react';
 import { EditItemFormProps } from './EditItemForm';
-import ShoppingListFactory from '../factories/ShoppingList';
-import ShoppingListItemFactory from '../factories/ShoppingListItem';
+import ShoppingListFactory from '../../factories/ShoppingList';
+import ShoppingListItemFactory from '../../factories/ShoppingListItem';
 
 const EditItemForm = ({ onSave }: EditItemFormProps) => {
   return <>

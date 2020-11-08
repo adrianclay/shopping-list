@@ -1,4 +1,4 @@
-import UnitsOfMeasurement from "../../domain/UnitsOfMeasurement";
+import UnitsOfMeasurement from "../../../domain/UnitsOfMeasurement";
 
 import React from "react";
 import { Select, SelectProps } from "semantic-ui-react";

@@ -1,12 +1,12 @@
 import React from 'react';
-import ItemListConstructor from './';
+import ItemListConstructor from '.';
 import {render, fireEvent, screen} from '@testing-library/react';
-import ShoppingListItem from '../domain/ShoppingListItem';
-import ShoppingList from '../domain/ShoppingList';
+import ShoppingListItem from '../../domain/ShoppingListItem';
+import ShoppingList from '../../domain/ShoppingList';
 import { EditItemFormProps } from './EditItemForm';
-import ShoppingListFactory from '../factories/ShoppingList';
-import ShoppingListItemFactory from '../factories/ShoppingListItem';
-import { realtimeServiceStub } from '../setupTests';
+import ShoppingListFactory from '../../factories/ShoppingList';
+import ShoppingListItemFactory from '../../factories/ShoppingListItem';
+import { realtimeServiceStub } from '../../setupTests';
 
 const error = new Error("Unhealthy snake, please check snake health.");
 

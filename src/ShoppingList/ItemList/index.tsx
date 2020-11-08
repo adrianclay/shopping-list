@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 import { Segment, Button, Icon, Header, Loader, Dimmer, Label } from "semantic-ui-react";
-import _useService, { RealtimeService } from "../useService";
-import ShoppingListItem from '../domain/ShoppingListItem';
-import ShoppingList from "../domain/ShoppingList";
+import _useService, { RealtimeService } from "../../useService";
+import ShoppingListItem from '../../domain/ShoppingListItem';
+import ShoppingList from "../../domain/ShoppingList";
 import { EditItemFormProps } from "./EditItemForm";
 
 type ShoppingListItemFetcher = RealtimeService<ShoppingList, ShoppingListItem[]>;

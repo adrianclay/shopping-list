@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Form, Input } from "semantic-ui-react";
 
-import ShoppingListItem from "../../domain/ShoppingListItem";
+import ShoppingListItem from "../../../domain/ShoppingListItem";
 import UnitsSelector from "../UnitsSelector";
 
 export interface EditItemFormProps {

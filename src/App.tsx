@@ -1,7 +1,7 @@
 import React from 'react';
 
-import ItemListConstructor from "./ItemList";
-import EditItemFormConstructor from './ItemList/EditItemForm';
+import ItemListConstructor from "./ShoppingList/ItemList";
+import EditItemFormConstructor from './ShoppingList/ItemList/EditItemForm';
 import AddItemFormConstructor from './ShoppingList/AddItemForm';
 import ShoppingListViewerConstructor from './ShoppingListViewer';
 import ListSelectorConstructor from './ListSelector';

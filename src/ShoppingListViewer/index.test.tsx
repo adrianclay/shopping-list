@@ -2,7 +2,7 @@ import React from "react";
 import { render, act, screen } from "@testing-library/react";
 
 import ShoppingListViewerConstructor from ".";
-import { ItemListProps } from "../ItemList";
+import { ItemListProps } from "../ShoppingList/ItemList";
 import { ListSelectorProps } from "../ListSelector";
 import { AddItemFormProps } from "../ShoppingList/AddItemForm";
 import { CreateShoppingListFormProps } from "../CreateShoppingListForm";
