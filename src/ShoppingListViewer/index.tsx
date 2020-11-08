@@ -1,19 +1,15 @@
 import React, { useState } from "react";
 import ShoppingList from "../domain/ShoppingList";
-import { AddItemFormProps } from "../AddItemForm";
-import { ItemListProps } from "../ItemList";
 import { ListSelectorProps } from "../ListSelector";
 import { CreateShoppingListFormProps } from "../CreateShoppingListForm";
 import { LoggedInUserContext } from "../Login";
-import { EventLogViewerProps } from "../EventLogViewer";
-import { Segment, Button } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
 import User from "../domain/User";
+import { ShoppingListProps } from "../ShoppingList";
 
 function ShoppingListViewerConstructor(
   ListSelector: React.FunctionComponent<ListSelectorProps>,
-  AddItemForm: React.FunctionComponent<AddItemFormProps>,
-  ItemList: React.FunctionComponent<ItemListProps>,
-  EventLogViewer: React.FunctionComponent<EventLogViewerProps>,
+  ShoppingListComponent: React.FunctionComponent<ShoppingListProps>,
   CreateShoppingListForm: React.FunctionComponent<CreateShoppingListFormProps>
 ) {
   return function ShoppingListViewer() {
@@ -21,17 +17,7 @@ function ShoppingListViewerConstructor(
 
     const itemList = (loggedInUser: User) => {
       if(shoppingList) {
-        return (<>
-          <h2>Items</h2>
-          <Segment.Group>
-            <AddItemForm shoppingList={shoppingList} />
-            <ItemList shoppingList={shoppingList} />
-          </Segment.Group>
-          <h2>History</h2>
-          <Segment.Group>
-            <EventLogViewer shoppingList={shoppingList} />
-          </Segment.Group>
-        </>);
+        return <ShoppingListComponent shoppingList={shoppingList} />;
       }
 
       if(null === shoppingList) {

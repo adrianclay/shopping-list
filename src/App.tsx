@@ -17,6 +17,7 @@ import { _listShoppingListItems, _searchForItems, _saveShoppingListItem } from '
 import _AddToShoppingList from './use_cases/AddToShoppingList';
 import _BuyItemOnShoppingList from './use_cases/BuyItemOnShoppingList';
 import _EventLogViewer from './EventLogViewer';
+import _ShoppingList from './ShoppingList';
 
 
 function AppConstructor(authenticator: Authenticator, firebase: firebase.app.App) {
@@ -30,11 +31,15 @@ function AppConstructor(authenticator: Authenticator, firebase: firebase.app.App
   const Login = LoginConstructor(authenticator);
   const EditItemForm = EditItemFormConstructor(saveShoppingListItem);
 
-  const ShoppingListViewer = ShoppingListViewerConstructor(
-    ListSelectorConstructor(_listShoppingLists(firestore)),
+  const ShoppingList = _ShoppingList(
     AddItemFormConstructor(_AddToShoppingList(searchForItems, saveShoppingListItem, createEvent), searchForItems),
     ItemListConstructor(_listShoppingListItems(firestore), _BuyItemOnShoppingList(saveShoppingListItem, createEvent), EditItemForm),
     _EventLogViewer(_listEvents(firestore)),
+  );
+
+  const ShoppingListViewer = ShoppingListViewerConstructor(
+    ListSelectorConstructor(_listShoppingLists(firestore)),
+    ShoppingList,
     CreateShoppingListFormConstructor(_createShoppingList(firestore))
   );
 

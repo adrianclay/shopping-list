@@ -9,6 +9,7 @@ import { CreateShoppingListFormProps } from "../CreateShoppingListForm";
 import { LoggedInUserContext } from "../Login";
 import ShoppingListFactory from "../factories/ShoppingList";
 import { EventLogViewerProps } from "../EventLogViewer";
+import _ShoppingList from "../ShoppingList";
 
 const loggedInUser = {
   uid: '100',
@@ -28,7 +29,8 @@ beforeEach(() => {
   eventLogViewerSpy = jest.fn<JSX.Element, [EventLogViewerProps]>(() => <p>EventLogViewer</p>);
   createShoppingListFormSpy = jest.fn<JSX.Element, [CreateShoppingListFormProps]>(() => <p>CreateShoppingListForm</p>)
 
-  const ShoppingListViewer = ShoppingListViewerConstructor(listSelectorSpy, addItemFormSpy, itemListSpy, eventLogViewerSpy, createShoppingListFormSpy);
+  const ShoppingList = _ShoppingList(addItemFormSpy, itemListSpy, eventLogViewerSpy);
+  const ShoppingListViewer = ShoppingListViewerConstructor(listSelectorSpy, ShoppingList, createShoppingListFormSpy);
 
   render(<LoggedInUserContext.Provider value={loggedInUser}>
     <ShoppingListViewer />
