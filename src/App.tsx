@@ -16,7 +16,7 @@ import { _createEvent, _listEvents } from './services/Firestore/ShoppingListEven
 import { _listShoppingListItems, _searchForItems, _saveShoppingListItem } from './services/Firestore/ShoppingListItems';
 import _AddToShoppingList from './use_cases/AddToShoppingList';
 import _BuyItemOnShoppingList from './use_cases/BuyItemOnShoppingList';
-import _EventLogViewer from './EventLogViewer';
+import _EventLogViewer from './ShoppingList/EventLogViewer';
 import _ShoppingList from './ShoppingList';
 
 

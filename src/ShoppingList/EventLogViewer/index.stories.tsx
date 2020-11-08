@@ -1,9 +1,9 @@
 import React from "react";
 
 import _EventLogViewer from ".";
-import ShoppingListEvent from "../domain/ShoppingListEvent";
-import ShoppingListFactory from "../factories/ShoppingList";
-import { days, hours, minutes } from "../RelativeTime/periods";
+import ShoppingListEvent from "../../domain/ShoppingListEvent";
+import ShoppingListFactory from "../../factories/ShoppingList";
+import { days, hours, minutes } from "../../RelativeTime/periods";
 
 const list = ShoppingListFactory.build();
 const events : ShoppingListEvent[] = [

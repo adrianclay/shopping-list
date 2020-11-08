@@ -8,7 +8,7 @@ import { AddItemFormProps } from "../ShoppingList/AddItemForm";
 import { CreateShoppingListFormProps } from "../CreateShoppingListForm";
 import { LoggedInUserContext } from "../Login";
 import ShoppingListFactory from "../factories/ShoppingList";
-import { EventLogViewerProps } from "../EventLogViewer";
+import { EventLogViewerProps } from "../ShoppingList/EventLogViewer";
 import _ShoppingList from "../ShoppingList";
 
 const loggedInUser = {

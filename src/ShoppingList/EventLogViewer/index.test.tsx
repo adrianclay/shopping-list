@@ -1,10 +1,10 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import _EventLogViewer from ".";
-import ShoppingList from "../domain/ShoppingList";
-import ShoppingListEvent from "../domain/ShoppingListEvent";
-import { realtimeServiceStub } from "../setupTests";
-import ShoppingListFactory from "../factories/ShoppingList";
+import ShoppingList from "../../domain/ShoppingList";
+import ShoppingListEvent from "../../domain/ShoppingListEvent";
+import { realtimeServiceStub } from "../../setupTests";
+import ShoppingListFactory from "../../factories/ShoppingList";
 
 const eventLogFetcherStub = realtimeServiceStub<ShoppingList, ShoppingListEvent[]>();
 const EventLogViewer = _EventLogViewer(eventLogFetcherStub.service);

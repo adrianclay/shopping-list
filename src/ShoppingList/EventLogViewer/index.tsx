@@ -1,10 +1,10 @@
 import React from "react";
 import { List } from "semantic-ui-react";
-import ShoppingList from "../domain/ShoppingList";
+import ShoppingList from "../../domain/ShoppingList";
 
-import ShoppingListEvent from "../domain/ShoppingListEvent";
-import RelativeTime from "../RelativeTime";
-import _useService, { RealtimeService } from "../useService";
+import ShoppingListEvent from "../../domain/ShoppingListEvent";
+import RelativeTime from "../../RelativeTime";
+import _useService, { RealtimeService } from "../../useService";
 
 const LogEntry = ({ event }: { event: ShoppingListEvent }) => {
   return <List.Item>
