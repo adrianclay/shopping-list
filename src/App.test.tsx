@@ -1,5 +1,5 @@
 import React from 'react';
-import {render, fireEvent, waitForElementToBeRemoved, RenderResult} from '@testing-library/react';
+import {render, fireEvent, waitForElementToBeRemoved, screen} from '@testing-library/react';
 import AppConstructor from './App';
 import {initializeTestApp, clearFirestoreData} from "@firebase/rules-unit-testing";
 import { act } from 'react-dom/test-utils';
@@ -11,8 +11,6 @@ const firebase = initializeTestApp({
   projectId,
   auth: { uid: 'alice', email: 'alice@example.com' }
 });
-
-let screen: RenderResult;
 
 afterAll(async () => {
   try {
@@ -55,7 +53,7 @@ test('As a user I can add items to the shopping list', async () => {
   };
 
   const App = AppConstructor(authenticatorStub, firebase)
-  screen = render(<App />);
+  render(<App />);
 
   await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
 
