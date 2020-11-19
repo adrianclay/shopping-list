@@ -5,7 +5,7 @@
   "dependencies": {
     "@formatjs/intl-relativetimeformat": "^7.3.3",
     "@testing-library/jest-dom": "^5.11.5",
-    "@testing-library/react": "^9.3.2",
+    "@testing-library/react": "^11.2.0",
     "@testing-library/user-event": "^12.2.0",
     "@types/jest": "^25.2.3",
     "@types/node": "^14.14.6",
