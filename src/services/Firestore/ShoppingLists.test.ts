@@ -2,7 +2,7 @@ import { assertFails, clearFirestoreData } from "@firebase/rules-unit-testing";
 import ShoppingList from "../../domain/ShoppingList";
 import { fetchFromRealtimeService } from "../../setupTests";
 import { alice, FirestoreAction, jeff, loginToFirestoreAs } from "./setup";
-import { _createShoppingList, _listShoppingLists } from "./ShoppingLists";
+import { _createShoppingList, _getShoppingList, _listShoppingLists } from "./ShoppingLists";
 
 const projectId = 'shopping-lists';
 const withJeffAuthenticated = <T>(action: FirestoreAction<T>) => loginToFirestoreAs(action, projectId, jeff);
@@ -41,7 +41,19 @@ describe('When Alice creates a shopping list', () => {
       firestore => fetchFromRealtimeService(_listShoppingLists(firestore), jeff)
     )).resolves.toEqual([])
   );
+
+  it('can retrieve it back, when querying by list id', () =>
+    expect(withAliceAuthenticated(
+      firestore => fetchFromRealtimeService(_getShoppingList(firestore), addedShoppingList.id)
+    )).resolves.toEqual(addedShoppingList)
+  );
 });
+
+test('fetching an unknown shopping list', () =>
+  expect(withAliceAuthenticated(
+    firestore => fetchFromRealtimeService(_getShoppingList(firestore), 'this-id-had-better-never-been-taken')
+  )).resolves.toEqual(null)
+)
 
 describe('firebase.rules', () => {
   it('Does not create, where the owner_uid does not match who is logged in', () =>
