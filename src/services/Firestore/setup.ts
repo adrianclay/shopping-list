@@ -1,4 +1,5 @@
 import { initializeTestApp } from "@firebase/rules-unit-testing";
+import firebase from "firebase/app"
 
 export type FirestoreAction<T> = (firestore: firebase.firestore.Firestore) => Promise<T>;
 

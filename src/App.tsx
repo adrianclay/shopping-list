@@ -1,4 +1,5 @@
 import React from 'react';
+import firebase from "firebase/app"
 
 import ItemListConstructor from "./ShoppingList/ItemList";
 import EditItemFormConstructor from './ShoppingList/ItemList/EditItemForm';
@@ -20,12 +21,12 @@ import _EventLogViewer from './ShoppingList/EventLogViewer';
 import _ShoppingList from './ShoppingList';
 
 
-function AppConstructor(authenticator: Authenticator, firebase: firebase.app.App) {
-  const firestore = firebase.firestore();
+function AppConstructor(authenticator: Authenticator, fb: firebase.app.App) {
+  const firestore = fb.firestore();
 
   const createEvent = _createEvent(firestore);
 
-  const saveShoppingListItem = prefixGeneratedSaveItem(_saveShoppingListItem(firebase.firestore()));
+  const saveShoppingListItem = prefixGeneratedSaveItem(_saveShoppingListItem(fb.firestore()));
   const searchForItems = prefixGeneratedSearchForItems(_searchForItems(firestore));
 
   const Login = LoginConstructor(authenticator);

@@ -1,4 +1,5 @@
 import { assertFails, clearFirestoreData } from "@firebase/rules-unit-testing";
+import firebase from "firebase/app";
 import ShoppingList from "../../domain/ShoppingList";
 import ShoppingListFactory from "../../factories/ShoppingList";
 import ShoppingListEventFactory from "../../factories/ShoppingListEvent";

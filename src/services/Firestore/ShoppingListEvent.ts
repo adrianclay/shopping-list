@@ -1,3 +1,4 @@
+import firebase from "firebase/app"
 import { RealtimeService } from "../../useService";
 import ShoppingList from "../../domain/ShoppingList";
 import ShoppingListEvent from "../../domain/ShoppingListEvent";
