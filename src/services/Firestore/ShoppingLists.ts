@@ -1,3 +1,4 @@
+import firebase from "firebase/app"
 import { AddShoppingListRequest } from "../../CreateShoppingListForm";
 import ShoppingList from "../../domain/ShoppingList";
 import User from "../../domain/User";
