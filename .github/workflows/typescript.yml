@@ -45,7 +45,7 @@ jobs:
       - name: Install node dependencies via yarn
         run: yarn install
       - name: TypeScript compiler
-        run: yarn run tsc --noEmit
+        run: make verify-typescript
 
   deploy:
     name: Deploy
