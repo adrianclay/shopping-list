@@ -1,7 +1,7 @@
 import React from "react";
 import { render, act, screen } from "@testing-library/react";
 
-import ShoppingListViewerConstructor from ".";
+import _ShoppingListSelector from ".";
 import { ListSelectorProps } from "../ListSelector";
 import { CreateShoppingListFormProps } from "../CreateShoppingListForm";
 import { LoggedInUserContext } from "../Login";
@@ -24,11 +24,11 @@ beforeEach(() => {
   listSelectorSpy = jest.fn<JSX.Element, [ListSelectorProps]>(() => <p>ListSelector</p>);
   createShoppingListFormSpy = jest.fn<JSX.Element, [CreateShoppingListFormProps]>(() => <p>CreateShoppingListForm</p>)
 
-  const ShoppingListViewer = ShoppingListViewerConstructor(listSelectorSpy, createShoppingListFormSpy, ShoppingListPath);
+  const ShoppingListSelector = _ShoppingListSelector(listSelectorSpy, createShoppingListFormSpy, ShoppingListPath);
 
   render(<MemoryRouter>
     <LoggedInUserContext.Provider value={loggedInUser}>
-      <ShoppingListViewer />
+      <ShoppingListSelector />
     </LoggedInUserContext.Provider>
     <Route path="*" render={({ location }) => {
           testLocation = location;

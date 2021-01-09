@@ -9,12 +9,12 @@ import { Redirect } from "react-router-dom";
 
 type Redirectable<Params> = (params: Params) => string;
 
-function ShoppingListViewerConstructor(
+function _ShoppingListSelector(
   ListSelector: React.FunctionComponent<ListSelectorProps>,
   CreateShoppingListForm: React.FunctionComponent<CreateShoppingListFormProps>,
   ShoppingListPath: Redirectable<{shoppingListId: string}>
 ) {
-  return function ShoppingListViewer() {
+  return function ShoppingListSelector() {
     const [shoppingList, setShoppingList] = useState<ShoppingList|undefined|null>();
 
     const itemList = (loggedInUser: User) => {
@@ -42,4 +42,4 @@ function ShoppingListViewerConstructor(
   }
 }
 
-export default ShoppingListViewerConstructor;
+export default _ShoppingListSelector;
