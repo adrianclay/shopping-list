@@ -1,7 +1,7 @@
 import React from 'react';
 import firebase from "firebase/app"
 
-import { BrowserRouter as Router, Switch } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import ItemListConstructor from "./ShoppingList/ItemList";
 import EditItemFormConstructor from './ShoppingList/ItemList/EditItemForm';
@@ -22,6 +22,7 @@ import _BuyItemOnShoppingList from './use_cases/BuyItemOnShoppingList';
 import _EventLogViewer from './ShoppingList/EventLogViewer';
 import _ShoppingList from './ShoppingList';
 import _ShoppingListPage, { ShoppingListPath } from './pages/ShoppingListPage';
+import _ShoppingListsPage from './pages/ShoppingListsPage';
 
 
 function AppConstructor(authenticator: Authenticator, fb: firebase.app.App) {
@@ -52,6 +53,8 @@ function AppConstructor(authenticator: Authenticator, fb: firebase.app.App) {
     _getShoppingList(firestore)
   );
 
+  const ShoppingListsPage = _ShoppingListsPage(ShoppingListSelector);
+
   return function App() {
     return (
       <Router>
@@ -59,11 +62,9 @@ function AppConstructor(authenticator: Authenticator, fb: firebase.app.App) {
           <h1>Shopping List</h1>
           <AlphaBanner />
           <Login>
-            <ShoppingListSelector />
-          </Login>
-          <Switch>
+            <ShoppingListsPage />
             <ShoppingListPage />
-          </Switch>
+          </Login>
         </Container>
       </Router>
     );
