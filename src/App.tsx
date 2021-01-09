@@ -21,7 +21,7 @@ import _AddToShoppingList from './use_cases/AddToShoppingList';
 import _BuyItemOnShoppingList from './use_cases/BuyItemOnShoppingList';
 import _EventLogViewer from './ShoppingList/EventLogViewer';
 import _ShoppingList from './ShoppingList';
-import _ShoppingListPage from './pages/ShoppingListPage';
+import _ShoppingListPage, { ShoppingListPath } from './pages/ShoppingListPage';
 
 
 function AppConstructor(authenticator: Authenticator, fb: firebase.app.App) {
@@ -43,8 +43,8 @@ function AppConstructor(authenticator: Authenticator, fb: firebase.app.App) {
 
   const ShoppingListViewer = ShoppingListViewerConstructor(
     ListSelectorConstructor(_listShoppingLists(firestore)),
-    ShoppingList,
-    CreateShoppingListFormConstructor(_createShoppingList(firestore))
+    CreateShoppingListFormConstructor(_createShoppingList(firestore)),
+    ShoppingListPath
   );
 
   const ShoppingListPage = _ShoppingListPage(

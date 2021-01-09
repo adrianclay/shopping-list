@@ -1,5 +1,5 @@
 import React from "react";
-import { useRouteMatch } from "react-router-dom";
+import { generatePath, useRouteMatch } from "react-router-dom";
 import { Container } from "semantic-ui-react";
 import ShoppingList from "../domain/ShoppingList";
 import { ShoppingListProps } from "../ShoppingList";
@@ -7,13 +7,17 @@ import _useService, { RealtimeService } from "../useService";
 
 type GetShoppingListServce = RealtimeService<string, ShoppingList | null>;
 
+const path = '/shopping-list/:shoppingListId';
+type PathParams = { shoppingListId: string };
+export const ShoppingListPath = (params: PathParams) => generatePath(path, params);
+
 function _ShoppingListPage(
   ShoppingList: React.FunctionComponent<ShoppingListProps>,
   getShoppingList: GetShoppingListServce
 ) {
   const useService = _useService(getShoppingList);
   return function ShoppingListRoute() {
-    const match = useRouteMatch<{ shoppingListId: string}>('/shopping-list/:shoppingListId');
+    const match = useRouteMatch<PathParams>(path);
     if (!match) {
       return null;
     }

@@ -2,39 +2,40 @@ import React from "react";
 import { render, act, screen } from "@testing-library/react";
 
 import ShoppingListViewerConstructor from ".";
-import { ItemListProps } from "../ShoppingList/ItemList";
 import { ListSelectorProps } from "../ListSelector";
-import { AddItemFormProps } from "../ShoppingList/AddItemForm";
 import { CreateShoppingListFormProps } from "../CreateShoppingListForm";
 import { LoggedInUserContext } from "../Login";
 import ShoppingListFactory from "../factories/ShoppingList";
-import { EventLogViewerProps } from "../ShoppingList/EventLogViewer";
 import _ShoppingList from "../ShoppingList";
+import { ShoppingListPath } from "../pages/ShoppingListPage";
+import { MemoryRouter, Route } from "react-router-dom";
+import * as H from 'history';
 
 const loggedInUser = {
   uid: '100',
   displayName: 'Barry'
 };
 
-let addItemFormSpy: jest.Mock<JSX.Element, [AddItemFormProps]>;
-let itemListSpy: jest.Mock<JSX.Element, [ItemListProps]>;
 let listSelectorSpy: jest.Mock<JSX.Element, [ListSelectorProps]>;
-let eventLogViewerSpy: jest.Mock<JSX.Element, [EventLogViewerProps]>;
 let createShoppingListFormSpy: jest.Mock<JSX.Element, [CreateShoppingListFormProps]>;
+let testLocation: H.Location;
 
 beforeEach(() => {
-  addItemFormSpy = jest.fn<JSX.Element, [AddItemFormProps]>(() => <p>AddItemForm</p>);
-  itemListSpy = jest.fn<JSX.Element, [ItemListProps]>(() => <p>ItemList</p>);
   listSelectorSpy = jest.fn<JSX.Element, [ListSelectorProps]>(() => <p>ListSelector</p>);
-  eventLogViewerSpy = jest.fn<JSX.Element, [EventLogViewerProps]>(() => <p>EventLogViewer</p>);
   createShoppingListFormSpy = jest.fn<JSX.Element, [CreateShoppingListFormProps]>(() => <p>CreateShoppingListForm</p>)
 
-  const ShoppingList = _ShoppingList(addItemFormSpy, itemListSpy, eventLogViewerSpy);
-  const ShoppingListViewer = ShoppingListViewerConstructor(listSelectorSpy, ShoppingList, createShoppingListFormSpy);
+  const ShoppingListViewer = ShoppingListViewerConstructor(listSelectorSpy, createShoppingListFormSpy, ShoppingListPath);
 
-  render(<LoggedInUserContext.Provider value={loggedInUser}>
-    <ShoppingListViewer />
-  </LoggedInUserContext.Provider>);
+  render(<MemoryRouter>
+    <LoggedInUserContext.Provider value={loggedInUser}>
+      <ShoppingListViewer />
+    </LoggedInUserContext.Provider>
+    <Route path="*" render={({ location }) => {
+          testLocation = location;
+          return null;
+        }}
+      />
+  </MemoryRouter>);
 })
 
 test('renders the ListSelector', async () => {
@@ -46,20 +47,6 @@ test('passes the loggedInUser to the ListSelector', async () => {
     expect.objectContaining({ loggedInUser }),
     {}
   )
-});
-
-describe('without selecting a shopping list', () => {
-  test('ItemList is not displayed', () => {
-    expect(itemListSpy).not.toBeCalled();
-  });
-
-  test('EventLogViewer is not displayed', () => {
-    expect(eventLogViewerSpy).not.toBeCalled();
-  });
-
-  test('AddItemForm is not displayed', () => {
-    expect(addItemFormSpy).not.toBeCalled();
-  });
 });
 
 describe('clicking create list', () => {
@@ -129,27 +116,8 @@ describe('selecting a shopping list', () => {
     );
   });
 
-  test('renders the ItemList', async () => {
-    expect(await screen.findByText('ItemList')).toBeInTheDocument();
+  test('redirects to the shopping-list page', () => {
+    const expectedLocation = ShoppingListPath({ shoppingListId: selectedShoppingList.id });
+    expect(testLocation.pathname).toBe(expectedLocation);
   });
-
-  test('passes the shoppingList prop to the ItemList', () => {
-    expect(itemListSpy).toHaveBeenLastCalledWith({ shoppingList: selectedShoppingList }, {});
-  })
-
-  test('renders the EventLogViewer', async () => {
-    expect(await screen.findByText('EventLogViewer')).toBeInTheDocument();
-  });
-
-  test('passes the shoppingList prop to the EventLogViewer', () => {
-    expect(eventLogViewerSpy).toHaveBeenLastCalledWith({ shoppingList: selectedShoppingList }, {});
-  })
-
-  test('renders the AddItemForm', async () => {
-    expect(await screen.findByText('AddItemForm')).toBeInTheDocument();
-  });
-
-  test('passes the shoppingList prop to the AddItemForm', () => {
-    expect(addItemFormSpy).toHaveBeenLastCalledWith({ shoppingList: selectedShoppingList }, {});
-  })
 });
