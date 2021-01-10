@@ -35,9 +35,10 @@ describe('Visiting /shopping-list/super-shopping-list/id', () => {
   });
 
   test('renders the ShoppingList component with the shoppingList when populated', async () => {
-    getShoppingListServiceStub.performUpdate(ShoppingListFactory.build());
+    const shoppingList = ShoppingListFactory.build();
+    getShoppingListServiceStub.performUpdate(shoppingList);
 
-    expect(await screen.findByText('List o Shopping')).toBeInTheDocument();
+    expect(ShoppingListStub).toHaveBeenCalledWith({ shoppingList }, {});
   });
 
   test('displays an error message', async () => {

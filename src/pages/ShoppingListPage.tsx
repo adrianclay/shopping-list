@@ -1,6 +1,6 @@
 import React from "react";
-import { generatePath, useRouteMatch } from "react-router-dom";
-import { Container } from "semantic-ui-react";
+import { generatePath, Link, useRouteMatch } from "react-router-dom";
+import { Breadcrumb, Container } from "semantic-ui-react";
 import ShoppingList from "../domain/ShoppingList";
 import { ShoppingListProps } from "../ShoppingList";
 import _useService, { RealtimeService } from "../useService";
@@ -29,7 +29,13 @@ function _ShoppingListPage(
     const [ , error, shoppingList] = useService(null, shoppingListId);
 
     if (shoppingList) {
-      return <ShoppingList shoppingList={shoppingList} />
+      return <>
+        <Breadcrumb icon='right angle' sections={[
+          { key: 0, content: <Link to='/'>Lists</Link> },
+          { key: 1, content: shoppingList.name, active: true }]}
+        />
+        <ShoppingList shoppingList={shoppingList} />
+      </>;
     }
     if (error) {
       return <Container>{error.message}</Container>
