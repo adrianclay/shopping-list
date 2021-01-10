@@ -1,6 +1,6 @@
 import React from "react";
 import { generatePath, Link, useRouteMatch } from "react-router-dom";
-import { Breadcrumb, Container } from "semantic-ui-react";
+import { Breadcrumb, Container, Loader } from "semantic-ui-react";
 import ShoppingList from "../domain/ShoppingList";
 import { ShoppingListProps } from "../ShoppingList";
 import _useService, { RealtimeService } from "../useService";
@@ -26,7 +26,11 @@ function _ShoppingListPage(
   }
 
   function ShoppingListPage({ shoppingListId }: { shoppingListId: string}) {
-    const [ , error, shoppingList] = useService(null, shoppingListId);
+    const [isLoading, error, shoppingList] = useService(null, shoppingListId);
+
+    if (isLoading) {
+      return <Loader active>Loading</Loader>
+    }
 
     if (shoppingList) {
       return <>

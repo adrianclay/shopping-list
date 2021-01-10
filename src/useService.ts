@@ -13,6 +13,7 @@ function _useService<R, D>(service: RealtimeService<R, D>) {
         setIsLoading(false);
         setFetchedData(fetchedData);
       }, (error) => {
+        setIsLoading(false);
         setFetchError(error);
       });
     }, [request]);

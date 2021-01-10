@@ -34,6 +34,10 @@ describe('Visiting /shopping-list/super-shopping-list/id', () => {
     expect(getShoppingList).toHaveBeenLastCalledWith('super-shopping-list-id', expect.anything(), expect.anything());
   });
 
+  test('shows a loading message', async () => {
+    expect(await screen.findByText(/loading/i)).toBeInTheDocument();
+  });
+
   test('renders the ShoppingList component with the shoppingList when populated', async () => {
     const shoppingList = ShoppingListFactory.build();
     getShoppingListServiceStub.performUpdate(shoppingList);
