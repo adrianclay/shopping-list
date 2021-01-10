@@ -1,6 +1,6 @@
 import React from "react";
 import { generatePath, Link, useRouteMatch } from "react-router-dom";
-import { Breadcrumb, Container, Loader } from "semantic-ui-react";
+import { Breadcrumb, Container, Loader, Message } from "semantic-ui-react";
 import ShoppingList from "../domain/ShoppingList";
 import { ShoppingListProps } from "../ShoppingList";
 import _useService, { RealtimeService } from "../useService";
@@ -44,7 +44,16 @@ function _ShoppingListPage(
     if (error) {
       return <Container>{error.message}</Container>
     }
-    return null;
+    return <>
+      <Breadcrumb icon='right angle' sections={[
+          { key: 0, content: <Link to='/'>Lists</Link> },
+          { key: 1, content: 'Unknown', active: true }]}
+      />
+      <Message negative>
+        <Message.Header>The shopping list on this page can't be found</Message.Header>
+        <p>This could be because it doesn't exist, or you don't have permission to access it.</p>
+      </Message>
+    </>;
   }
 }
 

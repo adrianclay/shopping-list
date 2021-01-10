@@ -30,7 +30,7 @@ describe('Visiting /shopping-list/super-shopping-list/id', () => {
     );
   });
 
-  test('passes in the shoppingListId to getShoppingList', async () => {
+  test('calls getShoppingList with the URIs shoppingListId', async () => {
     expect(getShoppingList).toHaveBeenLastCalledWith('super-shopping-list-id', expect.anything(), expect.anything());
   });
 
@@ -38,17 +38,29 @@ describe('Visiting /shopping-list/super-shopping-list/id', () => {
     expect(await screen.findByText(/loading/i)).toBeInTheDocument();
   });
 
-  test('renders the ShoppingList component with the shoppingList when populated', async () => {
-    const shoppingList = ShoppingListFactory.build();
-    getShoppingListServiceStub.performUpdate(shoppingList);
+  describe('with a valid shopping list', () => {
+    test('renders the ShoppingList component with the shoppingList', async () => {
+      const shoppingList = ShoppingListFactory.build();
+      getShoppingListServiceStub.performUpdate(shoppingList);
 
-    expect(ShoppingListStub).toHaveBeenCalledWith({ shoppingList }, {});
+      expect(ShoppingListStub).toHaveBeenCalledWith({ shoppingList }, {});
+    });
   });
 
-  test('displays an error message', async () => {
-    getShoppingListServiceStub.performError(new Error('Pandemic'));
+  describe('with an error', () => {
+    test('displays an error message', async () => {
+      getShoppingListServiceStub.performError(new Error('Pandemic'));
 
-    expect(await screen.findByText('Pandemic')).toBeInTheDocument();
+      expect(await screen.findByText('Pandemic')).toBeInTheDocument();
+    });
+  });
+
+  describe('with a null shopping list', () => {
+    test('displays a not found message', async () => {
+      getShoppingListServiceStub.performUpdate(null);
+
+      expect(await screen.findByText(/can't be found/)).toBeInTheDocument();
+    });
   });
 });
 
