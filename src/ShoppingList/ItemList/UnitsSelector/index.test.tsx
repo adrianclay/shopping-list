@@ -29,6 +29,17 @@ describe('selecting "g" from the dropdown', () => {
   });
 });
 
+describe('not passing in the onChange prop', () => {
+  describe('selecting "kg" from the dropdown', () => {
+    test('does not blow up by trying to call an undefined function', () => {
+      render(<UnitsSelector />);
+
+      openDropdown();
+      screen.getByText('kg').click();
+    });
+  });
+});
+
 describe('not passing in the value prop', () => {
   test('renders select with text "Units"', () => {
     render(<UnitsSelector />);
