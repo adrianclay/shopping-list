@@ -1,8 +1,5 @@
 name: Build
-on:
-  push:
-    branches:
-      - master
+on: push
 
 jobs:
   build:
@@ -48,6 +45,7 @@ jobs:
         run: make verify-typescript
 
   deploy:
+    if: github.ref == 'refs/heads/main'
     name: Deploy
     needs: [build, test, typescript]
     runs-on: ubuntu-latest
