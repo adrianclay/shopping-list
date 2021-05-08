@@ -22,6 +22,7 @@ export default async function initFirebase() {
             host: "localhost:8080",
             ssl: false
         });
+        app.auth().useEmulator('http://localhost:9099');
         return app;
     } else {
         // See https://firebase.google.com/docs/hosting/reserved-urls#sdk_auto-configuration

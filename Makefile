@@ -1,6 +1,6 @@
 .PHONY: start
 start:
-	firebase emulators:exec --only firestore "yarn start"
+	firebase emulators:exec --only firestore,auth "yarn start"
 
 .PHONY: verify-typescript
 verify-typescript:
