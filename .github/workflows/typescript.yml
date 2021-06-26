@@ -46,6 +46,7 @@ jobs:
 
   deploy:
     if: github.ref == 'refs/heads/main'
+    concurrency: firebase_deploy
     name: Deploy
     needs: [build, test, typescript]
     runs-on: ubuntu-latest
