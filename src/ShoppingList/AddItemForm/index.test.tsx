@@ -71,7 +71,7 @@ describe('Searching for "Granulated"', () => {
   describe('clicking on "Add Granulated"', () => {
     beforeEach(async () => {
       fireEvent.click(await screen.findByRole((role, element) => {
-        return role === 'option' && element.textContent === "Add Granulated";
+        return role === 'option' && element && element.textContent === "Add Granulated";
       }));
     });
 
