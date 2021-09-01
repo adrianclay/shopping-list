@@ -29,12 +29,12 @@ Launches the test runner in the interactive watch mode.
 
 ## Component designs ![storybook](https://github.com/adrianclay/shopping-list/workflows/storybook/badge.svg)
 
-This proect uses [Storybook][storybook] to create fast design feedback.
+This project uses [Storybook][storybook] to create fast design feedback.
 
 Use `yarn storybook` to run Storybook locally at [http://localhost:9009](http://localhost:9009)
 or visit
 [https://adrianclay.github.io/shopping-list](https://adrianclay.github.io/shopping-list)
-to view the compiled version for master.
+to view the latest compiled version.
 
 [storybook]: https://storybook.js.org/
 
