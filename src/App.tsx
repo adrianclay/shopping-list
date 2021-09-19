@@ -1,5 +1,5 @@
 import React from 'react';
-import firebase from "firebase/app"
+import { Firestore } from 'firebase/firestore';
 
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -25,12 +25,10 @@ import _ShoppingListPage, { ShoppingListPath } from './pages/ShoppingListPage';
 import _ShoppingListsPage from './pages/ShoppingListsPage';
 
 
-function AppConstructor(authenticator: Authenticator, fb: firebase.app.App) {
-  const firestore = fb.firestore();
-
+function AppConstructor(authenticator: Authenticator, firestore: Firestore) {
   const createEvent = _createEvent(firestore);
 
-  const saveShoppingListItem = prefixGeneratedSaveItem(_saveShoppingListItem(fb.firestore()));
+  const saveShoppingListItem = prefixGeneratedSaveItem(_saveShoppingListItem(firestore));
   const searchForItems = prefixGeneratedSearchForItems(_searchForItems(firestore));
 
   const Login = LoginConstructor(authenticator);

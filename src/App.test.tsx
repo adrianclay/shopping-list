@@ -1,22 +1,23 @@
 import React from 'react';
 import {render, fireEvent, waitForElementToBeRemoved, screen} from '@testing-library/react';
 import AppConstructor from './App';
-import {initializeTestApp, clearFirestoreData} from "@firebase/rules-unit-testing";
+import {initializeTestEnvironment} from "@firebase/rules-unit-testing";
 import { act } from 'react-dom/test-utils';
 import User from './domain/User';
+import { Firestore } from '@firebase/firestore';
 
 const projectId = 'app-test-tsx';
 
-const firebase = initializeTestApp({
+const testEnvironment = initializeTestEnvironment({
   projectId,
-  auth: { uid: 'alice', email: 'alice@example.com' }
 });
 
 afterAll(async () => {
+  const firebase = await testEnvironment;
   try {
-    await clearFirestoreData({ projectId });
+    firebase.clearFirestore();
   } finally {
-    firebase.firestore().terminate()
+    firebase.cleanup();
   }
 });
 
@@ -51,8 +52,9 @@ test('As a user I can add items to the shopping list', async () => {
     },
     signInWithRedirect: () => { throw new Error('signInWithRedirect not implemented')},
   };
-
-  const App = AppConstructor(authenticatorStub, firebase)
+  // @ts-ignore
+  const firestore : Firestore = (await testEnvironment).authenticatedContext('alice').firestore();
+  const App = AppConstructor(authenticatorStub, firestore);
   render(<App />);
 
   await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
