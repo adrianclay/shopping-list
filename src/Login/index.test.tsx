@@ -1,4 +1,3 @@
-import React from "react";
 import {render, Matcher} from "@testing-library/react";
 import {act} from "react-dom/test-utils";
 import User from "../domain/User";

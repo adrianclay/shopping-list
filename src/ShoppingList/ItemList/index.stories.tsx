@@ -1,4 +1,3 @@
-import React from 'react';
 import ItemListConstructor from '.';
 import { action } from '@storybook/addon-actions';
 import { Button, Segment } from 'semantic-ui-react';

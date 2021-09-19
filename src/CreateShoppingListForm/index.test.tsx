@@ -1,5 +1,4 @@
 import { render, fireEvent, screen, waitForElementToBeRemoved, act } from "@testing-library/react";
-import React from "react";
 import CreateShoppingListFormConstructor from ".";
 import ShoppingList from "../domain/ShoppingList";
 import ShoppingListFactory from "../factories/ShoppingList";

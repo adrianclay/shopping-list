@@ -1,5 +1,4 @@
 import AddItemFormConstructor from ".";
-import React from "react";
 import {fireEvent, render, screen} from "@testing-library/react";
 import ShoppingListFactory from "../../factories/ShoppingList";
 import ShoppingListItemFactory from "../../factories/ShoppingListItem";

@@ -1,4 +1,3 @@
-import React from "react";
 import { render, screen } from "@testing-library/react";
 import _EventLogViewer from ".";
 import ShoppingList from "../../domain/ShoppingList";

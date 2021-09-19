@@ -1,4 +1,3 @@
-import React from "react";
 
 import _EventLogViewer from ".";
 import ShoppingListEvent from "../../domain/ShoppingListEvent";

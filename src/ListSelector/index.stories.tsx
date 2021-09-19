@@ -1,4 +1,3 @@
-import React from 'react';
 import { action } from '@storybook/addon-actions';
 import ListSelectorConstructor from './';
 import ShoppingListFactory from '../factories/ShoppingList';

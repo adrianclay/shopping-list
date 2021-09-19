@@ -1,4 +1,3 @@
-import React from "react";
 import { generatePath, Link, useRouteMatch } from "react-router-dom";
 import { Breadcrumb, Container, Loader, Message } from "semantic-ui-react";
 import ShoppingList from "../domain/ShoppingList";

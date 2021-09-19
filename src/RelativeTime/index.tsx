@@ -1,6 +1,5 @@
 import '@formatjs/intl-relativetimeformat/polyfill'
 import '@formatjs/intl-relativetimeformat/locale-data/en'
-import React from "react";
 
 const timeFormat = (time: Date) => {
   const formatter = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' });

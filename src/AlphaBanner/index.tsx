@@ -1,5 +1,4 @@
 import { Label, Segment } from "semantic-ui-react";
-import React from "react";
 
 function AlphaBanner() {
   return <Segment color='blue' basic secondary>

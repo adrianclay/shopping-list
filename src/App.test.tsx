@@ -1,4 +1,3 @@
-import React from 'react';
 import {render, fireEvent, waitForElementToBeRemoved, screen} from '@testing-library/react';
 import AppConstructor from './App';
 import {initializeTestEnvironment} from "@firebase/rules-unit-testing";

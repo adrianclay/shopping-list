@@ -1,4 +1,3 @@
-import React from 'react';
 import CreateShoppingListFormConstructor from "./";
 import {action} from '@storybook/addon-actions';
 import ShoppingList from '../domain/ShoppingList';

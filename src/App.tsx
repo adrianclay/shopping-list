@@ -1,4 +1,3 @@
-import React from 'react';
 import { Firestore } from 'firebase/firestore';
 
 import { BrowserRouter as Router } from 'react-router-dom';

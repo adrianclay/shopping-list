@@ -1,4 +1,3 @@
-import React from "react";
 import { generatePath, Route } from "react-router-dom";
 
 

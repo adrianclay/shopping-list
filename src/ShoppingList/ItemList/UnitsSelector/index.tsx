@@ -1,6 +1,5 @@
 import UnitsOfMeasurement from "../../../domain/UnitsOfMeasurement";
 
-import React from "react";
 import { Select, SelectProps } from "semantic-ui-react";
 
 const EMPTY_DROPDOWN_VALUE = 'units';

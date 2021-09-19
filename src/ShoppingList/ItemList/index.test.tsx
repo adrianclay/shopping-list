@@ -1,4 +1,3 @@
-import React from 'react';
 import ItemListConstructor from '.';
 import {render, fireEvent, screen} from '@testing-library/react';
 import ShoppingListItem from '../../domain/ShoppingListItem';
