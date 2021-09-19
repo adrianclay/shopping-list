@@ -1,7 +1,7 @@
-import { assertFails, clearFirestoreData } from "@firebase/rules-unit-testing";
+import { assertFails } from "@firebase/rules-unit-testing";
 import ShoppingList from "../../domain/ShoppingList";
 import { fetchFromRealtimeService } from "../../setupTests";
-import { alice, FirestoreAction, jeff, loginToFirestoreAs } from "./setup";
+import { alice, clearFirestore, FirestoreAction, jeff, loginToFirestoreAs } from "./setup";
 import { _createShoppingList, _getShoppingList, _listShoppingLists } from "./ShoppingLists";
 
 const projectId = 'shopping-lists';
@@ -82,6 +82,4 @@ describe('firebase.rules', () => {
   );
 });
 
-afterEach(async () => {
-  await clearFirestoreData({ projectId });
-});
+afterEach(() => clearFirestore(projectId));

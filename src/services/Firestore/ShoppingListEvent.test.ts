@@ -1,10 +1,10 @@
-import { assertFails, clearFirestoreData } from "@firebase/rules-unit-testing";
-import firebase from "firebase/app";
+import { assertFails } from "@firebase/rules-unit-testing";
+import { Firestore } from "firebase/firestore";
 import ShoppingList from "../../domain/ShoppingList";
 import ShoppingListFactory from "../../factories/ShoppingList";
 import ShoppingListEventFactory from "../../factories/ShoppingListEvent";
 import { fetchFromRealtimeService } from "../../setupTests";
-import { alice, FirestoreAction, jeff, loginToFirestoreAs } from "./setup";
+import { alice, clearFirestore, FirestoreAction, jeff, loginToFirestoreAs } from "./setup";
 import { _createEvent, _listEvents } from "./ShoppingListEvent";
 import { _createShoppingList } from "./ShoppingLists";
 
@@ -12,9 +12,7 @@ const projectId = 'shopping-list-event';
 const withJeffAuthenticated = <T>(action: FirestoreAction<T>) => loginToFirestoreAs(action, projectId, jeff);
 const withAliceAuthenticated = <T>(callback: FirestoreAction<T>) => loginToFirestoreAs(callback, projectId, alice);
 
-afterEach(async () => {
-  await clearFirestoreData({ projectId });
-});
+afterEach(() => clearFirestore(projectId));
 
 let jeffsShoppingList: ShoppingList;
 beforeEach(() =>
@@ -38,10 +36,10 @@ test('Creating an event, is returned back', async () => {
   })).resolves.toEqual([event]);
 });
 
-const createEventWithTimestamp = (firestore: firebase.firestore.Firestore, timestamp: number) =>
+const createEventWithTimestamp = (firestore: Firestore, timestamp: number) =>
   _createEvent(firestore)(ShoppingListEventFactory.build({ list: jeffsShoppingList, created_on: new Date(timestamp) }));
 
-const listEventsTimestamps = async (firestore: firebase.firestore.Firestore) =>
+const listEventsTimestamps = async (firestore: Firestore) =>
   (await fetchFromRealtimeService(_listEvents(firestore), jeffsShoppingList)).map(e => e.created_on.valueOf())
 
 test('listEvents are returned in reverse chronological order', () => withJeffAuthenticated(async firestore => {

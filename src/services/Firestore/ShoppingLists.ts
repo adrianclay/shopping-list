@@ -1,4 +1,4 @@
-import firebase from "firebase/app"
+import { Firestore, collection as col, onSnapshot, where, query, doc, addDoc } from "firebase/firestore";
 import { AddShoppingListRequest } from "../../CreateShoppingListForm";
 import ShoppingList from "../../domain/ShoppingList";
 import User from "../../domain/User";
@@ -9,10 +9,10 @@ interface ShoppingListRecord {
   owner_uids: string[];
 }
 
-export function _listShoppingLists(firestore: firebase.firestore.Firestore) : RealtimeService<User, ShoppingList[]> {
+export function _listShoppingLists(firestore: Firestore) : RealtimeService<User, ShoppingList[]> {
   return function(loggedInUser: User, onUpdate: (items: ShoppingList[]) => void, onError: (error: Error) => void): () => void {
-    const shoppingListsFilteredByLoggedInUser = collection(firestore).where('owner_uids', 'array-contains', loggedInUser.uid);
-    return shoppingListsFilteredByLoggedInUser.onSnapshot(collection => {
+    const shoppingListsFilteredByLoggedInUser = query(collection(firestore), where('owner_uids', 'array-contains', loggedInUser.uid));
+    return onSnapshot(shoppingListsFilteredByLoggedInUser, collection => {
       const items = collection.docs.map(item => {
         const document = item.data() as ShoppingListRecord;
         return {
@@ -25,11 +25,11 @@ export function _listShoppingLists(firestore: firebase.firestore.Firestore) : Re
   }
 }
 
-export function _getShoppingList(firestore: firebase.firestore.Firestore) {
+export function _getShoppingList(firestore: Firestore) {
   return function(listId: string, onUpdate: (list: ShoppingList | null) => void, onError: (error: Error) => void) : () => void {
-    const shoppingListsFilteredById = collection(firestore).doc(listId);
-    return shoppingListsFilteredById.onSnapshot(snapshot => {
-      if (snapshot.exists) {
+    const shoppingListsFilteredById = doc(collection(firestore), listId);
+    return onSnapshot(shoppingListsFilteredById, snapshot => {
+      if (snapshot.exists()) {
         const document = snapshot.data() as ShoppingListRecord;
         const item = {
           id: snapshot.id,
@@ -52,9 +52,9 @@ export function _getShoppingList(firestore: firebase.firestore.Firestore) {
   }
 }
 
-export function _createShoppingList(firestore: firebase.firestore.Firestore) {
+export function _createShoppingList(firestore: Firestore) {
   return async function(list: AddShoppingListRequest) {
-    const docReference = await collection(firestore).add(list);
+    const docReference = await addDoc(collection(firestore), list);
     return {
       ...list,
       id: docReference.id,
@@ -62,6 +62,6 @@ export function _createShoppingList(firestore: firebase.firestore.Firestore) {
   }
 }
 
-function collection(firestore: firebase.firestore.Firestore) {
-  return firestore.collection('shopping-list');
+function collection(firestore: Firestore) {
+  return col(firestore, 'shopping-list');
 }

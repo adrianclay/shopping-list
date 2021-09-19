@@ -1,16 +1,24 @@
-import { initializeTestApp } from "@firebase/rules-unit-testing";
-import firebase from "firebase/app"
+import { initializeTestEnvironment } from "@firebase/rules-unit-testing";
+import { Firestore } from "firebase/firestore";
 
-export type FirestoreAction<T> = (firestore: firebase.firestore.Firestore) => Promise<T>;
+export type FirestoreAction<T> = (firestore: Firestore) => Promise<T>;
 
 export const alice = { uid: 'alice', displayName: 'Alice' };
 export const jeff = { uid: 'jeff', displayName: 'Jeff' };
 
 export async function loginToFirestoreAs<T>(callback: FirestoreAction<T>, projectId: string, authenticatedAs?: { uid: string }) {
-  const firebase = initializeTestApp({ projectId, auth: authenticatedAs });
+  const firebase = await initializeTestEnvironment({ projectId });
+  const context = authenticatedAs ? firebase.authenticatedContext(authenticatedAs.uid) : firebase.unauthenticatedContext();
   try {
-    return await callback(firebase.firestore());
+    // @ts-ignore
+    return await callback(context.firestore());
   } finally {
-    firebase.delete();
+    await firebase.cleanup();
   }
+}
+
+export async function clearFirestore(projectId: string) {
+  const firebase = await initializeTestEnvironment({ projectId });
+  await firebase.clearFirestore();
+  await firebase.cleanup();
 }
