@@ -50,7 +50,7 @@
     "resetMocks": false
   },
   "devDependencies": {
-    "@firebase/rules-unit-testing": "^2.0.0",
+    "@firebase/rules-unit-testing": "^2.0.1",
     "@storybook/addon-a11y": "^6.3.12",
     "@storybook/addon-actions": "^6.3.0",
     "@storybook/addons": "^6.3.0",
