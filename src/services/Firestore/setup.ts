@@ -10,7 +10,7 @@ export async function loginToFirestoreAs<T>(callback: FirestoreAction<T>, projec
   const firebase = await initializeTestEnvironment({ projectId });
   const context = authenticatedAs ? firebase.authenticatedContext(authenticatedAs.uid) : firebase.unauthenticatedContext();
   try {
-    // @ts-ignore
+    // @ts-expect-error
     return await callback(context.firestore());
   } finally {
     await firebase.cleanup();

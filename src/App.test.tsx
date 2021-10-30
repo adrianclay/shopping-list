@@ -51,7 +51,7 @@ test('As a user I can add items to the shopping list', async () => {
     },
     signInWithRedirect: () => { throw new Error('signInWithRedirect not implemented')},
   };
-  // @ts-ignore
+  // @ts-expect-error
   const firestore : Firestore = (await testEnvironment).authenticatedContext('alice').firestore();
   const App = AppConstructor(authenticatorStub, firestore);
   render(<App />);
