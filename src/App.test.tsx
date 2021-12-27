@@ -32,8 +32,6 @@ async function addShoppingListItem(itemName: string) {
 
 async function createShoppingList(shoppingListName: string) {
   await act(async () => {
-    (await screen.findByText(/create list/i)).click();
-
     fireEvent.change(
       screen.getByLabelText(/name/i),
       { target: { value: shoppingListName } }

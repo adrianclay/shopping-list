@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import ShoppingList from "../domain/ShoppingList";
 import { ListSelectorProps } from "../ListSelector";
 import { CreateShoppingListFormProps } from "../CreateShoppingListForm";
 import { LoggedInUserContext } from "../Login";
-import { Button } from "semantic-ui-react";
-import User from "../domain/User";
 import { useNavigate } from "react-router-dom";
 
 type Redirectable<Params> = (params: Params) => string;
@@ -15,28 +13,17 @@ function _ShoppingListSelector(
   ShoppingListPath: Redirectable<{shoppingListId: string}>
 ) {
   return function ShoppingListSelector() {
-    const [shoppingList, setShoppingList] = useState<ShoppingList|undefined|null>();
     const navigate = useNavigate();
 
-    const itemList = (loggedInUser: User) => {
-      if(shoppingList) {
-        navigate(ShoppingListPath({ shoppingListId: shoppingList.id }), { replace: true });
-      }
-
-      if(null === shoppingList) {
-        return <CreateShoppingListForm loggedInUser={loggedInUser} onCreate={(list: ShoppingList) => {setShoppingList(list)}} />
-      }
+    function switchToShoppingList(shoppingList: ShoppingList) {
+      navigate(ShoppingListPath({ shoppingListId: shoppingList.id }), { replace: true });
     }
-
-    const onListSelect = (list: ShoppingList) => {
-      setShoppingList(list);
-    };
 
     return <LoggedInUserContext.Consumer>
       { loggedInUser => <>
-          <ListSelector onSelect={onListSelect} loggedInUser={loggedInUser!} value={shoppingList} />
-          <Button icon='add' content='Create list' onClick={() => { setShoppingList(null) }} />
-          {itemList(loggedInUser!)}
+          <ListSelector onSelect={switchToShoppingList} loggedInUser={loggedInUser!} />
+          <h2>Create shopping list</h2>
+          <CreateShoppingListForm loggedInUser={loggedInUser!} onCreate={switchToShoppingList} />
         </>
       }
     </LoggedInUserContext.Consumer>;
