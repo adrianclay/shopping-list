@@ -34,7 +34,7 @@ test('displays loading message before fetch is resolved', async () => {
 });
 
 test('passes the loggedInUser to the fetcher', () => {
-  expect(shoppingListFetcherStub.service.mock.calls[1][0]).toEqual(loggedInUser);
+  expect(shoppingListFetcherStub.service).toHaveBeenCalledWith(loggedInUser, expect.anything(), expect.anything());
 });
 
 test('hides loading message after fetch is resolved', async () => {
