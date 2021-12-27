@@ -5,7 +5,7 @@ import { CreateShoppingListFormProps } from "../CreateShoppingListForm";
 import { LoggedInUserContext } from "../Login";
 import { Button } from "semantic-ui-react";
 import User from "../domain/User";
-import { Redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 type Redirectable<Params> = (params: Params) => string;
 
@@ -16,10 +16,11 @@ function _ShoppingListSelector(
 ) {
   return function ShoppingListSelector() {
     const [shoppingList, setShoppingList] = useState<ShoppingList|undefined|null>();
+    const navigate = useNavigate();
 
     const itemList = (loggedInUser: User) => {
       if(shoppingList) {
-        return <Redirect push to={ShoppingListPath({ shoppingListId: shoppingList.id })} />;
+        navigate(ShoppingListPath({ shoppingListId: shoppingList.id }), { replace: true });
       }
 
       if(null === shoppingList) {

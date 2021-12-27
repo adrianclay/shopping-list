@@ -1,4 +1,4 @@
-import { generatePath, Link, useRouteMatch } from "react-router-dom";
+import { generatePath, Link, useMatch } from "react-router-dom";
 import { Breadcrumb, Container, Loader, Message } from "semantic-ui-react";
 import ShoppingList from "../domain/ShoppingList";
 import { ShoppingListProps } from "../ShoppingList";
@@ -16,12 +16,12 @@ function _ShoppingListPage(
 ) {
   const useService = _useService(getShoppingList);
   return function ShoppingListRoute() {
-    const match = useRouteMatch<PathParams>(path);
+    const match = useMatch(path);
     if (!match) {
       return null;
     }
     const { shoppingListId } = match.params;
-    return <ShoppingListPage shoppingListId={shoppingListId} />
+    return <ShoppingListPage shoppingListId={shoppingListId!} />
   }
 
   function ShoppingListPage({ shoppingListId }: { shoppingListId: string}) {

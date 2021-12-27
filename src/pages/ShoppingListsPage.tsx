@@ -1,4 +1,4 @@
-import { generatePath, Route } from "react-router-dom";
+import { generatePath, Route, Routes } from "react-router-dom";
 
 
 const path = '/';
@@ -8,9 +8,9 @@ function _ShoppingListsPage(
   ShoppingListSelector: React.FunctionComponent<{}>
 ) {
   return function ShoppingListRoute() {
-    return <Route exact path={path}>
-      <ShoppingListSelector />
-    </Route>;
+    return <Routes>
+      <Route path={path} element={<ShoppingListSelector />} />
+    </Routes>;
   }
 }
 
