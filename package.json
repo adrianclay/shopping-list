@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@formatjs/intl-relativetimeformat": "^7.3.3",
-    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.0.3",
@@ -19,7 +19,7 @@
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
     "semantic-ui-react": "^2.0.4",
-    "typescript": "~4.5.4",
+    "typescript": "~4.5.5",
     "uuid": "^8.3.2"
   },
   "scripts": {
