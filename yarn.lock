@@ -2041,12 +2041,12 @@
     "@firebase/util" "1.6.3"
     tslib "^2.1.0"
 
-"@firebase/rules-unit-testing@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@firebase/rules-unit-testing/-/rules-unit-testing-2.0.1.tgz#d34f26f818d2827d6d0a89a8bb8e1169137cbc47"
-  integrity sha512-AhG0BZHHUZD4BVHUQOGXe4WkfuS9pNsXtHYmi8jxo7pR+oH967hkZere9Qn4GMbikwfv/KRkKBtKisf24F/SDA==
+"@firebase/rules-unit-testing@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@firebase/rules-unit-testing/-/rules-unit-testing-2.0.4.tgz#fe988970f1062df1257552623c598bdec5e30c2d"
+  integrity sha512-WZBCi3E5qpOjhXz9yYMsSeKQL8+bp5AlTRmTUfir4Wvm4plfNi04EyTfO/nqRCAIUEL8k6jDdNRx1IDuCyFBdg==
   dependencies:
-    node-fetch "2.6.2"
+    node-fetch "2.6.7"
 
 "@firebase/storage-compat@0.1.17":
   version "0.1.17"
@@ -10666,22 +10666,10 @@ node-dir@^0.1.10:
   dependencies:
     minimatch "^3.0.2"
 
-node-fetch@2.6.2:
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.2.tgz#986996818b73785e47b1965cc34eb093a1d464d0"
-  integrity sha512-aLoxToI6RfZ+0NOjmWAgn9+LEd30YCkJKFSyWacNZdEKTit/ZMcKjGkTRo8uWEsnIb/hfKecNPEbln02PdWbcA==
-
-node-fetch@2.6.7:
+node-fetch@2.6.7, node-fetch@^2.6.1:
   version "2.6.7"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
   integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==
-  dependencies:
-    whatwg-url "^5.0.0"
-
-node-fetch@^2.6.1:
-  version "2.6.6"
-  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.6.tgz#1751a7c01834e8e1697758732e9efb6eeadfaf89"
-  integrity sha512-Z8/6vRlTUChSdIgMa51jxQ4lrw/Jy5SOW10ObaA47/RElsAN2c5Pn8bTgFGWn/ibwzXTE8qwr1Yzx28vsecXEA==
   dependencies:
     whatwg-url "^5.0.0"
 
