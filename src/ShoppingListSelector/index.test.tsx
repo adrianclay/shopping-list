@@ -7,8 +7,7 @@ import { LoggedInUserContext } from "../Login";
 import ShoppingListFactory from "../factories/ShoppingList";
 import _ShoppingList from "../ShoppingList";
 import { ShoppingListPath } from "../pages/ShoppingListPage";
-import { MemoryRouter, Route } from "react-router-dom";
-import * as H from 'history';
+import { MemoryRouter, useLocation, Location } from "react-router-dom";
 
 const loggedInUser = {
   uid: '100',
@@ -17,7 +16,7 @@ const loggedInUser = {
 
 let listSelectorSpy: jest.Mock<JSX.Element, [ListSelectorProps]>;
 let createShoppingListFormSpy: jest.Mock<JSX.Element, [CreateShoppingListFormProps]>;
-let testLocation: H.Location;
+let locationSpy: Location;
 
 beforeEach(() => {
   listSelectorSpy = jest.fn<JSX.Element, [ListSelectorProps]>(() => <p>ListSelector</p>);
@@ -25,77 +24,37 @@ beforeEach(() => {
 
   const ShoppingListSelector = _ShoppingListSelector(listSelectorSpy, createShoppingListFormSpy, ShoppingListPath);
 
+  const SpyOnLocation = () => {
+    locationSpy = useLocation();
+    return null;
+  };
   render(<MemoryRouter>
+    <SpyOnLocation></SpyOnLocation>
     <LoggedInUserContext.Provider value={loggedInUser}>
       <ShoppingListSelector />
     </LoggedInUserContext.Provider>
-    {/* <Route path="*" render={({ location }) => {
-          testLocation = location;
-          return null;
-        }}
-      /> */}
   </MemoryRouter>);
 })
 
-xtest('renders the ListSelector', async () => {
+test('renders the ListSelector', async () => {
   expect(await screen.findByText('ListSelector')).toBeInTheDocument();
 });
 
-xtest('passes the loggedInUser to the ListSelector', async () => {
+test('passes the loggedInUser to the ListSelector', async () => {
   expect(listSelectorSpy).toHaveBeenLastCalledWith(
     expect.objectContaining({ loggedInUser }),
     {}
   )
 });
 
-xdescribe('clicking create list', () => {
-  beforeEach(async () => {
-    await act(async () => {
-      (await screen.findByText(/create list/i)).click();
-    });
-  });
-
-  test('renders the CreateShoppingListForm', async () => {
-    expect(await screen.findByText('CreateShoppingListForm')).toBeInTheDocument();
-  });
-
-  test('passes the loggedInUser to the CreateShoppingListForm', () => {
-    expect(createShoppingListFormSpy).toHaveBeenLastCalledWith(
-      expect.objectContaining({ loggedInUser }),
-      {}
-    );
-  });
-
-  test('clears the ListSelector value', () => {
-    expect(listSelectorSpy).toHaveBeenLastCalledWith(
-      expect.objectContaining({ value: null }),
-      {}
-    );
-  });
-
-  describe('and creating a list', () => {
-    const newlyCreatedShoppingList = ShoppingListFactory.build({
-      id: 'fresh-list',
-      name: 'List of freshness',
-    });
-
-    beforeEach(() => {
-      act(() => {
-        const createShoppingListFormProps = createShoppingListFormSpy.mock.calls[0][0];
-        createShoppingListFormProps.onCreate!(newlyCreatedShoppingList);
-      });
-    });
-
-    test('switches the ListSelector to the newly created list', () => {
-      expect(listSelectorSpy).toHaveBeenLastCalledWith(
-        expect.objectContaining({ value: newlyCreatedShoppingList }),
-        {}
-      );
-    });
-  });
+test('passes the loggedInUser to the CreateShoppingListForm', () => {
+  expect(createShoppingListFormSpy).toHaveBeenLastCalledWith(
+    expect.objectContaining({ loggedInUser }),
+    {}
+  );
 });
 
-xdescribe('selecting a shopping list', () => {
+describe('selecting a shopping list', () => {
   const selectedShoppingList = ShoppingListFactory.build({
     id: '200',
     name: 'Adrians fantastic list',
@@ -108,15 +67,8 @@ xdescribe('selecting a shopping list', () => {
     });
   });
 
-  test('passes the list to the ListSelector', () => {
-    expect(listSelectorSpy).toHaveBeenLastCalledWith(
-      expect.objectContaining({ value: selectedShoppingList }),
-      {}
-    );
-  });
-
   test('redirects to the shopping-list page', () => {
     const expectedLocation = ShoppingListPath({ shoppingListId: selectedShoppingList.id });
-    expect(testLocation.pathname).toBe(expectedLocation);
+    expect(locationSpy.pathname).toBe(expectedLocation);
   });
 });
