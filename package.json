@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^2.0.5",
-    "@storybook/addon-a11y": "^6.5.10",
+    "@storybook/addon-a11y": "^6.5.16",
     "@storybook/addon-actions": "^6.5.10",
     "@storybook/addons": "^6.5.10",
     "@storybook/builder-webpack5": "^6.5.10",
