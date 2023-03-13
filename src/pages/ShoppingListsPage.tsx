@@ -9,7 +9,7 @@ function _ShoppingListsPage(
 ) {
   return function ShoppingListRoute() {
     return <Routes>
-      <Route path={path} element={<ShoppingListSelector />} />
+      <Route path={path} Component={ShoppingListSelector} />
     </Routes>;
   }
 }
