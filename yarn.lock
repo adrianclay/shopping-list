@@ -7381,10 +7381,10 @@ extglob@^2.0.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-factory.ts@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/factory.ts/-/factory.ts-1.3.0.tgz#e5a845b81dbddca20ca6eb47a9c49177d0176499"
-  integrity sha512-fWJHpLmVaSagEPZ0RBuPxKDhuvU75Dy5kCeUxbvrqv6rYksBlByDAmuUrkv2mE68zRJvBvI2kP2LmcR7uoCmUQ==
+factory.ts@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/factory.ts/-/factory.ts-1.4.0.tgz#199ff8f9176bb1087975afd9d8d3d941e91ccfe7"
+  integrity sha512-dxfEaT2mE/Jb8ocryj8fLHdzIWmaWMOMOQxIk6hZ1Rs+snbGunJbv56DRvPbbjYaZ6OIoUiOYIojbcpCj2jCbQ==
   dependencies:
     clone-deep "^4.0.1"
     source-map-support "^0.5.21"
