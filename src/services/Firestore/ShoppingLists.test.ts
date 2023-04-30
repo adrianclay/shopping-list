@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 import { assertFails } from "@firebase/rules-unit-testing";
 import ShoppingList from "../../domain/ShoppingList";
 import { fetchFromRealtimeService } from "../../setupTests";

@@ -41,7 +41,7 @@ async function createShoppingList(shoppingListName: string) {
   });
 }
 
-test.skip('As a user I can add items to the shopping list', async () => {
+test('As a user I can add items to the shopping list', async () => {
   const authenticatorStub = {
     onAuthStateChanged: (onUpdate: (currentUser: User | null) => void) => {
       const loggedInUser = { uid: 'alice', displayName: 'bobby' };
