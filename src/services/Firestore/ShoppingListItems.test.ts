@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 import { assertFails } from "@firebase/rules-unit-testing";
 import * as Factory from "factory.ts";
 import ShoppingList from "../../domain/ShoppingList";
